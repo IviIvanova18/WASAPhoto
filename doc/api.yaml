@@ -5,6 +5,13 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
+tags:
+  - name: "User"
+    description: User operations
+  - name: "Photo"
+    description: Photo operations
+  - name: "login"
+    description: Operations for login
 components:
   responses:
     BadRequest:
@@ -33,13 +40,15 @@ components:
       example: 12:30:21:20
     Likes:
       description: The number of likes each photo has
-      type: number
+      type: integer
       format: integer
       example: 32
       minimum: 0
     Comments:
       description: All the comments from users the photo has
       type: string
+      minLength: 10
+      maxLength: 200
     Photo:
       title: Photo
       description: This object represents a single photo
@@ -103,6 +112,8 @@ paths:
           schema:
             type: string
             example: "user123"
+            minLength: 5
+            maxLength: 15
         - name: sort
           description: The way to sort the results
           in: query
@@ -111,6 +122,8 @@ paths:
             type: string
             enum: ["alphabetical", "date", "followers", "asc", "desc"]
             example: alphabetical
+            minLength: 3
+            maxLength: 15
       responses:
         200:
           description: User/s found
@@ -125,7 +138,7 @@ paths:
     get:
       tags: ["User"]
       operationId: getUserProfile
-      summary: Get a specific user
+      summary: Get a specific user by ID
       description: Returns the user
       parameters:
         - name: user_id
@@ -165,6 +178,8 @@ paths:
                   description: The user's display username
                   type: string
                   example: user123
+                  minLength: 5
+                  maxLength: 15
       responses:
         200:
           description: The user's username was updated
@@ -343,7 +358,38 @@ paths:
           description: The user was banned.
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
-  /users/likes/{photo_id}:
+  /photos/{photo_id}/likes:
+    get:
+      tags: ["Photo"]
+      summary: Get all the users who have liked a photo
+      description: Returns all the users who have liked a particular photo.'
+      operationId: getPhotoLikes
+      parameters:
+        - name: photo_id
+          description: The ID of the photo
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: sort
+          description: The way to sort the results.
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - alphabetical
+              - date
+      responses:
+        200:
+          description: "The users were returned."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
     put:
       tags: ["Photo"]
       summary: A user likes a photo
@@ -354,7 +400,13 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
+            example: 1
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: integer
             example: 1
       responses:
         204:
@@ -371,7 +423,13 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
+            example: 1
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: integer
             example: 1
       responses:
         204:
@@ -427,7 +485,7 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
             example: 1
       responses:
         "204": { description: Photo deleted successfully }
@@ -445,7 +503,7 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
             example: 1
         - name: direction
           description: The direction of sorting of the results.
@@ -473,7 +531,7 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
             example: 1
       requestBody:
         required: true
@@ -486,6 +544,8 @@ paths:
                   description: The content of the comment
                   example: Such a cool photo! :)
                   type: string
+                  minLength: 10
+                  maxLength: 200
       responses:
         201:
           description: "The comment was added."
@@ -506,52 +566,20 @@ paths:
           in: path
           required: true
           schema:
-            type: number
+            type: integer
             example: 1
         - name: photo_id
           description: The id of the photo
           in: path
           required: true
           schema:
-            type: number
+            type: integer
             example: 1
       responses:
         "204": { description: Comment deleted successfully }
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { description: comment not found }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photo_id}/likes:
-    get:
-      tags: ["Photo"]
-      summary: Get all the users who have liked a photo
-      description: Returns all the users who have liked a particular photo.'
-      operationId: getPhotoLikes
-      parameters:
-        - name: photo_id
-          description: The ID of the photo
-          in: path
-          required: true
-          schema:
-            type: number
-            example: 1
-        - name: sort
-          description: The way to sort the results.
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - alphabetical
-              - date
-      responses:
-        200:
-          description: "The users were returned."
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
   /session:
     post:
       tags: ["login"]
