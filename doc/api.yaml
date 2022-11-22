@@ -358,7 +358,7 @@ paths:
           description: The user was banned.
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photo_id}/likes:
+  /photos/{photo_id}/likes/{user_id}:
     get:
       tags: ["Photo"]
       summary: Get all the users who have liked a photo
@@ -367,6 +367,13 @@ paths:
       parameters:
         - name: photo_id
           description: The ID of the photo
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: user_id
+          description: The ID of the user
           in: path
           required: true
           schema:
@@ -403,7 +410,7 @@ paths:
             type: integer
             example: 1
         - name: user_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -426,7 +433,7 @@ paths:
             type: integer
             example: 1
         - name: user_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -441,7 +448,7 @@ paths:
     get:
       tags: ["Photo"]
       operationId: listPhotos
-      summary: Get the list of all photos
+      summary: Get the list of all photos (the stream)
       description: Returns the list of all photos in reverse chronological order uploaded in the app
       parameters:
         - name: date
@@ -466,12 +473,13 @@ paths:
           schema: { $ref: "#/components/schemas/Comments" }
       responses:
         "200":
-          description: List of photos
+          description: List the stream
           content:
-            application/json:
+            image/png:
               schema:
-                type: array
-                items: { $ref: "#/components/schemas/Photo" }
+                type: string
+                format: binary
+
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/{photo_id}:
