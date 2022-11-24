@@ -96,6 +96,14 @@ components:
               description: The total number of users that are followed by current user
               example: 52
               type: integer
+  securitySchemes:
+    LegacyAuth:
+      type: apiKey
+      in: header
+      name: X-App-Token
+      description: |-
+        App session token value. This value is sent by the server in the login
+        and session refresh APIs.
 
 paths:
   /users/:
@@ -134,6 +142,9 @@ paths:
                 items: { $ref: "#/components/schemas/User" }
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
+
   /users/{user_id}:
     get:
       tags: ["User"]
@@ -154,6 +165,9 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/User" }
+      security:
+        - LegacyAuth: []
+
     patch:
       tags: ["User"]
       operationId: setMyUserName
@@ -186,6 +200,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/User" }
+      security:
+        - LegacyAuth: []
   /users/{user_id}/following:
     get:
       tags: ["User"]
@@ -216,6 +232,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/User" }
+      security:
+        - LegacyAuth: []
 
   /users/{user_id}/following/{follower_user_id}:
     delete:
@@ -240,6 +258,8 @@ paths:
             example: 1
       responses:
         204: { description: "The user was unfollowed." }
+      security:
+        - LegacyAuth: []
     put:
       tags: ["User"]
       operationId: followUser
@@ -263,6 +283,8 @@ paths:
       responses:
         204:
           description: The user was followed.
+      security:
+        - LegacyAuth: []
   /users/{user_id}/photos:
     get:
       tags: ["Photo"]
@@ -285,6 +307,9 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/Photo" }
+      security:
+        - LegacyAuth: []
+
     post:
       tags: ["Photo"]
       operationId: uploadPhoto
@@ -310,6 +335,8 @@ paths:
               schema: { $ref: "#/components/schemas/Photo" }
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
   /users/{user_id}/banned/{banned_user_id}:
     delete:
       tags: ["User"]
@@ -333,6 +360,8 @@ paths:
             example: 1
       responses:
         204: { description: The user was unbanned. }
+      security:
+        - LegacyAuth: []
     put:
       tags: ["User"]
       operationId: banUser
@@ -358,6 +387,8 @@ paths:
           description: The user was banned.
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
   /photos/{photo_id}/likes/{user_id}:
     get:
       tags: ["Photo"]
@@ -397,6 +428,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
+      security:
+        - LegacyAuth: []
+
     put:
       tags: ["Photo"]
       summary: A user likes a photo
@@ -420,6 +454,8 @@ paths:
           description: The photo was liked.
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
     delete:
       tags: ["Photo"]
       summary: A user unlikes a photo
@@ -443,7 +479,8 @@ paths:
           description: The photo was unliked.
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
-
+      security:
+        - LegacyAuth: []
   /photos/:
     get:
       tags: ["Photo"]
@@ -482,6 +519,9 @@ paths:
 
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
+
   /photos/{photo_id}:
     delete:
       tags: ["Photo"]
@@ -500,6 +540,8 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { description: Photo not found }
         "500": { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
   /photos/{photo_id}/comments:
     get:
       tags: ["Photo"]
@@ -529,6 +571,9 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/Comments" }
+      security:
+        - LegacyAuth: []
+
     post:
       tags: ["Photo"]
       operationId: commentPhoto
@@ -562,6 +607,8 @@ paths:
               schema: { $ref: "#/components/schemas/Comments" }
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
   /photos/{photo_id}/comments/{comment_id}:
     delete:
       tags: ["Photo"]
@@ -588,6 +635,8 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { description: comment not found }
         "500": { $ref: "#/components/responses/InternalServerError" }
+      security:
+        - LegacyAuth: []
   /session:
     post:
       tags: ["login"]
