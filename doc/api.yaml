@@ -32,6 +32,7 @@ components:
       schema:
         type: string
         example: "user123"
+        pattern: "ˆ.*?$"
         readOnly: true
         minLength: 5
         maxLength: 15
@@ -51,6 +52,7 @@ components:
     Sort:
       schema:
         type: string
+        pattern: "ˆ.*?$"
         enum: ["alphabetical", "date", "followers", "asc", "desc"]
         example: alphabetical
         minLength: 3
@@ -73,16 +75,16 @@ components:
       format: time
       example: 12:30:21:20
       minLength: 8
-      maxLength: 13
+      maxLength: 12
     Likes:
       description: The number of likes each photo has
       type: integer
-      format: integer
       example: 32
       minimum: 0
     Comments:
       description: All the comments from users the photo has
       type: string
+      pattern: "ˆ.*?$"
       minLength: 10
       maxLength: 200
     Photo:
@@ -90,7 +92,7 @@ components:
       description: This object represents a single photo
       type: object
       properties:
-        id:
+        photo_id:
           description: Unique photo indentifier
           type: integer
           example: 1
@@ -104,7 +106,7 @@ components:
       description: This object represents a user
       type: object
       properties:
-        id:
+        user_id:
           description: Unique user identifier
           type: integer
           example: 1
@@ -159,6 +161,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/User" }
+                minItems: 0
+                maxItems: 1000
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
@@ -196,7 +200,7 @@ paths:
                 username:
                   description: The user's display username
                   type: string
-                  example: user123
+                  example: "user123"
                   minLength: 5
                   maxLength: 15
       responses:
@@ -225,6 +229,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/User" }
+                minItems: 0
+                maxItems: 1000
       security:
         - LegacyAuth: []
 
@@ -282,6 +288,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/Photo" }
+                minItems: 0
+                maxItems: 1000
       security:
         - LegacyAuth: []
 
@@ -295,7 +303,7 @@ paths:
           application/json:
             schema: { $ref: "#/components/schemas/Photo" }
       responses:
-        200:
+        201:
           description: Photo uploaded successfully
           content:
             application/json:
@@ -363,6 +371,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
+                  minItems: 0
+                  maxItems: 1000
       security:
         - LegacyAuth: []
 
@@ -464,6 +474,8 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/Comments" }
+                minItems: 0
+                maxItems: 1000
       security:
         - LegacyAuth: []
 
@@ -483,6 +495,7 @@ paths:
                   description: The content of the comment
                   example: Such a cool photo! :)
                   type: string
+                  pattern: "ˆ.*?$"
                   minLength: 10
                   maxLength: 200
       responses:
