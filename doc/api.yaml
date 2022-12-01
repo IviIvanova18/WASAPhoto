@@ -24,20 +24,56 @@ components:
         type: integer
         example: 001
         readOnly: true
-      name: id
+      name: photo_id
       in: path
       required: true
       description: Photo id
+    Username:
+      schema:
+        type: string
+        example: "user123"
+        readOnly: true
+        minLength: 5
+        maxLength: 15
+      name: username
+      in: query
+      required: true
+      description: Username to find the user.
+    UserID:
+      schema:
+        type: integer
+        example: 1
+        readOnly: true
+      name: user_id
+      in: path
+      required: true
+      description: User ID
+    Sort:
+      schema:
+        type: string
+        enum: ["alphabetical", "date", "followers", "asc", "desc"]
+        example: alphabetical
+        minLength: 3
+        maxLength: 15
+      name: sort
+      description: The way to sort the results
+      in: query
+      required: false
   schemas:
     Date:
       description: The date when the photo was uploaded
       type: string
       format: date
       example: 2022-01-01
+      minLength: 8
+      maxLength: 12
     Time:
       description: The time when the photo was uploaded
       type: string
+      format: time
       example: 12:30:21:20
+      minLength: 8
+      maxLength: 13
     Likes:
       description: The number of likes each photo has
       type: integer
@@ -113,25 +149,8 @@ paths:
       summary: Search for a specific user by username or list all users
       description: Returns the list of users
       parameters:
-        - name: username
-          description: Username to find the user.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "user123"
-            minLength: 5
-            maxLength: 15
-        - name: sort
-          description: The way to sort the results
-          in: query
-          required: false
-          schema:
-            type: string
-            enum: ["alphabetical", "date", "followers", "asc", "desc"]
-            example: alphabetical
-            minLength: 3
-            maxLength: 15
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/Username"
       responses:
         200:
           description: User/s found
@@ -146,19 +165,13 @@ paths:
         - LegacyAuth: []
 
   /users/{user_id}:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     get:
       tags: ["User"]
       operationId: getUserProfile
       summary: Get a specific user by ID
       description: Returns the user
-      parameters:
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         200:
           description: The user is returned
@@ -173,14 +186,6 @@ paths:
       operationId: setMyUserName
       summary: Update username
       description: The username of the user is updated with the specified one
-      parameters:
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       requestBody:
         required: false
         content:
@@ -203,27 +208,15 @@ paths:
       security:
         - LegacyAuth: []
   /users/{user_id}/following:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     get:
       tags: ["User"]
       summary: All the users that the current user is following
       description: Returns all users that the authenticated user is following.
       operationId: getUserFollowing
       parameters:
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: direction
-          description: The direction of sorting of the results.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: asc
-            enum: ["asc", "desc"]
+        - $ref: "#/components/parameters/Sort"
       responses:
         200:
           description: The followed users were returned.
@@ -236,6 +229,8 @@ paths:
         - LegacyAuth: []
 
   /users/{user_id}/following/{follower_user_id}:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     delete:
       tags: ["User"]
       operationId: unfollowUser
@@ -249,13 +244,6 @@ paths:
           schema:
             type: integer
             example: 2
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204: { description: "The user was unfollowed." }
       security:
@@ -273,32 +261,19 @@ paths:
           schema:
             type: integer
             example: 2
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204:
           description: The user was followed.
       security:
         - LegacyAuth: []
   /users/{user_id}/photos:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     get:
       tags: ["Photo"]
       operationId: getMyStream
       summary: Get a list of all the photos
       description: Returns a list of all the photos of a user in reverse chronological order
-      parameters:
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         200:
           description: The photos are returned
@@ -315,14 +290,6 @@ paths:
       operationId: uploadPhoto
       summary: Upload a photo
       description: Uploads a new photo in the user's account
-      parameters:
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       requestBody:
         content:
           application/json:
@@ -338,6 +305,8 @@ paths:
       security:
         - LegacyAuth: []
   /users/{user_id}/banned/{banned_user_id}:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     delete:
       tags: ["User"]
       operationId: unbanUser
@@ -351,13 +320,6 @@ paths:
           schema:
             type: integer
             example: 2
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204: { description: The user was unbanned. }
       security:
@@ -375,13 +337,6 @@ paths:
           schema:
             type: integer
             example: 2
-        - name: user_id
-          description: The id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204:
           description: The user was banned.
@@ -390,35 +345,15 @@ paths:
       security:
         - LegacyAuth: []
   /photos/{photo_id}/likes/{user_id}:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
+      - $ref: "#/components/parameters/PhotoID"
+      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["Photo"]
       summary: Get all the users who have liked a photo
       description: Returns all the users who have liked a particular photo.'
       operationId: getPhotoLikes
-      parameters:
-        - name: photo_id
-          description: The ID of the photo
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: user_id
-          description: The ID of the user
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: sort
-          description: The way to sort the results.
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - alphabetical
-              - date
       responses:
         200:
           description: "The users were returned."
@@ -436,19 +371,6 @@ paths:
       summary: A user likes a photo
       description: A specific users like a photo
       operationId: likePhoto
-      parameters:
-        - name: photo_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204:
           description: The photo was liked.
@@ -461,19 +383,6 @@ paths:
       summary: A user unlikes a photo
       description: The specified user unlikes a photo that they previously liked.'
       operationId: unlikePhoto
-      parameters:
-        - name: photo_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: user_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204:
           description: The photo was unliked.
@@ -523,18 +432,13 @@ paths:
         - LegacyAuth: []
 
   /photos/{photo_id}:
+    parameters:
+      - $ref: "#/components/parameters/PhotoID"
     delete:
       tags: ["Photo"]
       operationId: deletePhoto
       summary: Remove a Photo
       description: Remove a photo from the system.
-      parameters:
-        - name: photo_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         "204": { description: Photo deleted successfully }
         "400": { $ref: "#/components/responses/BadRequest" }
@@ -543,26 +447,15 @@ paths:
       security:
         - LegacyAuth: []
   /photos/{photo_id}/comments:
+    parameters:
+      - $ref: "#/components/parameters/PhotoID"
     get:
       tags: ["Photo"]
       operationId: get_commets
       summary: Get all the comments on a Photo
       description: Returns all the comments on a specified photo
       parameters:
-        - name: photo_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: direction
-          description: The direction of sorting of the results.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: asc
-            enum: ["asc", "desc"]
+        - $ref: "#/components/parameters/Sort"
       responses:
         200:
           description: "All the comments of a photo are returned."
@@ -579,13 +472,6 @@ paths:
       operationId: commentPhoto
       summary: Add a comment to a photo
       description: Adds a new comment to a specific photo
-      parameters:
-        - name: photo_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       requestBody:
         required: true
         content:
@@ -610,6 +496,8 @@ paths:
       security:
         - LegacyAuth: []
   /photos/{photo_id}/comments/{comment_id}:
+    parameters:
+      - $ref: "#/components/parameters/PhotoID"
     delete:
       tags: ["Photo"]
       operationId: uncommentPhoto
@@ -618,13 +506,6 @@ paths:
       parameters:
         - name: comment_id
           description: The id of the comment
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: photo_id
-          description: The id of the photo
           in: path
           required: true
           schema:
