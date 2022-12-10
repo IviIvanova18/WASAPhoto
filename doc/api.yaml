@@ -145,14 +145,14 @@ components:
 
 paths:
   /users/:
+    parameters:
+      - $ref: "#/components/parameters/Sort"
+      - $ref: "#/components/parameters/Username"
     get:
       tags: ["User"]
       operationId: serachUser
       summary: Search for a specific user by username or list all users
       description: Returns the list of users
-      parameters:
-        - $ref: "#/components/parameters/Sort"
-        - $ref: "#/components/parameters/Username"
       responses:
         200:
           description: User/s found
@@ -214,13 +214,12 @@ paths:
   /users/{user_id}/following:
     parameters:
       - $ref: "#/components/parameters/UserID"
+      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["User"]
       summary: All the users that the current user is following
       description: Returns all users that the authenticated user is following.
       operationId: getUserFollowing
-      parameters:
-        - $ref: "#/components/parameters/Sort"
       responses:
         200:
           description: The followed users were returned.
@@ -459,13 +458,12 @@ paths:
   /photos/{photo_id}/comments:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
+      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["Photo"]
       operationId: get_commets
       summary: Get all the comments on a Photo
       description: Returns all the comments on a specified photo
-      parameters:
-        - $ref: "#/components/parameters/Sort"
       responses:
         200:
           description: "All the comments of a photo are returned."
