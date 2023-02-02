@@ -150,7 +150,7 @@ paths:
       - $ref: "#/components/parameters/Username"
     get:
       tags: ["User"]
-      operationId: serachUser
+      operationId: searachUser
       summary: Search for a specific user by username or list all users
       description: Returns the list of users
       responses:
@@ -185,7 +185,7 @@ paths:
       security:
         - LegacyAuth: []
 
-    patch:
+    put:
       tags: ["User"]
       operationId: setMyUserName
       summary: Update username
@@ -209,6 +209,10 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/User" }
+        400: { $ref: "#/components/responses/BadRequest" }
+        404 : 
+          description: Fountain not found
+        500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
   /users/{user_id}/following:
@@ -291,7 +295,6 @@ paths:
                 maxItems: 1000
       security:
         - LegacyAuth: []
-
     post:
       tags: ["Photo"]
       operationId: uploadPhoto

@@ -1,27 +1,29 @@
 package api
 
-import "git.wasaphoto.ivi/wasaphoto/service/database"
-
-// const (
-// 	FountainStatusGood   string = "good"
-// 	FountainStatusFaulty string = "faulty"
+// import ("git.wasaphoto.ivi/wasaphoto/service/database"
+		
 // )
+
+
 
 // Fountain struct represent a fountain in every data exchange with the external world via REST API. JSON tags have been
 // added to the struct to conform to the OpenAPI specifications regarding JSON key names.
 // Note: there is a similar struct in the database package. See Fountain.FromDatabase (below) to understand why.
-// type FPountain struct {
-// 	ID        uint64  `json:"id"`
-// 	Latitude  float64 `json:"latitude"`
-// 	Longitude float64 `json:"longitude"`
-// 	Status    string  `json:"status"`
-// }
+
 
 type Photo struct{
 	ID int `json:"id"`
-	DateTime time.Time `json:"DateTime"`
+	DateTime string `json:"DateTime"`
 	Likes int `json:"likes"`
-	Comments string `json:"comments"`
+	Comments []string `json:"comments"`
+}
+
+type User{
+	ID int `json:"id"`
+	Username string `json:"username"`
+	PhotoCount int `json:"photoCount"`
+	Followers int `json:"followers"`
+	Followings int `json:"following"`
 
 }
 type JSONErrorMsg struct{
@@ -43,7 +45,7 @@ func (p *Photo) FromDatabase(photo database.Photo) {
 	p.Comments = photo.Comments
 }
 
-// ToDatabase returns the fountain in a database-compatible representation
+// // ToDatabase returns the fountain in a database-compatible representation
 func (p *Photo) ToDatabase() database.Photo {
 	return database.Photo{
 		ID:        p.ID,

@@ -35,6 +35,8 @@ import (
 	"errors"
 	"fmt"
 )
+var ErrUserDoesNotExist = errors.New("User does not exist")
+var ErrPhotoDoesNotExist = errors.New("Photo does not exist")
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {

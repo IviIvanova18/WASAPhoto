@@ -12,21 +12,21 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 	var photos = []Photo{
 		Photo{
 			ID:1,
-			DateTime: "01.02.2023",
+			DateTime: "01.03.2023",
 			Likes:23,
-			Comments:"New",
+			Comments:[]string{"New","Another Comment"},
 		},
 		Photo{
 			ID:2,
 			DateTime: "04.03.2022",
 			Likes:2543,
-			Comments:"New Com",
+			Comments:[]string{"New Com"},
 		},
 		Photo{
 			ID:3,
-			DateTime: "02.02.2023",
+			DateTime: "02.04.2023",
 			Likes:232,
-			Comments:"New",
+			Comments:[]string{"New"},
 		},
 	}
 	w.Header().Set("content-type", "application/json")
