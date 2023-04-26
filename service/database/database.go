@@ -37,19 +37,31 @@ import (
 	"time"
 )
 
-var ErrorUserDoesNotExist = errors.New("Error User does not exists!")
-// var ErrImageDoesNotExist = errors.New("image does not exist")
-// var ErrCommentNotFound = errors.New("comment does not exist")
-// var ErrLikeNotFound = errors.New("like does not exist")
+var ErrUserDoesNotExist = errors.New("Error User does not exist!")
+var ErrPhotoDoesNotExists = errors.New("Error photo does not exist!")
+var ErrCommentNotFound = errors.New("Error comment does not exist!")
+var ErrLikeNotFound = errors.New("Error like does not exist!")
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 	CreateUser(username string) (UserLogin, error)
 	GetIDByUsername(username string) (uint64, error)
+	GetUsernameById(id uint64) (string, error)
 	SetMyUserName(u UserLogin) error
 	SearchUser(user User) (User, error)
 	UploadPhoto(photo Photo) (Photo, error)
-	GetUsernameById(id uint64) (string, error)
+	DeletePhoto(id uint64) error
+	GetPhoto(id uint64) ([]byte, error)
+	DeleteLikes(idPhoto uint64) error
+	DeleteComments(idPhoto uint64) error
+	UpdateLikesPhoto(photoId uint64, count int64) error
+	UpdatePhotoCountUser(idUser uint64, count int64) error
+	CommentPhoto(comment Comment) error
+	UncommentPhoto(id uint64, idPhoto uint64) error
+	LikePhoto(idImage uint64, idUser uint64) error
+	UnlikePhoto(idImage uint64, idUser uint64) error
+	GetUserIDByPhoto(photoId uint64) (uint64, error)
+	UpdateCommentsPhoto(photoId uint64, count int64) error
 
 	Ping() error
 }
@@ -99,6 +111,38 @@ func New(db *sql.DB) (AppDatabase, error) {
 			return nil, fmt.Errorf("error creating database structure photos: %w", err)
 		}
 	}
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='likes';`).Scan(&tableName)
+	if errors.Is(err, sql.ErrNoRows) {
+		sqlStmt := `CREATE TABLE likes (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			idPhoto INTEGER NOT NULL,
+			idUser INTEGER NOT NULL,
+			UNIQUE(idPhoto, idUser),
+			FOREIGN KEY (idPhoto) REFERENCES photos(idPhoto),
+			FOREIGN KEY (idUser) REFERENCES users(idUser)
+			);`
+		_, err = db.Exec(sqlStmt)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure likes: %w", err)
+		}
+	}
+
+
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='comments';`).Scan(&tableName)
+	if errors.Is(err, sql.ErrNoRows) {
+		sqlStmt := `CREATE TABLE comments (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			idPhoto INTEGER NOT NULL,
+			idUser INTEGER NOT NULL,
+			commentText TEXT NOT NULL,
+			FOREIGN KEY (idPhoto) REFERENCES photos(idPhotos),
+			FOREIGN KEY (idUser) REFERENCES users(isUser)
+			);`
+		_, err = db.Exec(sqlStmt)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure comments: %w", err)
+		}
+	}
 
 	return &appdbimpl{
 		c: db,
@@ -132,14 +176,13 @@ type Photo struct{
 	Username string		
 	DateTime time.Time 	
 	Likes int 			
-	Comments []string 	
+	Comments uint64	
 	Path []byte			
 }
 
-type Comment struct {
+type Comment struct{
 	IDComment uint64
-	IDUser    uint64
-	IDPhoto   uint64
-	Comment     string
+	IDUser uint64
+	IDPhoto uint64
+	CommentText string 
 }
-

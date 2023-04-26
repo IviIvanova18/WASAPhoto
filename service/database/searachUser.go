@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) SearchUser(user User) (User, error) {
-	err := db.c.QueryRow(`SELECT id_user, username, photosCount FROM users WHERE username=?`, user.Username).Scan(&user.IDUser, &user.Username, &user.PhotosCount)
+	err := db.c.QueryRow(`SELECT idUser, username, photosCount FROM users WHERE username=?`, user.Username).Scan(&user.IDUser, &user.Username, &user.PhotosCount)
 	if err != nil {
 		return user, err
 	}
