@@ -464,7 +464,7 @@ paths:
       - $ref: "#/components/parameters/Sort"
     get:
       tags: ["Photo"]
-      operationId: get_commets
+      operationId: get_comments
       summary: Get all the comments on a Photo
       description: Returns all the comments on a specified photo
       responses:

@@ -20,10 +20,10 @@ func (rt *_router) UploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	photo.Path = buf
 	photo.IDUser = id_u
 	photo.Likes = 0
-	photo.Comments = []string{}
+	photo.Comments = 0
 	photo.DateTime = time.Now()
 
-	dbimage, err := rt.db.UploadPhoto(photo.ToDatabase())
+	dbPhoto, err := rt.db.UploadPhoto(photo.ToDatabase())
 
 	if err != nil {
 		ctx.Logger.WithError(err).Error("Photo cannot be uploaded")
@@ -41,7 +41,7 @@ func (rt *_router) UploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// 	return
 	// }
 
-	photo.FromDatabase(dbimage)
+	photo.FromDatabase(dbPhoto)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(Identifier{Id: photo.IDPhoto})
 }

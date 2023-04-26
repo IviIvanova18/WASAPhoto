@@ -16,16 +16,17 @@ type JSONErrorMsg struct{
 }
 
 //Photo
-
 type Photo struct{
 	IDPhoto uint64 		`json:"id"`
 	IDUser uint64		`json:"id_user"`
 	Username string		`json:"username"`
 	DateTime time.Time 	`json:"DateTime"`
 	Likes int 			`json:"likes"`
-	Comments []string 	`json:"comments"`
+	Comments uint64 	`json:"comments"`
 	Path []byte			`json:"path"`
 }
+
+
 
 
 func (p *Photo) FromDatabase(photo database.Photo) {
@@ -91,7 +92,28 @@ type Comment struct{
 	IDComment uint64
 	IDUser uint64
 	IDPhoto uint64
-	Comment string `json:"comment"`
+	CommentText string `json:"comment"`
+}
+
+func (c *Comment) ToDatabase() database.Comment {
+	return database.Comment{
+		IDComment: 	c.IDComment,
+		IDUser:    	c.IDUser,
+		IDPhoto:   	c.IDPhoto,
+		CommentText:c.CommentText,
+	}
+}
+
+func (c *Comment) FromDatabase(comment database.Comment) {
+	c.IDComment = comment.IDComment
+	c.IDUser = comment.IDUser
+	c.IDPhoto = comment.IDPhoto
+	c.CommentText = comment.CommentText
+}
+
+func (c *Comment) isValid() bool {
+	length := len([]rune(c.CommentText))
+	return 1 <= length && length <= 200
 }
 
 
