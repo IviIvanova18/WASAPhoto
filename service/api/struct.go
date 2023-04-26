@@ -1,63 +1,124 @@
 package api
 
-// import ("git.wasaphoto.ivi/wasaphoto/service/database"
-		
-// )
+import (
+	"git.wasaphoto.ivi/wasaphoto/service/database"
+	"time"
+	
+)
 
-
-
-// Fountain struct represent a fountain in every data exchange with the external world via REST API. JSON tags have been
-// added to the struct to conform to the OpenAPI specifications regarding JSON key names.
-// Note: there is a similar struct in the database package. See Fountain.FromDatabase (below) to understand why.
-
-
-type Photo struct{
-	ID int `json:"id"`
-	DateTime string `json:"DateTime"`
-	Likes int `json:"likes"`
-	Comments []string `json:"comments"`
+type Identifier struct {
+	Id uint64 `json:"id"`
 }
 
-type User{
-	ID int `json:"id"`
-	Username string `json:"username"`
-	PhotoCount int `json:"photoCount"`
-	Followers int `json:"followers"`
-	Followings int `json:"following"`
-
-}
+// Error Message
 type JSONErrorMsg struct{
 	Message string
 }
 
-// FromDatabase populates the struct with data from the database, overwriting all values.
-// You might think this is code duplication, which is correct. However, it's "good" code duplication because it allows
-// us to uncouple the database and API packages.
-// Suppose we were using the "database.Fountain" struct inside the API package; in that case, we were forced to conform
-// either the API specifications to the database package or the other way around. However, very often, the database
-// structure is different from the structure of the REST API.
-// Also, in this way the database package is freely usable by other packages without the assumption that structs from
-// the database should somehow be JSON-serializable (or, in general, serializable).
+//Photo
+
+type Photo struct{
+	IDPhoto uint64 		`json:"id"`
+	IDUser uint64		`json:"id_user"`
+	Username string		`json:"username"`
+	DateTime time.Time 	`json:"DateTime"`
+	Likes int 			`json:"likes"`
+	Comments []string 	`json:"comments"`
+	Path []byte			`json:"path"`
+}
+
+
 func (p *Photo) FromDatabase(photo database.Photo) {
-	p.ID = photo.ID
+	p.IDPhoto = photo.IDPhoto
+	p.IDUser = photo.IDUser
+	p.Username = photo.Username
 	p.DateTime = photo.DateTime
 	p.Likes = photo.Likes
 	p.Comments = photo.Comments
+	p.Path = photo.Path
 }
 
-// // ToDatabase returns the fountain in a database-compatible representation
 func (p *Photo) ToDatabase() database.Photo {
 	return database.Photo{
-		ID:        p.ID,
-		DateTime:  p.DateTime,
-		Likes: p.Likes,
-		Comments:    f.Comments,
+		IDPhoto:	p.IDPhoto,
+		IDUser: 	p.IDUser,
+		Username:	p.Username,
+		DateTime:  	p.DateTime,
+		Likes: 		p.Likes,
+		Comments:   p.Comments,
+		Path:		p.Path,
 	}
 }
 
-// IsValid checks the validity of the content. In particular, coordinates should be in their range of validity, and the
-// status should be either FountainStatusGood or FountainStatusFaulty. Note that the ID is not checked, as fountains
-// read from requests have zero IDs as the user won't send us the ID in that way.
-func (p *Photo) IsValid() bool {
-	return p.Likes >=0 
+// User 
+type User struct{
+	ID uint64 			`json:"id"`
+	Username string 	`json:"username"`
+	PhotosCount uint64 	`json:"photosCount"`
+	FollowersCount int 	`json:"followers"`
+	FollowingsCount int `json:"following"`
+	Photos []uint64 	`json:"photos"`
+	Followers []string 	`json:"followers"`
+	Followings []string `json:"followings"`
 }
+
+func (user *User) ToDatabase() database.User {
+	return database.User{
+		IDUser:  user.ID,
+		Username: user.Username,
+		PhotosCount: user.PhotosCount,
+		FollowersCount: user.FollowersCount,
+		FollowingsCount: user.FollowingsCount,
+		Followers: user.Followers,
+		Followings: user.Followings,
+		Photos: user.Photos,
+	}
+}
+func (u *User) FromDatabase(user database.User){
+	u.ID = user.IDUser
+	u.Username = user.Username
+	u.PhotosCount = user.PhotosCount
+	u.Followers = user.Followers
+	u.Followings = user.Followings
+	u.Followers = user.Followers
+	u.Followings = user.Followings
+	u.Photos = user.Photos
+}
+
+//Comment 
+
+type Comment struct{
+	IDComment uint64
+	IDUser uint64
+	IDPhoto uint64
+	Comment string `json:"comment"`
+}
+
+
+
+
+//UserLogin
+
+type UserLogin struct {
+	ID       uint64 `json:"id"`
+	Username string `json:"username"`
+}
+
+func (u *UserLogin) FromDatabase(user database.UserLogin) {
+	u.ID = user.ID
+	u.Username = user.Username
+}
+
+func (u *UserLogin) ToDatabase() database.UserLogin {
+	return database.UserLogin{
+		ID:  u.ID,
+		Username: u.Username,
+	}
+}
+
+// The username of the user is valid if it is between 5 and 20 caracters
+func (u *UserLogin) isValid() bool {
+	length := len([]rune(u.Username))
+	return 5 <= length && length <= 20
+}
+

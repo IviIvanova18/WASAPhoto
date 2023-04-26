@@ -34,14 +34,22 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 )
-var ErrUserDoesNotExist = errors.New("User does not exist")
-var ErrPhotoDoesNotExist = errors.New("Photo does not exist")
+
+var ErrorUserDoesNotExist = errors.New("Error User does not exists!")
+// var ErrImageDoesNotExist = errors.New("image does not exist")
+// var ErrCommentNotFound = errors.New("comment does not exist")
+// var ErrLikeNotFound = errors.New("like does not exist")
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
+	CreateUser(username string) (UserLogin, error)
+	GetIDByUsername(username string) (uint64, error)
+	SetMyUserName(u UserLogin) error
+	SearchUser(user User) (User, error)
+	UploadPhoto(photo Photo) (Photo, error)
+	GetUsernameById(id uint64) (string, error)
 
 	Ping() error
 }
@@ -59,12 +67,36 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
 	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
+	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='users';`).Scan(&tableName)
+
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
+		sqlStmt := `CREATE TABLE users (
+			idUser INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			username TEXT NOT NULL UNIQUE,
+			photosCount INTEGER NOT NULL
+			);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
-			return nil, fmt.Errorf("error creating database structure: %w", err)
+			return nil, fmt.Errorf("error creating database structure users: %w", err)
+		}
+	}
+
+	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='photos';`).Scan(&tableName)
+	if errors.Is(err, sql.ErrNoRows) {
+		sqlStmt := `CREATE TABLE photos (
+			idPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			idUser INTEGER NOT NULL,
+			username TEXT NOT NULL UNIQUE,
+			comments INTEGER NOT NULL,
+			likes INTEGER NOT NULL,
+			date DATETIME NOT NULL,
+			path VARBINARY NOT NULL,
+			FOREIGN KEY (idUser)
+				REFERENCES users (idUser)
+			);`
+		_, err = db.Exec(sqlStmt)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure photos: %w", err)
 		}
 	}
 
@@ -76,3 +108,38 @@ func New(db *sql.DB) (AppDatabase, error) {
 func (db *appdbimpl) Ping() error {
 	return db.c.Ping()
 }
+
+type UserLogin struct {
+	ID  uint64
+	Username string
+}
+
+type User struct {
+	IDUser     uint64
+	Username   string
+	PhotosCount  uint64
+	FollowersCount int 	
+	FollowingsCount int 
+	Photos []uint64 	
+	Followers  []string
+	Followings []string
+	
+}
+
+type Photo struct{
+	IDPhoto uint64 	
+	IDUser uint64		
+	Username string		
+	DateTime time.Time 	
+	Likes int 			
+	Comments []string 	
+	Path []byte			
+}
+
+type Comment struct {
+	IDComment uint64
+	IDUser    uint64
+	IDPhoto   uint64
+	Comment     string
+}
+
