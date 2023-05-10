@@ -551,7 +551,7 @@ paths:
                   example: Maria
                   pattern: "ˆ.*?$"
                   minLength: 3
-                  maxLength: 16
+                  maxLength: 20
         required: true
       responses:
         "201":

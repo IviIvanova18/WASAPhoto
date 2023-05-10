@@ -52,6 +52,7 @@ type AppDatabase interface {
 
 	BanUser(idUser uint64, idBannedUser uint64) error
 	UnbanUser(idUser uint64, idBannedUser uint64) error
+	GetAllBannedUsersDB(uid uint64) ([]string, error)
 
 	FollowUser(idFollowed uint64, idFollower uint64) error
 	UnfollowUser(idFollowed uint64, idFollower uint64) error

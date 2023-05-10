@@ -18,11 +18,6 @@ func (rt *_router) BanUser(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != idUser {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
 	idBanned, err := strconv.ParseUint(ps.ByName("bannedUserId"), 10, 64)
 	if err != nil {

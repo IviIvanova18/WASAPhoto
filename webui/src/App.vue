@@ -23,33 +23,39 @@ export default {}
 					</h6>
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink to="/" class="nav-link">
+							<RouterLink :to="{ name: 'Stream' }" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#home"/></svg>
 								Home
 							</RouterLink>
 						</li>
 						<li class="nav-item">
-							<RouterLink to="/link1" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#layout"/></svg>
-								Menu item 1
-							</RouterLink>
+							<RouterLink to="{ name : 'UploadPhoto'}" class="nav-link">
+								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#image"/></svg>
+								Upload Photo
+							</RouterLink>	
 						</li>
 						<li class="nav-item">
-							<RouterLink to="/link2" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#key"/></svg>
-								Menu item 2
+							<RouterLink to="{ name : SearchUser}" class="nav-link">
+								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#search"/></svg>
+								Search User
 							</RouterLink>
 						</li>
 					</ul>
 
 					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-						<span>Secondary menu</span>
+						<span>My Account</span>
 					</h6>
 					<ul class="nav flex-column">
+						<li class="nav-item">'
+							<RouterLink :to="{ name :  MyAccount }" class="nav-link">
+								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#user"/></svg>
+								MyAccout
+							</RouterLink>
+						</li>
 						<li class="nav-item">
-							<RouterLink :to="'/some/' + 'variable_here' + '/path'" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#file-text"/></svg>
-								Item 1
+							<RouterLink :to="{ name :  Login }" class="nav-link">
+								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#log-out"/></svg>
+								Logout 
 							</RouterLink>
 						</li>
 					</ul>

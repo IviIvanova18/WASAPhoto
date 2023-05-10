@@ -141,6 +141,6 @@ func (u *UserLogin) ToDatabase() database.UserLogin {
 // The username of the user is valid if it is between 5 and 20 caracters
 func (u *UserLogin) isValid() bool {
 	length := len([]rune(u.Username))
-	return 5 <= length && length <= 20
+	return 3 <= length && length <= 20
 }
 

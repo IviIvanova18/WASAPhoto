@@ -16,12 +16,6 @@ func (rt *_router) UnfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != idFollower {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
 	idFollowed, err := strconv.ParseUint(ps.ByName("followerUserId"), 10, 64)
 
 	if err != nil {
