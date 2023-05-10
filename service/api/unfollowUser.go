@@ -16,7 +16,7 @@ func (rt *_router) UnfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	idFollowed, err := strconv.ParseUint(ps.ByName("followerUserId"), 10, 64)
+	idFollowed, err := strconv.ParseUint(ps.ByName("followedUserId"), 10, 64)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) GetFollowings(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	userId, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse uint")
@@ -17,23 +17,23 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 	}
 
 	
-	listBannedUsers, err := rt.db.GetAllBannedUsersDB(userId)
+	listFollowedUsers, err := rt.db.GetFollowingsDB(userId)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("can't get listBannedUsers users")
+		ctx.Logger.WithError(err).Error("can't get listFollowedUsers users")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	type BannedUsers struct {
-		Banned []string `json:"bannedusers"`
+	type FollwedUsers struct {
+		Followed []string `json:"followedusers"`
 	}
 
-	if len(listBannedUsers) == 0 {
-		listBannedUsers = []string{}
+	if len(listFollowedUsers) == 0 {
+		listFollowedUsers = []string{}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(BannedUsers{
-		Banned: listBannedUsers,
+	_ = json.NewEncoder(w).Encode(FollwedUsers{
+		Followed: listFollowedUsers,
 	})
 
 }

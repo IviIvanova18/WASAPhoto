@@ -1,14 +1,14 @@
 package database
 
-func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]string, error) {
-	var banned []string
+func (db *appdbimpl) GetFollowingsDB(uid uint64) ([]string, error) {
+	var followings []string
 
 	query := `
 		SELECT users.username
 		FROM users
-		INNER JOIN bannedUsers
-		ON bannedUsers.idBannedUser = users.idUser
-		WHERE bannedUsers.idUser = ?
+		INNER JOIN followings
+		ON followings.idFollowed = users.idUser
+		WHERE followings.idUser = ?
 	`
 
 	rows, err := db.c.Query(query, uid)
@@ -25,11 +25,11 @@ func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]string, error) {
 			return []string{}, err
 		}
 
-		banned = append(banned, username)
+		followings = append(followings, username)
 	}
 
 	if err = rows.Err(); err != nil {
 		return []string{}, err
 	}
-	return banned, nil
+	return followings, nil
 }
