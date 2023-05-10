@@ -9,29 +9,23 @@ import (
 	"strconv"
 )
 
-
 func (rt *_router) FollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	idFollower, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
+	idUser, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != idFollower {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
-	idFollowed, err := strconv.ParseUint(ps.ByName("followerUserId"), 10, 64)
+	idFollowed, err := strconv.ParseUint(ps.ByName("followedUserId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = rt.db.FollowUser(idFollowed, idFollower)
+	err = rt.db.FollowUser(idUser, idFollowed)
 	if err != nil {
 		var sqliteErr sqlite3.Error
 		if errors.As(err, &sqliteErr) {

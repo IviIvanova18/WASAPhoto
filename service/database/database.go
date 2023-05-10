@@ -49,12 +49,15 @@ type AppDatabase interface {
 	GetUsernameById(id uint64) (string, error)
 	SetMyUserName(u UserLogin) error
 	SearchUser(user User) (User, error)
+	ListUsers() ([]UserLogin, error)
 
 	BanUser(idUser uint64, idBannedUser uint64) error
 	UnbanUser(idUser uint64, idBannedUser uint64) error
+	GetAllBannedUsersDB(uid uint64) ([]string, error)
 
 	FollowUser(idFollowed uint64, idFollower uint64) error
 	UnfollowUser(idFollowed uint64, idFollower uint64) error
+	GetFollowingsDB(uid uint64) ([]string, error)
 
 	UploadPhoto(photo Photo) (Photo, error)
 	DeletePhoto(id uint64) error
@@ -179,11 +182,11 @@ func New(db *sql.DB) (AppDatabase, error) {
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE followings (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			idFollowed INTEGER NOT NULL,
 			idFollower INTEGER NOT NULL,
-			UNIQUE (idFollowed, idFollower),
-			FOREIGN KEY (idFollowed) REFERENCES users (idUser),
-			FOREIGN KEY (idFollower) REFERENCES users (idUSer)
+			idFollowed INTEGER NOT NULL,
+			UNIQUE (idFollower, idFollowed),
+			FOREIGN KEY (idFollower) REFERENCES users (idUser),
+			FOREIGN KEY (idFollowed) REFERENCES users (idUSer)
 			);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {

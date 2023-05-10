@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) CreateUser(username string) (UserLogin, error) {
-	res, err := db.c.Exec(`INSERT INTO users (id_user, username, photosCount) VALUES (NULL, ?, ?)`,
+	res, err := db.c.Exec(`INSERT INTO users (idUser, username, photosCount) VALUES (NULL, ?, ?)`,
 		username, 0)
 	if err != nil {
 		return UserLogin{

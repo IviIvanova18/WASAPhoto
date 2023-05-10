@@ -18,12 +18,7 @@ func (rt *_router) GetStream(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != id {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
+	
 	user.ID = id
 	photosDB, err := rt.db.GetStreamFollowing(user.ToDatabase())
 	if err != nil {

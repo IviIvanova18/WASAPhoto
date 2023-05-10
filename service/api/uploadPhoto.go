@@ -8,12 +8,14 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"fmt"
 )
 
 func (rt *_router) UploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	buf, err := ioutil.ReadAll(r.Body)
-
+	authorizationHeader := r.Header.Get("Authorization")
+	fmt.Println(authorizationHeader)
 	id_u, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
 
 	var photo Photo
