@@ -10,22 +10,19 @@ import (
 	"strconv"
 )
 
-func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	uid, err := strconv.ParseUint(ps.ByName("uid"), 10, 64)
+func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {	
+	uid, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != uid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
 	var newUserName UserLogin
 	err = json.NewDecoder(r.Body).Decode(&newUserName)
+	_ = r.Body.Close()
+
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -35,6 +32,7 @@ func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	newUserName.ID = uid
+		
 	err = rt.db.SetMyUserName(newUserName.ToDatabase())
 	if err != nil {
 		var sqliteErr sqlite3.Error

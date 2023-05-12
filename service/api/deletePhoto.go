@@ -10,7 +10,7 @@ import (
 )
 
 func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	id, err := strconv.ParseUint(ps.ByName("idPhoto"), 10, 64)
+	id, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -38,7 +38,9 @@ func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	id_user, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
+	// id_user, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
+	var id_user uint64
+	id_user, _ = rt.db.GetIDByPhotoID(id)
 	err = rt.db.UpdatePhotoCountUser(id_user, -1)
 	if err != nil && errors.Is(err, database.ErrUserDoesNotExist) {
 		w.WriteHeader(http.StatusNotFound)

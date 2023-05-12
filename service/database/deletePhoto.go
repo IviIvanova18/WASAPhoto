@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) DeletePhoto(id uint64) error {
-	res, err := db.c.Exec(`DELETE FROM photos WHERE idPhoto=?`, id)
+	res, err := db.c.Exec(`DELETE FROM photos WHERE idPhoto= ? `, id)
 	if err != nil {
 		return err
 	}

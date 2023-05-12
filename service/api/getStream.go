@@ -10,7 +10,7 @@ import (
 
 func (rt *_router) GetStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	var user User
+	var user UserLogin
 	id, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 
 	if err != nil {

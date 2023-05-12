@@ -46,6 +46,7 @@ var ErrLikeNotFound = errors.New("Error like does not exist!")
 type AppDatabase interface {
 	CreateUser(username string) (UserLogin, error)
 	GetIDByUsername(username string) (uint64, error)
+	GetIDByPhotoID(id uint64) (uint64, error)
 	GetUsernameById(id uint64) (string, error)
 	SetMyUserName(u UserLogin) error
 	SearchUser(user User) (User, error)
@@ -77,7 +78,7 @@ type AppDatabase interface {
 	GetUserIDByPhoto(photoId uint64) (uint64, error)
 	UpdateCommentsPhoto(photoId uint64, count int64) error
 
-	GetStreamFollowing(user User) ([]Photo, error)
+	GetStreamFollowing(user UserLogin) ([]Photo, error)
 	
 
 	Ping() error
@@ -110,16 +111,16 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
+	// _, err = db.Exec("DROP TABLE photos;")
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='photos';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE photos (
 			idPhoto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			idUser INTEGER NOT NULL,
-			username TEXT NOT NULL UNIQUE,
 			comments INTEGER NOT NULL,
 			likes INTEGER NOT NULL,
 			date DATETIME NOT NULL,
-			path VARBINARY NOT NULL,
+			path TEXT NOT NULL,
 			FOREIGN KEY (idUser)
 				REFERENCES users (idUser)
 			);`
@@ -214,20 +215,20 @@ type User struct {
 	PhotosCount  uint64
 	FollowersCount int 	
 	FollowingsCount int 
-	Photos []uint64 	
-	Followers  []string
-	Followings []string
+	Photos []int 	
+	Followers []int
+	Followings []int
 	
 }
 
 type Photo struct{
 	IDPhoto uint64 	
-	IDUser uint64		
+	IDUser uint64
 	Username string		
 	DateTime time.Time 	
 	Likes int 			
 	Comments uint64	
-	Path []byte			
+	Path string		
 }
 
 type Comment struct{
