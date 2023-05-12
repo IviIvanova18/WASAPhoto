@@ -89,10 +89,10 @@ func (u *User) FromDatabase(user database.User){
 //Comment 
 
 type Comment struct{
-	IDComment uint64
-	IDUser uint64
-	IDPhoto uint64
-	CommentText string `json:"comment"`
+	IDComment uint64 	`json:"id"`
+	IDUser uint64 		`json:"idUser"`
+	IDPhoto uint64 		`json:"idPhoto"`
+	CommentText string 	`json:"comment"`
 }
 
 func (c *Comment) ToDatabase() database.Comment {

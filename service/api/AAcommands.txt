@@ -1,0 +1,30 @@
+CreateUser
+curl -POST http://localhost:3000/session/ -d'{"username": "user7"}'
+listUsers
+curl http://localhost:3000/users/
+
+UploadPhoto
+curl -X POST http://localhost:3000/users/6/photos/ -d '{"path": "cow5.jpeg"}'
+DeletePhoto
+curl -X DELETE http://localhost:3000/photos/9/
+
+stream
+curl http://localhost:3000/users/1/stream/
+
+Follow
+curl -X PUT http://localhost:3000/users/2/following/3/
+
+Unfollow
+curl -X DELETE http://localhost:3000/users/2/following/3/
+
+Ban
+curl -X PUT http://localhost:3000/users/2/banned/3/
+
+Unban
+curl -X DELETE http://localhost:3000/users/2/banned/3/
+
+Comment
+
+UnComment
+
+

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"database/sql"
+
 	"encoding/json"
 	"errors"
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
@@ -9,50 +9,37 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
+
+		
 )
 
 func (rt *_router) CommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// There is no error since it is already checked in the Athorization header
-	idUser, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-
-	idPhoto, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	// idPosted, err := rt.db.GetUserIDByPhoto(idPhoto)
-	if err != nil && errors.Is(err, sql.ErrNoRows) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	} else if err != nil {
-		ctx.Logger.WithError(err).WithField("id", idPhoto).Error("Photo not found")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// err = rt.db.IsBanned(idPosted, idUser)
-	// if err != nil && !errors.Is(err, sql.ErrNoRows) {
-	// 	w.WriteHeader(http.StatusNotFound)
-	// 	return
-	// }
-
 	var comment Comment
 
-	err = json.NewDecoder(r.Body).Decode(&comment)
+	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
+		rt.baseLogger.WithError(err).Warning("wrong JSON received")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	} else if !comment.isValid() {
+		rt.baseLogger.WithError(err).Warning("wrong user format received")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	comment.IDUser = idUser
-	comment.IDPhoto = idPhoto
 
-	err = rt.db.CommentPhoto(comment.ToDatabase())
+	photoId, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("Comment cannot be added")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	
+	comment.IDPhoto = photoId
+	
+
+	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
+
+	if err != nil {
+		ctx.Logger.WithError(err).Error("Comment cannot be uploaded")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -62,10 +49,12 @@ func (rt *_router) CommentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
-		ctx.Logger.WithError(err).Error("Comment cannot be added")
+		ctx.Logger.WithError(err).Error("Photo cannot be added")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	comment.FromDatabase(dbComment)
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(comment)
 }
