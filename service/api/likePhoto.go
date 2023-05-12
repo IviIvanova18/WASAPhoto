@@ -18,11 +18,6 @@ func (rt *_router) LikePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != userId {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
 	photoId, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {

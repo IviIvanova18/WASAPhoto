@@ -57,28 +57,6 @@ func (db *appdbimpl) UpdatePhotoCountUser(idUser uint64, count int64) error {
 
 func (db *appdbimpl) UpdateLikesPhoto(photoId uint64, count int64) error {
 	query := `UPDATE photos SET likes = likes + ?
-				WHERE id_image = ?`
-	res, err := db.c.Exec(query, count, photoId)
-	if err != nil {
-		return err
-	}
-	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrPhotoDoesNotExists
-	}
-	return err
-
-}
-
-func (db *appdbimpl) GetUserIDByPhoto(photoId uint64) (uint64, error) {
-	var userId uint64
-	err := db.c.QueryRow(`SELECT idUser FROM photos WHERE idPhoto=?`, photoId).Scan(&userId)
-
-	return userId, err
-}
-
-func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {
-	query := `UPDATE photos SET comments = comments + ?
 				WHERE idPhoto = ?`
 	res, err := db.c.Exec(query, count, photoId)
 	if err != nil {
@@ -91,4 +69,23 @@ func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {
 	return err
 
 }
+func (db *appdbimpl) IsBanned(user uint64, banned uint64) error {
+	var id uint64
+	err := db.c.QueryRow(`SELECT id FROM bannedUsers WHERE idUser=? AND idBannedUser=?`, user, banned).Scan(&id)
+	return err
+}
+
+func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {
+	res, err := db.c.Exec(`UPDATE photos SET comments = comments + ? WHERE idPhoto = ?`, count, photoId)
+	if err != nil {
+		return err
+	}
+	rows, err := res.RowsAffected()
+	if rows == 0 {
+		return ErrPhotoDoesNotExists
+	}
+	return err
+
+}
+
 

@@ -17,12 +17,7 @@ func (rt *_router) UnlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	token, _ := strconv.ParseUint(r.Header.Get("Authorization")[7:], 10, 64)
-	if token != idUser {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
+	
 	idPhoto, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

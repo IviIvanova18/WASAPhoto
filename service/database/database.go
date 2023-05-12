@@ -68,17 +68,19 @@ type AppDatabase interface {
 	UpdateLikesPhoto(photoId uint64, count int64) error
 	UpdatePhotoCountUser(idUser uint64, count int64) error
 
-	CommentPhoto(comment Comment) error
+	CommentPhoto(comment Comment) (Comment, error)
 	UncommentPhoto(id uint64, idPhoto uint64) error
 	GetCommentsOfImage(photoId uint64) ([]Comment, error)
+	IsBanned(user uint64, banned uint64) error
 
 	LikePhoto(idImage uint64, idUser uint64) error
 	UnlikePhoto(idImage uint64, idUser uint64) error
 
-	GetUserIDByPhoto(photoId uint64) (uint64, error)
+	// GetUserIDByPhoto(photoId uint64) (uint64, error)
 	UpdateCommentsPhoto(photoId uint64, count int64) error
 
 	GetStreamFollowing(user UserLogin) ([]Photo, error)
+	
 	
 
 	Ping() error
