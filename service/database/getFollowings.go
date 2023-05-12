@@ -8,7 +8,7 @@ func (db *appdbimpl) GetFollowingsDB(uid uint64) ([]string, error) {
 		FROM users
 		INNER JOIN followings
 		ON followings.idFollowed = users.idUser
-		WHERE followings.idUser = ?
+		WHERE followings.idFollower = ?
 	`
 
 	rows, err := db.c.Query(query, uid)

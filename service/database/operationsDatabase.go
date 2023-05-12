@@ -7,12 +7,19 @@ package database
 
 func (db *appdbimpl) GetIDByUsername(username string) (uint64, error) {
 	var id uint64
-	err := db.c.QueryRow(`SELECT id_user FROM users WHERE username=?`, username).Scan(&id)
+	err := db.c.QueryRow(`SELECT idUser FROM users WHERE username=?`, username).Scan(&id)
 
 	if err != nil {
 		return 0, err
 	}
 	return id, nil
+}
+
+func (db *appdbimpl) GetIDByPhotoID(id uint64) (uint64, error) {
+	var idUser uint64
+	err := db.c.QueryRow(`SELECT idUser FROM photos WHERE idPhoto=?`, id).Scan(&idUser)
+
+	return idUser, err
 }
 
 func (db *appdbimpl) GetUsernameById(id uint64) (string, error) {
@@ -35,7 +42,7 @@ func (db *appdbimpl) DeleteComments(idPhoto uint64) error {
 
 func (db *appdbimpl) UpdatePhotoCountUser(idUser uint64, count int64) error {
 	query := `UPDATE users SET photosCount = photosCount + ?
-			WHERE id_user = ?`
+			WHERE idUser = ?`
 
 	res, err := db.c.Exec(query, count, idUser)
 	if err != nil {

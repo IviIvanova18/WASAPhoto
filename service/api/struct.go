@@ -23,7 +23,7 @@ type Photo struct{
 	DateTime time.Time 	`json:"DateTime"`
 	Likes int 			`json:"likes"`
 	Comments uint64 	`json:"comments"`
-	Path []byte			`json:"path"`
+	Path string			`json:"path"`
 }
 
 
@@ -58,9 +58,9 @@ type User struct{
 	PhotosCount uint64 	`json:"photosCount"`
 	FollowersCount int 	`json:"followers"`
 	FollowingsCount int `json:"following"`
-	Photos []uint64 	`json:"photos"`
-	Followers []string 	`json:"followers"`
-	Followings []string `json:"followings"`
+	Photos []int 		`json:"photos"`
+	Followers []int		`json:"followers"`
+	Followings []int 	`json:"followings"`
 }
 
 func (user *User) ToDatabase() database.User {
@@ -138,7 +138,7 @@ func (u *UserLogin) ToDatabase() database.UserLogin {
 	}
 }
 
-// The username of the user is valid if it is between 5 and 20 caracters
+// The username of the user is valid if it is between 3 and 20 caracters
 func (u *UserLogin) isValid() bool {
 	length := len([]rune(u.Username))
 	return 3 <= length && length <= 20

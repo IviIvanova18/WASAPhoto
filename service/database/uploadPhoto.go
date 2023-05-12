@@ -1,8 +1,8 @@
 package database
 
 func (db *appdbimpl) UploadPhoto(photo Photo) (Photo, error) {
-	res, err := db.c.Exec(`INSERT INTO photos (idPhoto, idUser, username, comments, likes ,date, path) VALUES (NULL, ?, ?, ?, ?, ?, ?)`,
-		photo.IDUser, photo.Username, photo.Comments, photo.Likes, photo.DateTime, photo.Path)
+	res, err := db.c.Exec(`INSERT INTO photos (idPhoto, idUser, comments, likes ,date, path) VALUES (NULL, ?, ?, ?, ?, ?)`,
+		photo.IDUser, photo.Comments, photo.Likes, photo.DateTime, photo.Path)
 
 	if err != nil {
 		return photo, err
