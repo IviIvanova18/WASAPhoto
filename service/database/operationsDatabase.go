@@ -88,4 +88,87 @@ func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {
 
 }
 
+func (db *appdbimpl) GetFollowersById(id uint64) ([]string, error) {
+	var followers []string
+	query := `
+	SELECT users.username FROM users
+	INNER JOIN followings
+	ON users.idUser = followings.idFollower
+	WHERE followings.idFollowed = ? ;`
+
+	rows, err := db.c.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var username string
+		err = rows.Scan(&username)
+
+		if err != nil {
+			return nil, err
+		}
+		followers = append(followers, username)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return followers, nil
+}
+
+func (db *appdbimpl) GetFollowingsById(id uint64) ([]string, error) {
+	var followings []string
+	query := `
+	SELECT users.username FROM users
+    INNER JOIN followings
+    ON users.idUser = followings.idFollowed
+    WHERE followings.idFollower = ?; `
+	rows, err := db.c.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var username string
+		err = rows.Scan(&username)
+
+		if err != nil {
+			return nil, err
+		}
+		followings = append(followings, username)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return followings, nil
+}
+
+func (db *appdbimpl) GetPhotosById(id uint64) ([]string, error) {
+	var photoes []string
+	rows, err := db.c.Query(`SELECT path FROM photos WHERE idUser=? ORDER BY photos.date DESC`, id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var path string
+		err = rows.Scan(&path)
+
+		if err != nil {
+			return nil, err
+		}
+		photoes = append(photoes, path)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return photoes, nil
+}
+
 

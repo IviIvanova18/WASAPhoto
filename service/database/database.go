@@ -51,6 +51,13 @@ type AppDatabase interface {
 	SetMyUserName(u UserLogin) error
 	SearchUser(user User) (User, error)
 	ListUsers() ([]UserLogin, error)
+	GetUserProfile(user User) (User, error)
+	// GetUserProfile(id uint64) (User, error)
+
+
+	GetFollowersById(id uint64) ([]string, error)
+	GetFollowingsById(id uint64) ([]string, error)
+	GetPhotosById(id uint64) ([]string, error)
 
 	BanUser(idUser uint64, idBannedUser uint64) error
 	UnbanUser(idUser uint64, idBannedUser uint64) error
@@ -214,12 +221,12 @@ type UserLogin struct {
 type User struct {
 	IDUser     uint64
 	Username   string
-	PhotosCount  uint64
+	PhotosCount  int
 	FollowersCount int 	
 	FollowingsCount int 
-	Photos []int 	
-	Followers []int
-	Followings []int
+	Photos []string 	
+	Followers []string
+	Followings []string
 	
 }
 

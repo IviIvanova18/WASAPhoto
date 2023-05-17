@@ -7,14 +7,16 @@ import (
 // Handler returns an instance of httprouter.Router that handle APIs registered here
 func (rt *_router) Handler() http.Handler {
 	// Register routes
-	// rt.router.GET("/user/:id",rt.getUserProfile)
+
 	// USER tested
 	rt.router.POST("/session/", rt.wrap(rt.CreateUser))
 	rt.router.GET("/users/", rt.wrap(rt.listUsers))
 	rt.router.PUT("/users/:userId/", rt.wrap(rt.SetMyUserName))
 	rt.router.GET("/users/:userId/stream/", rt.wrap(rt.GetStream))
+	rt.router.GET("/users/:userId/profile/:username/", rt.wrap(rt.GetUserProfile))
 
-	rt.router.GET("/users/:userId/Profile/:username/", rt.wrap(rt.SearchUser))
+
+	// rt.router.GET("/users/:userId/profile/:username/", rt.wrap(rt.SearchUser))
 
 
 	//Ban tested

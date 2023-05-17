@@ -53,19 +53,19 @@ func (p *Photo) ToDatabase() database.Photo {
 
 // User 
 type User struct{
-	ID uint64 			`json:"id"`
+	IDUser uint64 		`json:"id"`
 	Username string 	`json:"username"`
-	PhotosCount uint64 	`json:"photosCount"`
-	FollowersCount int 	`json:"followers"`
-	FollowingsCount int `json:"following"`
-	Photos []int 		`json:"photos"`
-	Followers []int		`json:"followers"`
-	Followings []int 	`json:"followings"`
+	PhotosCount int 	`json:"photosCount"`
+	FollowersCount int 	`json:"followersCount"`
+	FollowingsCount int `json:"followingCount"`
+	Photos []string 	`json:"photos"`
+	Followers []string	`json:"followers"`
+	Followings []string `json:"followings"`
 }
 
 func (user *User) ToDatabase() database.User {
 	return database.User{
-		IDUser:  user.ID,
+		IDUser:  user.IDUser,
 		Username: user.Username,
 		PhotosCount: user.PhotosCount,
 		FollowersCount: user.FollowersCount,
@@ -76,7 +76,7 @@ func (user *User) ToDatabase() database.User {
 	}
 }
 func (u *User) FromDatabase(user database.User){
-	u.ID = user.IDUser
+	u.IDUser = user.IDUser
 	u.Username = user.Username
 	u.PhotosCount = user.PhotosCount
 	u.Followers = user.Followers

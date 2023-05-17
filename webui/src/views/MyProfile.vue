@@ -17,7 +17,7 @@
 				this.loading = true;
                 this.errormsg = null;
                 try {
-                    let url = "/Users/" + this.$cookies.get("token") + "/Profile/" + this.$cookies.get("username")
+                    let url = "/users/" + this.$cookies.get("token") + "/profile/" + this.$cookies.get("username")
                     let config = {
                         headers: {
                             Authorization: "Bearer " + this.$cookies.get("token")
