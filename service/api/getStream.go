@@ -30,8 +30,6 @@ func (rt *_router) GetStream(w http.ResponseWriter, r *http.Request, ps httprout
 
 	for _, img := range photosDB {
 		photo.FromDatabase(img)
-
-		
 		photos = append(photos, photo)
 	}
 
