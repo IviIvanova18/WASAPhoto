@@ -1,58 +1,93 @@
 <script>
     export default {
-        data: function() {
+        data: function () {
             return {
                 errormsg: null,
                 loading: false,
                 username: null,
+                
+                
             }
         },
         methods: {
-            async loginUser() {
+            createUser: async function () {
                 this.loading = true;
                 this.errormsg = null;
                 try {
-                    let response = await this.$axios.post("/session", {
-                        username: this.username
-                    }, {
-                        "Content-Type": "application/json"
+                    const response =await this.$axios.post("/session/", {
+                        username: this.username,
                     });
-                    this.$cookies.set("token", response.data.id)
-                    this.$cookies.set("username", response.data.username)
-                    this.$router.push({ name: 'MyProfile'})
+                    const responseData = response.data;
+                    
+                    console.log(responseData);  
+                    const userId = response.data.id;
+                    const username = response.data.username;
+                    // console.log(username);  
+                    // console.log(userId);  
+                    
+                    this.$router.push({ name: 'MyAccount', params: { userId: userId, username: username } });
+
                 } catch (e) {
                     this.errormsg = e.toString();
                 }
                 this.loading = false;
-            },
+            }
         }
     }
     </script>
     
+
+      
     <template>
-        <div>
-            <div class="container py-5 h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card bg-dark text-white">
-                    <div class="card-body p-5 text-center">
-                        <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-                        <p class="text-white-50">Please enter your username!</p>
-                            <div class="form-outline form-white mb-4">
-                                <input type="text" id="username" class="form-control form-control-lg" v-model="username" placeholder="username" required minlength="3" maxlength="16" />
-                                <label class="form-label" for="username">Username</label>
-                            </div>
-                            <button v-if="!loading" class="btn btn-outline-light btn-lg" type="submit" @click="loginUser">Login</button>
-                            <LoadingSpinner v-if="loading"></LoadingSpinner>
-                        </div>          
+        <div class="background">
+          <div class="container py-5">
+            <div class="row justify-content-center align-items-center">
+              <div class="col-md-6">
+                <div class="card bg-white text-dark rounded-3">
+                  <div class="card-body p-5 text-center">
+                    <h2 class="fw-bold mb-4 text-uppercase">Welcome</h2>
+                    <p class="text-muted">Please enter your username.</p>
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        id="username"
+                        class="form-control form-control-lg rounded-pill mb-3"
+                        v-model="username"
+                        placeholder="Username"
+                        required
+                        minlength="3"
+                        maxlength="16"
+                      />
                     </div>
+                    <div class="d-grid gap-3">
+                      <button v-if="!loading" class="btn btn-primary rounded-pill" type="submit" @click="createUser" style="background-color: #2e4a78;">Login</button>
+
+                      <LoadingSpinner v-if="loading" />
+                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-            <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+          </div>
+          <ErrorMsg v-if="errormsg" :msg="errormsg" />
         </div>
-    </template>
-    
-    <style>
-    </style>
+      </template>
+      
+      <style>
+      .background {
+        background-color: #f3f3f3;
+        background-image: linear-gradient(to bottom right, #80a2d9, #ffffff);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      .card {
+        box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
+      }
+      </style>
+      
+
     
