@@ -4,7 +4,7 @@ export default {
 		return {
 			errormsg: null,
 			loading: false,
-			users: null,
+			some_data: null,
 		}
 	},
 	methods: {
@@ -12,8 +12,8 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let response = await this.$axios.get("/users/");
-				this.users = response.data;
+				let response = await this.$axios.get("/");
+				this.some_data = response.data;
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -36,17 +36,19 @@ export default {
 					<button type="button" class="btn btn-sm btn-outline-secondary" @click="refresh">
 						Refresh
 					</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" @click="exportList">
+						Export
+					</button>
+				</div>
+				<div class="btn-group me-2">
+					<button type="button" class="btn btn-sm btn-outline-primary" @click="newItem">
+						Newx
+					</button>
 				</div>
 			</div>
 		</div>
 
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-		<ul>
-			<li> item 1</li>
-			<li> item 2</li>
-			<li> item 3</li>
-
-		</ul>	
 	</div>
 </template>
 

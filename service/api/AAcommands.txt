@@ -44,3 +44,7 @@ delete like
 curl -X DELETE http://localhost:3000/photos/1/likes/4/
 
 
+
+
+
+
