@@ -24,7 +24,7 @@ curl -X PUT http://localhost:3000/users/1/following/6/
 
 Unfollow
 curl -X DELETE http://localhost:3000/users/2/following/3/
-
+this.
 Ban
 curl -X PUT http://localhost:3000/users/2/banned/3/
 

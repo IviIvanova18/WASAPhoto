@@ -36,10 +36,14 @@ export default {
 							</RouterLink>
 						</li> -->
 						<!-- <li class="nav-item">
-							<RouterLink to="{ name : 'UploadPhoto'}" class="nav-link">
+							<RouterLink :to="{ name: 'UploadPhoto', params: { userId: this.id } }" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#image"/></svg>
 								Upload Photo
-							</RouterLink>	
+							  </RouterLink>
+          					<router-link :to="{ name: 'UploadPhoto', params: { userId: this.userId }}" class="nav-link">
+								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#image"/></svg>
+								Upload Photo</router-link>
+
 						</li> -->
 						<!-- <li class="nav-item">
 							<RouterLink to="{ name : SearchUser}" class="nav-link">
@@ -53,12 +57,13 @@ export default {
 						<span>My Account</span>
 					</h6>
 					<ul class="nav flex-column">
-						<li class="nav-item">'
+						<!-- <li class="nav-item">'
 							<RouterLink :to="{ name: 'MyAccount', params: { userId: userId, username: username } }" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#user"/></svg>
 								MyAccout
 							</RouterLink>
-						</li>
+
+						</li> -->
 						<li class="nav-item">
 							<RouterLink to="/" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#log-out"/></svg>

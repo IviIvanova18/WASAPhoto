@@ -82,6 +82,7 @@ type AppDatabase interface {
 
 	LikePhoto(idImage uint64, idUser uint64) error
 	UnlikePhoto(idImage uint64, idUser uint64) error
+	GetAllLikesOfPhoto(photoId uint64) ([]Like, error)
 
 	// GetUserIDByPhoto(photoId uint64) (uint64, error)
 	UpdateCommentsPhoto(photoId uint64, count int64) error
@@ -138,16 +139,17 @@ func New(db *sql.DB) (AppDatabase, error) {
 			return nil, fmt.Errorf("error creating database structure photos: %w", err)
 		}
 	}
+	// db.Exec(`DROP TABLE likes`);
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='likes';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE likes (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			idPhoto INTEGER NOT NULL,
 			idUser INTEGER NOT NULL,
-			UNIQUE(idPhoto, idUser),
 			FOREIGN KEY (idPhoto) REFERENCES photos(idPhoto),
-			FOREIGN KEY (idUser) REFERENCES users(idUser)
-			);`
+			FOREIGN KEY (idUser) REFERENCES users(idUser),
+			CONSTRAINT unique_user_photo UNIQUE (idUser, idPhoto)
+		  );`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure likes: %w", err)
@@ -243,6 +245,13 @@ type Photo struct{
 type Comment struct{
 	IDComment uint64
 	IDUser uint64
+	Username string
 	IDPhoto uint64
 	CommentText string 
+}
+
+type Like struct {
+	ID     uint64 
+	IDUser uint64 
+	IDPhoto uint64
 }

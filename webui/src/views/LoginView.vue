@@ -61,7 +61,6 @@
                     </div>
                     <div class="d-grid gap-3">
                       <button v-if="!loading" class="btn btn-primary rounded-pill" type="submit" @click="createUser" style="background-color: #2e4a78;">Login</button>
-
                       <LoadingSpinner v-if="loading" />
                     </div>
                   </div>
@@ -72,21 +71,11 @@
           <ErrorMsg v-if="errormsg" :msg="errormsg" />
         </div>
       </template>
+
+      
       
       <style>
-      .background {
-        background-color: #f3f3f3;
-        background-image: linear-gradient(to bottom right, #80a2d9, #ffffff);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-      
-      .card {
-        box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
-      }
+
       </style>
       
 

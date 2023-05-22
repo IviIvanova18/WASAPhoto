@@ -16,13 +16,12 @@
           this.errormsg = null;
           try {
             let userId = this.$route.params.userId;
-            let apiUrl = `/users/${userId}/following/`;
+            let username = this.$route.params.username;
+            let apiUrl = `/users/${userId}/profile/${username}/`;
             let response = await this.$axios.get(apiUrl);            
-            this.followings = response.data.followedusers; 
+            this.followings = response.data.followings; 
             console.log(this.followings);     
-            
-
-            
+                        
           } catch (e) {
             this.errormsg = e.toString();
           }
@@ -72,10 +71,4 @@
   height: 100%;
   
 }
-.error-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 10vh;
-  }
 </style>
