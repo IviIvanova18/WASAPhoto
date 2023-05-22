@@ -148,7 +148,7 @@ func (db *appdbimpl) GetFollowingsById(id uint64) ([]string, error) {
 }
 
 func (db *appdbimpl) GetPhotosById(id uint64) ([]string, error) {
-	var photoes []string
+	var photos []string
 	rows, err := db.c.Query(`SELECT path FROM photos WHERE idUser=? ORDER BY photos.date DESC`, id)
 	if err != nil {
 		return nil, err
@@ -163,12 +163,12 @@ func (db *appdbimpl) GetPhotosById(id uint64) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		photoes = append(photoes, path)
+		photos = append(photos, path)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return photoes, nil
+	return photos, nil
 }
 
 

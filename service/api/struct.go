@@ -91,14 +91,17 @@ func (u *User) FromDatabase(user database.User){
 type Comment struct{
 	IDComment uint64 	`json:"id"`
 	IDUser uint64 		`json:"idUser"`
+	Username string		`json:"username"`
 	IDPhoto uint64 		`json:"idPhoto"`
 	CommentText string 	`json:"comment"`
+
 }
 
 func (c *Comment) ToDatabase() database.Comment {
 	return database.Comment{
 		IDComment: 	c.IDComment,
 		IDUser:    	c.IDUser,
+		Username:	c.Username,
 		IDPhoto:   	c.IDPhoto,
 		CommentText:c.CommentText,
 	}
@@ -107,6 +110,7 @@ func (c *Comment) ToDatabase() database.Comment {
 func (c *Comment) FromDatabase(comment database.Comment) {
 	c.IDComment = comment.IDComment
 	c.IDUser = comment.IDUser
+	c.Username = comment.Username
 	c.IDPhoto = comment.IDPhoto
 	c.CommentText = comment.CommentText
 }
@@ -144,3 +148,26 @@ func (u *UserLogin) isValid() bool {
 	return 3 <= length && length <= 20
 }
 
+//Like
+type Like struct {
+	ID       uint64 `json:"id"`
+	IDUser uint64 `json:"idUser"`
+	IDPhoto uint64 `json:"idPhoto"`
+
+}
+
+func (u *Like) FromDatabase(user database.Like) {
+	u.ID = user.ID
+	u.IDUser = user.IDUser
+	u.IDPhoto = user.IDPhoto
+
+}
+
+func (u *Like) ToDatabase() database.Like {
+	return database.Like{
+		ID:  u.ID,
+		IDUser: u.IDUser,
+		IDPhoto: u.IDPhoto,
+
+	}
+}

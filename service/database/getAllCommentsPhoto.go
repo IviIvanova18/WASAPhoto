@@ -4,8 +4,10 @@ func (db *appdbimpl) GetCommentsOfImage(photoId uint64) ([]Comment, error) {
 	var comments []Comment
 
 	query := `
-		SELECT comments.idUser, comments.commentText, comments.id 
+		SELECT users.username, comments.idUser, comments.commentText, comments.id, comments.idPhoto
 		FROM comments
+		INNER JOIN users
+		ON comments.idUser = users.idUser
 		WHERE comments.idPhoto = ?
 	`
 
@@ -14,7 +16,7 @@ func (db *appdbimpl) GetCommentsOfImage(photoId uint64) ([]Comment, error) {
 
 	for rows.Next() {
 		var comment Comment
-		err = rows.Scan(&comment.IDUser, &comment.CommentText, &comment.IDPhoto)
+		err = rows.Scan(&comment.Username, &comment.IDUser, &comment.CommentText, &comment.IDComment,&comment.IDPhoto)
 		if err != nil {
 			return nil, err
 		}
