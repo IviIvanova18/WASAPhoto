@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
-	sqlite3 "github.com/mattn/go-sqlite3"
 	"net/http"
 	"strconv"
 )
 
-func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {	
+func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {	
 	uid, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 
 	if err != nil {
@@ -18,47 +18,28 @@ func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	var newUserName UserLogin
-	err = json.NewDecoder(r.Body).Decode(&newUserName)
-	_ = r.Body.Close()
-
-
+	var updatedUsername UserLogin
+	err = json.NewDecoder(r.Body).Decode(&updatedUsername)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
-	} else if !newUserName.isValid() {
+	} else if !updatedUsername.isValid() {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	newUserName.ID = uid
+	updatedUsername.ID = uid
 		
-	err = rt.db.SetMyUserName(newUserName.ToDatabase())
-	if err != nil {
-		var sqliteErr sqlite3.Error
-		if errors.As(err, &sqliteErr) {
-			if sqliteErr.Code == sqlite3.ErrConstraint &&
-				sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
-
-				username, err := rt.db.GetUsernameById(newUserName.ID)
-				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					return
-				}
-				newUserName.Username = username
-
-				w.WriteHeader(http.StatusOK)
-				w.Header().Set("Content-Type", "application/json")
-				_ = json.NewEncoder(w).Encode(newUserName)
-				return
-			}
-		}
+	err = rt.db.SetMyUserName(updatedUsername.ToDatabase())
+	if errors.Is(err, database.ErrUserDoesNotExist) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err != nil {
+		ctx.Logger.WithError(err).WithField("id", uid).Error("can't update the user")
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("The Username cannot be updated")
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(newUserName)
+	_ = json.NewEncoder(w).Encode(updatedUsername)
 
 }

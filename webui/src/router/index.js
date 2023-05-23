@@ -5,6 +5,7 @@ import StreamView from '../views/StreamView.vue'
 import MyAccount from '../views/MyAccount.vue'
 import Followings from '../views/GetFollowings.vue'
 import UploadPhoto from '../views/UploadPhotoView.vue'
+import SearchUser from '../views/SearchUser.vue'
 
 
 const router = createRouter({
@@ -15,8 +16,8 @@ const router = createRouter({
 		{ path: '/users/:userId/photos', component: UploadPhoto, name: 'UploadPhoto' },
 		{ path: '/users/:userId/profile/:username', component: MyAccount, name: 'MyAccount'},
 		{ path: '/users/:userId/followings', component: Followings, name: 'Followings'},
-		{ path: '/users/:userId/followers', component: Followings, name: 'Followings'}
-
+		{ path: '/users/:userId/followers', component: Followings, name: 'Followings'},
+		{ path: '/:userId/search', component: SearchUser, name: 'SearchUser'}
 		
 	]
 })

@@ -7,8 +7,8 @@
           errormsg: null,
           loading: false,
           user: null,
-          userId: this.$route.params.userId,
-          username:this.$route.params.username,
+          userId: null,
+          username:null,
         }
       },
       methods: {
@@ -19,14 +19,19 @@
           this.loading = true;
           this.errormsg = null;
           try {
-            let userId = this.$route.params.userId;
-            let username = this.$route.params.username;
-            let apiUrl = `/users/${userId}/profile/${username}/`;
+            // location.reload();
+            this.userId = this.$route.params.userId;
+            // console.log(this.userId);
+            this.username = this.$route.params.username;
+            // console.log(this.username);
+
+            let apiUrl = `/users/${this.$route.params.userId}/profile/${this.$route.params.username}/`;
             let response = await this.$axios.get(apiUrl);
-            this.user = response.data;        
+            this.user = response.data;  
+            // console.log(response.data);      
             
-            console.log(typeof this.user.id); 
-            console.log(typeof userId);        
+            // console.log(typeof this.user.id); 
+            // console.log(typeof userId);        
 
           } catch (e) {
             this.errormsg = e.toString();
@@ -45,6 +50,8 @@
         async followUser(id, followedUserId) {
 			      this.loading = true;
 			      this.errormsg = null
+            console.log(id);
+            console.log(followedUserId);
             let url = `/users/${id}/following/${followedUserId}/`;
 			      try {
 			      	await this.$axios.put(url);
@@ -99,7 +106,7 @@
             </div>
           </div>
         </div>
-        <div v-if="this.user?.photos && this.user.photos.length === 0 && this.user?.id === this.userId" class="d-flex justify-content-center align-items-center">
+        <div v-if="this.user?.photos && this.user.photos.length === 0 && parseInt(this.user?.id) === parseInt(this.userId)" class="d-flex justify-content-center align-items-center h-80">
           <router-link :to="{ name: 'UploadPhoto', params: { userId: this.userId }}" class="btn btn-primary rounded-pill larger-text" style="background-color: #2e4a78;">Upload Photo</router-link>
           <!-- <button v-if="!loading" class="btn btn-primary rounded-pill" type="submit" @click="uploadPhoto" style="background-color: #2e4a78;">Add Photo</button> -->
         </div> 

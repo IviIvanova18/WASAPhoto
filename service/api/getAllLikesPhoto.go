@@ -6,7 +6,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
-	
 )
 
 func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -24,12 +23,12 @@ func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps h
 	}
 	var likes []Like
 	var like Like
+	
 
 	for _, dbcom := range likesDB {
-		like.FromDatabase(dbcom)
 
+		like.FromDatabase(dbcom)
 		likes = append(likes, like)
-		// fmt.Println(like)
 	}
 	if len(likes) == 0 {
 		likes = []Like{}

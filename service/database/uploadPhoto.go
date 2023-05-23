@@ -7,6 +7,12 @@ func (db *appdbimpl) UploadPhoto(photo Photo) (Photo, error) {
 	if err != nil {
 		return photo, err
 	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return photo, err
+	} else if affected == 0 {
+		return photo, ErrUserDoesNotExist
+	}
 
 	lastInsertId, err := res.LastInsertId()
 	if err != nil {
@@ -14,4 +20,6 @@ func (db *appdbimpl) UploadPhoto(photo Photo) (Photo, error) {
 	}
 	photo.IDPhoto = uint64(lastInsertId)
 	return photo, nil
+
+
 }

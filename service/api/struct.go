@@ -18,7 +18,7 @@ type JSONErrorMsg struct{
 //Photo
 type Photo struct{
 	IDPhoto uint64 		`json:"id"`
-	IDUser uint64		`json:"id_user"`
+	IDUser uint64		`json:"idUser"`
 	Username string		`json:"username"`
 	DateTime time.Time 	`json:"DateTime"`
 	Likes int 			`json:"likes"`

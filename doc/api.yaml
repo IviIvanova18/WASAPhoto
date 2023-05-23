@@ -24,7 +24,7 @@ components:
         type: integer
         example: 001
         readOnly: true
-      name: photo_id
+      name: photoId
       in: path
       required: true
       description: Photo id
@@ -34,8 +34,8 @@ components:
         example: "user123"
         pattern: "ˆ.*?$"
         readOnly: true
-        minLength: 5
-        maxLength: 15
+        minLength: 3
+        maxLength: 20
       name: username
       in: query
       required: true
@@ -45,7 +45,7 @@ components:
         type: integer
         example: 1
         readOnly: true
-      name: user_id
+      name: userId
       in: path
       required: true
       description: User ID
@@ -54,7 +54,7 @@ components:
         type: string
         pattern: "ˆ.*?$"
         enum: ["alphabetical", "date", "followers", "asc", "desc"]
-        example: alphabetical
+        example: date
         minLength: 3
         maxLength: 15
       name: sort
@@ -62,20 +62,11 @@ components:
       in: query
       required: false
   schemas:
-    Date:
-      description: The date when the photo was uploaded
+    DateTime:
+      description: The date and time when the photo was uploaded
       type: string
       format: date
-      example: 2022-01-01
-      minLength: 8
-      maxLength: 12
-    Time:
-      description: The time when the photo was uploaded
-      type: string
-      format: time
-      example: 12:30:21:20
-      minLength: 8
-      maxLength: 12
+      example: 2022-01-01 
     Likes:
       description: The number of likes each photo has
       type: integer
@@ -85,14 +76,20 @@ components:
       description: All the comments from users the photo has
       type: string
       pattern: "ˆ.*?$"
-      minLength: 10
+      minLength: 1
+      maxLength: 200
+    Path:
+      description: The url path of the photo
+      type: string
+      pattern: "ˆ.*?$"
+      minLength: 1
       maxLength: 200
     Photo:
       title: Photo
       description: This object represents a single photo
       type: object
       properties:
-        photo_id:
+        photoId:
           description: Unique photo indentifier
           type: integer
           example: 1
@@ -101,12 +98,13 @@ components:
         time: { $ref: "#/components/schemas/Time" }
         likes: { $ref: "#/components/schemas/Likes" }
         comments: { $ref: "#/components/schemas/Comments" }
+        path: { $ref: "#/components/schemas/Path" }
     User:
       title: User
       description: This object represents a user
       type: object
       properties:
-        user_id:
+        userId:
           description: Unique user identifier
           type: integer
           example: 1
@@ -150,8 +148,8 @@ paths:
       - $ref: "#/components/parameters/Username"
     get:
       tags: ["User"]
-      operationId: searachUser
-      summary: Search for a specific user by username or list all users
+      operationId: listUsers
+      summary: List all the users
       description: Returns the list of users
       responses:
         200:
@@ -167,24 +165,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-
-  /users/{user_id}:
-    parameters:
-      - $ref: "#/components/parameters/UserID"
-    get:
-      tags: ["User"]
-      operationId: getUserProfile
-      summary: Get a specific user by ID
-      description: Returns the user
-      responses:
-        200:
-          description: The user is returned
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/User" }
-      security:
-        - LegacyAuth: []
-
+  /users/{userId}/:
     put:
       tags: ["User"]
       operationId: setMyUserName
@@ -201,8 +182,8 @@ paths:
                   description: The user's display username
                   type: string
                   example: "user123"
-                  minLength: 5
-                  maxLength: 15
+                  minLength: 3
+                  maxLength: 20
       responses:
         200:
           description: The user's username was updated
@@ -211,11 +192,27 @@ paths:
               schema: { $ref: "#/components/schemas/User" }
         400: { $ref: "#/components/responses/BadRequest" }
         404 : 
-          description: Fountain not found
+          description: User not found
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /users/{user_id}/following:
+  /users/{userId}/profile/{username}/:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
+    get:
+      tags: ["User"]
+      operationId: getUserProfile
+      summary: Get a specific user by ID
+      description: Returns the user
+      responses:
+        200:
+          description: The user is returned
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+      security:
+        - LegacyAuth: []
+  /users/{userId}/following:
     parameters:
       - $ref: "#/components/parameters/UserID"
       - $ref: "#/components/parameters/Sort"
@@ -223,7 +220,7 @@ paths:
       tags: ["User"]
       summary: All the users that the current user is following
       description: Returns all users that the authenticated user is following.
-      operationId: getUserFollowing
+      operationId: getFollowings
       responses:
         200:
           description: The followed users were returned.
@@ -237,7 +234,7 @@ paths:
       security:
         - LegacyAuth: []
 
-  /users/{user_id}/following/{follower_user_id}:
+  /users/{userId}/following/{followedUserId}:
     parameters:
       - $ref: "#/components/parameters/UserID"
     delete:
@@ -246,7 +243,7 @@ paths:
       summary: Unfollow a user
       description: The current user stops following another user."
       parameters:
-        - name: follower_user_id
+        - name: followedUserId
           description: The id of the user to unfollow.
           in: path
           required: true
@@ -261,9 +258,9 @@ paths:
       tags: ["User"]
       operationId: followUser
       summary: Follow a specific user
-      description: The current user becomes the follower of another user.
+      description: The current user becomes a follower of another user.
       parameters:
-        - name: follower_user_id
+        - name: followedUserId
           description: The id of the user to follow.
           in: path
           required: true
@@ -272,17 +269,17 @@ paths:
             example: 2
       responses:
         204:
-          description: The user was followed.
+          description: The user started following the other user.
       security:
         - LegacyAuth: []
-  /users/{user_id}/photos:
+  /users/{userId}/stream/:
     parameters:
       - $ref: "#/components/parameters/UserID"
     get:
       tags: ["Photo"]
       operationId: getMyStream
-      summary: Get a list of all the photos
-      description: Returns a list of all the photos of a user in reverse chronological order
+      summary: Get a list of all the photos of a user's followings
+      description: Returns a list of all the photos of a user's followings in reverse chronological order
       responses:
         200:
           description: The photos are returned
@@ -295,6 +292,7 @@ paths:
                 maxItems: 1000
       security:
         - LegacyAuth: []
+  /users/{userId}/photos/:
     post:
       tags: ["Photo"]
       operationId: uploadPhoto
@@ -314,7 +312,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /users/{user_id}/banned/{banned_user_id}:
+  /users/{userId}/banned/{bannedUserId}:
     parameters:
       - $ref: "#/components/parameters/UserID"
     delete:
@@ -323,7 +321,7 @@ paths:
       summary: Unban a user
       description: The current user unbans another user."
       parameters:
-        - name: banned_user_id
+        - name: bannedUserId
           description: The id of the user to unban.
           in: path
           required: true
@@ -340,7 +338,7 @@ paths:
       summary: Ban a specific user
       description: The current user bans another user.
       parameters:
-        - name: banned_user_id
+        - name: bannedUserId
           description: The id of the user to ban.
           in: path
           required: true
@@ -354,7 +352,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/{photo_id}/likes/{user_id}:
+  /photos/{photoId}/likes/:
     parameters:
       - $ref: "#/components/parameters/UserID"
       - $ref: "#/components/parameters/PhotoID"
@@ -363,7 +361,7 @@ paths:
       tags: ["Photo"]
       summary: Get all the users who have liked a photo
       description: Returns all the users who have liked a particular photo.'
-      operationId: getPhotoLikes
+      operationId: GetAllLikesPhoto
       responses:
         200:
           description: "The users were returned."
@@ -377,7 +375,7 @@ paths:
                   maxItems: 1000
       security:
         - LegacyAuth: []
-
+  /photos/{photoId}/likes/{userId}:
     put:
       tags: ["Photo"]
       summary: A user likes a photo
@@ -402,48 +400,8 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/:
-    get:
-      tags: ["Photo"]
-      operationId: listPhotos
-      summary: Get the list of all photos (the stream)
-      description: Returns the list of all photos in reverse chronological order uploaded in the app
-      parameters:
-        - name: date
-          in: query
-          required: true
-          description: The date the photo was uploaded.
-          schema: { $ref: "#/components/schemas/Date" }
-        - name: time
-          in: query
-          required: true
-          description: The time the photo was uploaded.
-          schema: { $ref: "#/components/schemas/Time" }
-        - name: likes
-          in: query
-          required: true
-          description: The number of likes the photo has.
-          schema: { $ref: "#/components/schemas/Likes" }
-        - name: comments
-          in: query
-          required: true
-          description: The comments the photo has.
-          schema: { $ref: "#/components/schemas/Comments" }
-      responses:
-        "200":
-          description: List the stream
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
 
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
-      security:
-        - LegacyAuth: []
-
-  /photos/{photo_id}:
+  /photos/{photoId}:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
     delete:
@@ -458,13 +416,13 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/{photo_id}/comments:
+  /photos/{photoId}/comments:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
       - $ref: "#/components/parameters/Sort"
     get:
       tags: ["Photo"]
-      operationId: get_comments
+      operationId: getComments
       summary: Get all the comments on a Photo
       description: Returns all the comments on a specified photo
       responses:
@@ -476,10 +434,10 @@ paths:
                 type: array
                 items: { $ref: "#/components/schemas/Comments" }
                 minItems: 0
-                maxItems: 1000
+                maxItems: 200
       security:
         - LegacyAuth: []
-
+  
     post:
       tags: ["Photo"]
       operationId: commentPhoto
@@ -497,7 +455,7 @@ paths:
                   example: Such a cool photo! :)
                   type: string
                   pattern: "ˆ.*?$"
-                  minLength: 10
+                  minLength: 1
                   maxLength: 200
       responses:
         201:
@@ -509,7 +467,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/{photo_id}/comments/{comment_id}:
+  /photos/{photoId}/comments/{commentId}:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
     delete:

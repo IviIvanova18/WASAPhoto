@@ -6,37 +6,37 @@ func (db *appdbimpl) SearchUser(user User) (User, error) {
 		return user, err
 	}
 
-	// followers, err := db.GetFollowersIDs(user.IDUser)
-	// if err != nil {
-	// 	return user, err
-	// }
+	followers, err := db.GetFollowersById(user.IDUser)
+	if err != nil {
+		return user, err
+	}
 
-	// followings, err := db.GetFollowingsIDs(user.IDUser)
-	// if err != nil {
-	// 	return user, err
-	// }
+	followings, err := db.GetFollowingsById(user.IDUser)
+	if err != nil {
+		return user, err
+	}
 
-	// photoes, err := db.GetPhotoesIDs(user.IDUser)
-	// if err != nil {
-	// 	return user, err
-	// }
-	// if followers == nil {
-	// 	user.Followers = []string{}
-	// } else {
-	// 	user.Followers = followers
-	// }
+	photos, err := db.GetPhotosById(user.IDUser)
+	if err != nil {
+		return user, err
+	}
+	if followers == nil {
+		user.Followers = []string{}
+	} else {
+		user.Followers = followers
+	}
 
-	// if followings == nil {
-	// 	user.Followings = []string{}
-	// } else {
-	// 	user.Followings = followings
-	// }
+	if followings == nil {
+		user.Followings = []string{}
+	} else {
+		user.Followings = followings
+	}
 
-	// if photoes == nil {
-	// 	user.Photoes = []uint64{}
-	// } else {
-	// 	user.Photoes = photoes
-	// }
+	if photos == nil {
+		user.Photos = []string{}
+	} else {
+		user.Photos = photos
+	}
 
 	return user, nil
 }

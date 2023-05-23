@@ -8,11 +8,10 @@ import (
 	"strconv"
 )
 
-func (rt *_router) GetStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	var user UserLogin
 	id, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

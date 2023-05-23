@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) UnbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	bannedId, err := strconv.ParseUint(ps.ByName("bannedUserId"), 10, 64)
 
 	if err != nil {

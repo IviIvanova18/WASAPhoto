@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) BanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	idUser, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 

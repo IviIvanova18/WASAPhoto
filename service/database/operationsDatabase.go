@@ -1,9 +1,5 @@
 package database
 
-// import (
-// 	"database/sql"
-// 	"errors"
-// )
 
 func (db *appdbimpl) GetIDByUsername(username string) (uint64, error) {
 	var id uint64

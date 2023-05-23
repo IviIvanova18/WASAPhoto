@@ -1,11 +1,12 @@
 package database
 
-func (db *appdbimpl) GetPhoto(id uint64) ([]byte, error) {
-	var path []byte
-	err := db.c.QueryRow(`SELECT path FROM photos WHERE idPhoto=?`, id).Scan(&path)
+func (db *appdbimpl) GetPhoto(id uint64) (Photo, error) {
+	var photo Photo
+	err := db.c.QueryRow(`SELECT idPhoto, IdUser, comments, likes, path 
+	FROM photos WHERE idPhoto=?`, id).Scan(&photo.IDPhoto, &photo.IDUser, &photo.Comments, &photo.Likes, &photo.Path)
 
 	if err != nil {
-		return make([]byte, 0), err
+		return photo, err
 	}
-	return path, nil
+	return photo, nil
 }

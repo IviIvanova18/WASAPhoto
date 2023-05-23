@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) GetUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var user User
 	user.Username = ps.ByName("username")
 	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
@@ -21,21 +21,19 @@ func (rt *_router) GetUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 	
 	dbUser, err := rt.db.GetUserProfile(user.ToDatabase())
-	
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	user.FromDatabase(dbUser)
-
-
 	err = rt.db.IsBanned(user.IDUser, userID)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		ctx.Logger.WithError(err).Error("can't see bans")
+		ctx.Logger.WithError(err).Error("Can't find banned users")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if err == nil {
+		// ctx.Logger.WithError(err).Error("User can't be displayed")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

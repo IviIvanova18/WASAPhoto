@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) GetAllCommentsPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	photoId, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 
 	if err != nil {
