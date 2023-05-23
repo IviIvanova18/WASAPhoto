@@ -13,10 +13,10 @@ import (
 		
 )
 
-func (rt *_router) CommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var comment Comment
-
 	err := json.NewDecoder(r.Body).Decode(&comment)
+
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("wrong JSON received")
 		w.WriteHeader(http.StatusBadRequest)
@@ -34,8 +34,6 @@ func (rt *_router) CommentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 	
 	comment.IDPhoto = photoId
-	
-
 	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
 
 	if err != nil {

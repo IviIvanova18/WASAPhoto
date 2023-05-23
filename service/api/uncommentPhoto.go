@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) UncommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	idPhoto, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {

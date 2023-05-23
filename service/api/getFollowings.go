@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (rt *_router) GetFollowings(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	userId, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse uint")

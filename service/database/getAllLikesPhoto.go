@@ -6,7 +6,6 @@ func (db *appdbimpl) GetAllLikesOfPhoto(photoId uint64) ([]Like, error) {
 	query := `
 		SELECT likes.id, likes.idUser, likes.idPhoto
 		FROM likes
-		INNER JOIN users
 		WHERE likes.idPhoto = ?
 	`
 

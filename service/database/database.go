@@ -46,9 +46,10 @@ var ErrLikeNotFound = errors.New("Error like does not exist!")
 type AppDatabase interface {
 	CreateUser(username string) (UserLogin, error)
 	GetIDByUsername(username string) (uint64, error)
+	SetMyUserName(user UserLogin) error
+
 	GetIDByPhotoID(id uint64) (uint64, error)
 	GetUsernameById(id uint64) (string, error)
-	SetMyUserName(u UserLogin) error
 	SearchUser(user User) (User, error)
 	ListUsers() ([]UserLogin, error)
 	GetUserProfile(user User) (User, error)
@@ -69,7 +70,7 @@ type AppDatabase interface {
 
 	UploadPhoto(photo Photo) (Photo, error)
 	DeletePhoto(id uint64) error
-	GetPhoto(id uint64) ([]byte, error)
+	GetPhoto(id uint64) (Photo, error)
 	DeleteLikes(idPhoto uint64) error
 	DeleteComments(idPhoto uint64) error
 	UpdateLikesPhoto(photoId uint64, count int64) error

@@ -14,18 +14,20 @@
       load() {
         return load
       },
-      // async refresh() {
-      //   this.loading = true;
-      //   this.errormsg = null;
-      //   await this.$axios.refresh();
-      // },
+      async refresh() {
+        this.loading = true;
+        this.errormsg = null;
+      },
       uploadPhoto: async function (){
         this.loading = true;
         this.errormsg = null;
         try{
           let userId = this.$route.params.userId;
+          let fileInput = document.getElementById('photo');
+          let file = fileInput.files[0];
+          let path = file.name;
           await this.$axios.post(`/users/${userId}/photos/`,{
-            path : this.photo,
+            path : path,
           });
           this.$router.push({ name: 'Stream', params: { userId: userId } });
           
@@ -34,8 +36,7 @@
           this.errormsg = e.toString();
         }
         this.loading = false;
-      },
-           
+      },           
       
     },
     

@@ -9,11 +9,11 @@ import (
 	"net/http"
 )
 
-func (rt *_router) CreateUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	// Read the new content for the user in the request body
 	var user UserLogin
 
 	err := json.NewDecoder(r.Body).Decode(&user)
-	_ = r.Body.Close()
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("wrong JSON received")
 		w.WriteHeader(http.StatusBadRequest)
@@ -29,14 +29,12 @@ func (rt *_router) CreateUser(w http.ResponseWriter, r *http.Request, ps httprou
 		if errors.As(err, &sqliteErr) {
 			if sqliteErr.Code == sqlite3.ErrConstraint &&
 				sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
-
 				id, err := rt.db.GetIDByUsername(user.Username)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 				user.ID = id
-
 				w.WriteHeader(http.StatusOK)
 				w.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(w).Encode(user)
@@ -45,7 +43,7 @@ func (rt *_router) CreateUser(w http.ResponseWriter, r *http.Request, ps httprou
 		}
 
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).WithField("username", user.Username).Error("can't retrieve user")
+		ctx.Logger.WithError(err).WithField("username", user.Username).Error("can't create user")
 		return
 	}
 	user.FromDatabase(dbuser)
