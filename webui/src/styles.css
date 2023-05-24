@@ -86,3 +86,11 @@
     left: 0;
   }
   
+  
+ .empty-col{
+  display: none;
+ }
+ .col-md-9 .col-lg-10{
+  float: right;
+ }
+  

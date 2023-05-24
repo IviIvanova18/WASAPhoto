@@ -5,7 +5,6 @@ import (
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
-	// sqlite3 "github.com/mattn/go-sqlite3"
 	"net/http"
 	"strconv"
 )

@@ -82,10 +82,23 @@ components:
           type: integer
           example: 1
           readOnly: true
-        datetime: { $ref: "#/components/schemas/DateTime" }
-        likes: { $ref: "#/components/schemas/Likes" }
-        comments: { $ref: "#/components/schemas/Comments" }
-        path: { $ref: "#/components/schemas/Path" }
+        username:
+          description: The username of the user
+          type: string
+          example: "Alice"
+        userId:
+          description: Unique user identifier
+          type: integer
+          example: 1
+          readOnly: true
+        datetime: 
+          $ref: "#/components/schemas/DateTime"
+        likes: 
+          $ref: "#/components/schemas/Likes" 
+        comments: 
+          $ref: "#/components/schemas/Comments"
+        path: 
+          $ref: "#/components/schemas/Path"
     User:
       title: User
       description: This object represents a user
@@ -98,27 +111,30 @@ components:
           readOnly: true
         username:
           description: The username of the user
+          type: string
+          example: "Alice"
         photoCount:
           description: The total number of uploaded photos by this user
           type: integer
           example: 87
           minimum: 0
         followers:
-          description: Information about the user's followers.
+          description: List of usernames of user's followers.
           type: object
-          properties:
-            total:
-              description: The total number of users that follow the current user
-              example: 24
-              type: integer
+        followersCount:
+          description: The total number of users that follow the current user
+          example: 24
+          type: integer
         followings:
-          description: Information about the users that the current user is following.
+          description: List of usernames of users that the current user is following.
           type: object
-          properties:
-            total:
-              description: The total number of users that are followed by current user
-              example: 52
-              type: integer
+        followingsCount:
+          description: The total number of users that are followed by current user
+          example: 52
+          type: integer
+        photosPath:
+          description: List of paths of photos that the user uploaded.
+          type: object
   securitySchemes:
     LegacyAuth:
       type: apiKey
@@ -209,7 +225,7 @@ paths:
               schema: { $ref: "#/components/schemas/User" }
       security:
         - LegacyAuth: []
-  /users/{userId}/following:
+  /users/{userId}/followings/:
     parameters:
       - $ref: "#/components/parameters/UserID"
       - $ref: "#/components/parameters/Sort"
@@ -231,22 +247,21 @@ paths:
       security:
         - LegacyAuth: []
 
-  /users/{userId}/following/{followedUserId}:
+  /users/{userId}/followings/{followedUserId}/:
     parameters:
       - $ref: "#/components/parameters/UserID"
+      - name: followedUserId
+        description: The id of the user to unfollow.
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 2
     delete:
       tags: ["User"]
       operationId: unfollowUser
       summary: Unfollow a user
       description: The current user stops following another user."
-      parameters:
-        - name: followedUserId
-          description: The id of the user to unfollow.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 2
       responses:
         204: { description: "The user was unfollowed." }
       security:
@@ -256,14 +271,6 @@ paths:
       operationId: followUser
       summary: Follow a specific user
       description: The current user becomes a follower of another user.
-      parameters:
-        - name: followedUserId
-          description: The id of the user to follow.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 2
       responses:
         204:
           description: The user started following the other user.
@@ -290,13 +297,13 @@ paths:
       security:
         - LegacyAuth: []
   /users/{userId}/photos/:
+    parameters:
+      - $ref: "#/components/parameters/UserID"
     post:
       tags: ["Photo"]
       operationId: uploadPhoto
       summary: Upload a photo
       description: Uploads a new photo in the user's account
-      parameters:
-      - $ref: "#/components/parameters/UserID"
       requestBody:
         content:
           application/json:
@@ -314,19 +321,18 @@ paths:
   /users/{userId}/banned/{bannedUserId}:
     parameters:
       - $ref: "#/components/parameters/UserID"
+      - name: bannedUserId
+        description: The id of the user to unban.
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 2
     delete:
       tags: ["User"]
       operationId: unbanUser
       summary: Unban a user
       description: The current user unbans another user."
-      parameters:
-        - name: bannedUserId
-          description: The id of the user to unban.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 2
       responses:
         204: { description: The user was unbanned. }
       security:
@@ -336,14 +342,6 @@ paths:
       operationId: banUser
       summary: Ban a specific user
       description: The current user bans another user.
-      parameters:
-        - name: bannedUserId
-          description: The id of the user to ban.
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 2
       responses:
         204:
           description: The user was banned.
@@ -374,15 +372,15 @@ paths:
                   maxItems: 1000
       security:
         - LegacyAuth: []
-  /photos/{photoId}/likes/{userId}:
+  /photos/{photoId}/likes/{userId}/:
+    parameters:
+      - $ref: "#/components/parameters/PhotoID"
+      - $ref: "#/components/parameters/UserID"
     put:
       tags: ["Photo"]
       summary: A user likes a photo
       description: A specific users like a photo
       operationId: likePhoto
-      parameters:
-        - $ref: "#/components/parameters/PhotoID"
-        - $ref: "#/components/parameters/UserID"
       responses:
         204:
           description: The photo was liked.
@@ -395,9 +393,6 @@ paths:
       summary: A user unlikes a photo
       description: The specified user unlikes a photo that they previously liked.'
       operationId: unlikePhoto
-      parameters:
-        - $ref: "#/components/parameters/PhotoID"
-        - $ref: "#/components/parameters/UserID"
       responses:
         204:
           description: The photo was unliked.
@@ -406,7 +401,7 @@ paths:
       security:
         - LegacyAuth: []
 
-  /photos/{photoId}:
+  /photos/{photoId}/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
     delete:
@@ -421,7 +416,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/{photoId}/comments:
+  /photos/{photoId}/comments/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
       - $ref: "#/components/parameters/Sort"
@@ -472,7 +467,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /photos/{photoId}/comments/{commentId}:
+  /photos/{photoId}/comments/{commentId}/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
     delete:
@@ -495,7 +490,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
         - LegacyAuth: []
-  /session:
+  /session/:
     post:
       tags: ["login"]
       summary: Logs in the user

@@ -15,7 +15,7 @@ type JSONErrorMsg struct{
 	Message string
 }
 
-//Photo
+// Photo
 type Photo struct{
 	IDPhoto uint64 		`json:"id"`
 	IDUser uint64		`json:"idUser"`
@@ -90,7 +90,7 @@ func (u *User) FromDatabase(user database.User){
 
 }
 
-//Comment 
+// Comment 
 
 type Comment struct{
 	IDComment uint64 	`json:"id"`
@@ -127,7 +127,7 @@ func (c *Comment) isValid() bool {
 
 
 
-//UserLogin
+// UserLogin
 
 type UserLogin struct {
 	ID       uint64 `json:"id"`
@@ -152,7 +152,7 @@ func (u *UserLogin) isValid() bool {
 	return 3 <= length && length <= 20
 }
 
-//Like
+// Like
 type Like struct {
 	ID       uint64 `json:"id"`
 	IDUser uint64 `json:"idUser"`

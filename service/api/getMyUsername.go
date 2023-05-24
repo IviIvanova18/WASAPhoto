@@ -23,7 +23,7 @@ func (rt *_router) getMyUsername(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 	user.Username = username
-	// user.FromDatabase(dbUser)
+	
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(user)
 }

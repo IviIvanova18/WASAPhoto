@@ -11,7 +11,7 @@ import (
 
 func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	
-	// var id_user uint64
+	
 
 	id, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {
