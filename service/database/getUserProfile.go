@@ -7,7 +7,7 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 		return user, err
 	}
 
-	//Get Followers
+	// Get Followers
 	followers, err := db.GetFollowersById(user.IDUser)
 	if err != nil {
 		return user, err
@@ -18,7 +18,7 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 		user.Followers = followers
 	}
 
-	//Get followings
+	// Get followings
 	followings, err := db.GetFollowingsById(user.IDUser)
 	if err != nil {
 		return user, err
@@ -29,7 +29,7 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 		user.Followings = followings
 	}
 
-	//Get Photos
+	// Get Photos
 	photoIds, paths, err := db.GetPhotosById(user.IDUser)
 	if err != nil {
 		return user, err

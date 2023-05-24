@@ -83,7 +83,6 @@ type AppDatabase interface {
 	UnlikePhoto(idImage uint64, idUser uint64) error
 	GetAllLikesOfPhoto(photoId uint64) ([]Like, error)
 
-	// GetUserIDByPhoto(photoId uint64) (uint64, error)
 	UpdateCommentsPhoto(photoId uint64, count int64) error
 
 	GetStreamFollowing(user UserLogin) ([]Photo, error)
@@ -120,7 +119,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-	// _, err = db.Exec("DROP TABLE photos;")
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='photos';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE photos (
@@ -138,7 +136,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 			return nil, fmt.Errorf("error creating database structure photos: %w", err)
 		}
 	}
-	// db.Exec(`DROP TABLE likes`);
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='likes';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE likes (

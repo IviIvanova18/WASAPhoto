@@ -33,7 +33,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if err == nil {
-		// ctx.Logger.WithError(err).Error("User can't be displayed")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
