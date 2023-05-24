@@ -9,6 +9,12 @@
           user: null,
           userId: null,
           username:null,
+          comments:{},
+          likes:{},
+          userLikes:{},
+          followTag:false,
+          banTag:false,
+          newComment: null,
         }
       },
       methods: {
@@ -19,58 +25,142 @@
           this.loading = true;
           this.errormsg = null;
           try {
-            // location.reload();
             this.userId = this.$route.params.userId;
-            // console.log(this.userId);
             this.username = this.$route.params.username;
-            // console.log(this.username);
-
             let apiUrl = `/users/${this.$route.params.userId}/profile/${this.$route.params.username}/`;
             let response = await this.$axios.get(apiUrl);
             this.user = response.data;  
-            // console.log(response.data);      
-            
-            // console.log(typeof this.user.id); 
-            // console.log(typeof userId);        
+            for (const photo of this.user.idPhotos) {
+              const commentsResponse = await this.$axios.get(`/photos/${photo}/comments/`);         
+              this.comments[photo] = commentsResponse.data;
+              const likesResponse = await this.$axios.get(`/photos/${photo}/likes/`); 
+              this.likes[photo] = likesResponse.data.length;               
+              this.userLikes[photo] = likesResponse.data.map(p => p.idUser).includes(parseInt(this.userId));
+            }
 
           } catch (e) {
-            this.errormsg = e.toString();
+            if (e.response.status == 404) {
+              this.errormsg = "You can not acces user" + this.username
+            } else if (e.response.status == 401) {
+              this.$router.push({ name: 'Login'})
+            } else {
+              this.errormsg = e.toString();
+            }
           }
           this.loading = false;
         },
-        async followersView(){
-          //TO_DO
-          this.$router.push({ name: 'Followings', params: { userId: this.user.id, username: this.username} });
+        async likePhoto(photoId, userId){
+            this.loading = true;
+			      this.errormsg = null
+			      try {
+              if (this.userLikes[photoId]) {
+                await this.$axios.delete(`/photos/${photoId}/likes/${userId}/`) 
+                this.userLikes[photoId] = false
+              } else {
+                await this.$axios.put(`/photos/${photoId}/likes/${userId}/`)
+                this.userLikes[photoId] = true
+              }
+              await this.refresh();
+			      } catch (e) {
+			      	this.errormsg = e.toString();
+			      }
+			      this.loading = false;
         },
-        async followingsView(){
-          //TO_DO
-          this.$router.push({ name: 'Followers', params: { userId: this.user.id, username: this.username} });
+        async deleteComment(photoId,commentId){
+          this.loading = true;
+			    this.errormsg = null;
+			    try {
+			    	await this.$axios.delete(`/photos/${photoId}/comments/${commentId}/`);
+			    	await this.refresh();
+			    } catch (e) {
+			    	this.errormsg = e.toString();
+			    }
+			    this.loading = false;
+        },
+        addComment: async function (photoId){
+			    this.loading = true;
+			    this.errormsg = null;
+			    try {
+			    	await this.$axios.post(`/photos/${photoId}/comments/`, {
+              idUser: parseInt(this.userId),
+			    		comment: this.newComment,
+			    	});
+            await this.refresh();
+            this.newComment = "";
+			    } catch (e) {
+			    	this.errormsg = e.toString();
+			    }
+			    this.loading = false;
+		    },
+        async followersView(id,username){
+         
+          this.$router.push({ name: 'Followers', params: { userId: id, username: username} });
+        },
+        async followingsView(id,username){
+         
+          this.$router.push({ name: 'Followings', params: { userId: id, username: username} });
         },
         
         async followUser(id, followedUserId) {
-			      this.loading = true;
-			      this.errormsg = null
-            console.log(id);
-            console.log(followedUserId);
-            let url = `/users/${id}/following/${followedUserId}/`;
-			      try {
-			      	await this.$axios.put(url);
-			      } catch (e) {
-			      	this.errormsg = e.toString();
-			      }
-			      this.loading = false;
+          let response = await this.$axios.get(`/users/${followedUserId}/`);
+          let follower = response.data.username;           
+          this.followTag = this.user.followers.includes(follower);
+			    
+          this.loading = true;
+			    this.errormsg = null;
+			    try {
+            if (this.followTag) {
+              await this.$axios.delete(`/users/${id}/following/${followedUserId}/`) 
+              this.followTag = false
+            } else {
+              await this.$axios.put(`/users/${id}/following/${followedUserId}/`)
+              this.followTag = true
+            }
+            await this.refresh();
+			    } catch (e) {
+			    	this.errormsg = e.toString();
+			    }
+			    this.loading = false;
 		    },
         async banUser(id, bannedUserId) {
-			      this.loading = true;
-			      this.errormsg = null;
-            let url = `/users/${id}/banned/${bannedUserId}/`;
-			      try {
-			      	await this.$axios.put(url);
-			      } catch (e) {
-			      	this.errormsg = e.toString();
-			      }
-			      this.loading = false;
+          let response = await this.$axios.get(`/users/${bannedUserId}/`);
+          let bannedUser = response.data.username; 
+          response = await this.$axios.get(`/users/${id}/banned/`);
+          let banned = response.data; 		    
+          this.loading = true;
+			    this.errormsg = null;
+			    try {
+            if (this.banTag) {
+              await this.$axios.delete(`/users/${id}/banned/${bannedUserId}/`) 
+              this.banTag = false
+            } else {
+              await this.$axios.put(`/users/${id}/banned/${bannedUserId}/`)
+              this.banTag = true
+            }
+            await this.refresh();
+			    } catch (e) {
+			    	this.errormsg = e.toString();
+			    }
+			    this.loading = false;
 		    },
+        requirePhoto(idPhoto) {
+          
+          return `../src/assets/images/${this.user.photos[this.user.idPhotos.indexOf(idPhoto)]}`;
+        },
+        async deletePhoto(photo){
+          this.loading = true;
+			    this.errormsg = null;
+			    try {
+			    	await this.$axios.delete(`/photos/${photo}/`);
+			    	await this.refresh();
+			    } catch (e) {
+			    	this.errormsg = e.toString();
+			    }
+			    this.loading = false;
+          await this.refresh();
+
+
+        }
       },
       mounted() {
         this.refresh()
@@ -85,37 +175,72 @@
             <div class="card-body p-5 text-center">
               <h2 class="fw-bold mb-4 text-uppercase">@{{ this.user?.username }}</h2>
               <div class="info">
-                <div >
-                  <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="followersView">Followers</a>
+                <div>
+                  <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="followersView(this.user?.id,this.user?.username)">Followers</a>
                   <p class="mb-0 text-center"> {{ this.user?.followersCount }} </p>
                 </div>
                 <div>
-                  <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="followingsView">Followings</a>
+                  <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="followingsView(this.user?.id,this.user?.username)">Followings</a>
                   <p class="mb-0 text-center"> {{ this.user?.followingCount }} </p>
                 </div>
                 <div>
                   <p class="text-muted mb-1 larger-text">Photos</p>
                   <p class="mb-0 text-center"> {{ this.user?.photosCount }} </p>
                 </div>
-                <div v-if="parseInt(this.user?.id) !== parseInt(this.userId)" class="d-grid gap-3 ">
-                  <button v-if="!loading" class="btn btn-primary rounded-pill larger-text" type="submit" @click="banUser(this.userId, this.user?.id)" style="background-color: #d10606f5;">Ban</button>
-                  <button v-if="!loading" class="btn btn-primary rounded-pill larger-text" type="submit" @click="followUser(this.userId, this.user?.id)" style="background-color: #2e4a78;">Follow</button>
-                  <LoadingSpinner v-if="loading" />
-                </div> 
               </div>
+              <div v-if="parseInt(this.user?.id) !== parseInt(this.userId)" class="gap-3 ">
+                <button v-if="!loading" class="btn btn-primary btn-block rounded-pill larger-text" type="submit" @click="banUser(this.userId, this.user?.id)" style="background-color: #d10606f5;"> {{ banTag ? 'Unban' : 'Ban' }}</button>
+                <button v-if="!loading" class="btn btn-primary btn-block rounded-pill larger-text" type="submit" @click="followUser(this.userId, this.user?.id)" style="background-color: #2e4a78;"> {{ followTag ? 'Unfollow' : 'Follow' }}</button>
+                <LoadingSpinner v-if="loading" />
+              </div>              
             </div>
           </div>
         </div>
-        <div v-if="this.user?.photos && this.user.photos.length === 0 && parseInt(this.user?.id) === parseInt(this.userId)" class="d-flex justify-content-center align-items-center h-80">
+        <div v-if="parseInt(this.user?.photosCount) === 0 && parseInt(this.user?.id) === parseInt(this.userId)" class="d-flex justify-content-center align-items-center h-80">
           <router-link :to="{ name: 'UploadPhoto', params: { userId: this.userId }}" class="btn btn-primary rounded-pill larger-text" style="background-color: #2e4a78;">Upload Photo</router-link>
-          <!-- <button v-if="!loading" class="btn btn-primary rounded-pill" type="submit" @click="uploadPhoto" style="background-color: #2e4a78;">Add Photo</button> -->
         </div> 
         
-        <!-- <div v-else class="photo-grid">
-          <div class="photo-card-user" v-for="photo in this.user.photos">
-            <img :src="requirePhoto(photo)" class="photo-img" />
+        <div v-else class="photo-grid d-flex justify-content-center align-items-center h-80">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="photo in this.user?.idPhotos" :key="photo.id">
+            <div class="photo-card bg-white text-dark rounded-5 position-relative">
+              <div class="dropdown position-absolute top-0 end-0 p-2">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#more-vertical"/></svg>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li><button class="dropdown-item" @click="deletePhoto(photo)">Delete Photo</button></li>
+                </ul>
+              </div>
+              <img :src="requirePhoto(photo)" class="photo-img" />
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="likes">
+                    <button class="btn btn-link" :class="{ 'text-danger': userLikes[photo], 'text-dark': !userLikes[photo] }" @click="likePhoto(photo, this.user?.id)">
+                      <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#heart"/></svg>
+                    </button>
+                    {{ this.likes[photo] }} likes
+                  </div>
+                  <div class="comments" v-if="comments[photo]">
+                    <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#comment"/></svg>
+                    {{ comments[photo].length }} comments
+                  </div>
+                </div>
+                <div class="comment-section">
+                  <div class="comment" v-for="comment in comments[photo]" :key="comment.id">
+                    <strong>{{ comment.username }}</strong> {{ comment.comment }}
+                    <button v-if="parseInt(comment.idUser) === parseInt(this.userId)" class="btn btn-link text-danger m1-auto" @click="deleteComment(photo, comment.id)">
+                      <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#trash"/></svg>
+                    </button>
+                  </div>
+                  
+                  <div class="mt-3">
+                    <input type="text" v-model="newComment" class="form-control" placeholder="Add a comment..." @keyup.enter="addComment(photo)" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>  -->
+        </div> 
         <ErrorMsg class="error-container" v-if="errormsg" :msg="errormsg" />
       </div>
     </template>

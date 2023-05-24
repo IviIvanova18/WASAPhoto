@@ -13,12 +13,12 @@ SetMyUserName
 curl -X PUT http://localhost:3000/users/1/ -d {"username" : "updatedUser1"}
 
 uploadPhoto
-curl -X POST http://localhost:3000/users/1/photos/ -d '{"path": "cow5.jpeg"}'
+curl -X POST http://localhost:3000/users/1/photos/ -d '{"path": "dog.jpeg"}'    
 DeletePhoto
 curl -X DELETE http://localhost:3000/photos/9/
 
 GetUserProfile
-curl http://localhost:3000/users/1/profile/user2/
+curl http://localhost:3000/users/1/profile/user1/
 
 
 stream

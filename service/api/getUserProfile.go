@@ -39,7 +39,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 	user.FollowersCount = len(dbUser.Followers)
 	user.FollowingsCount = len(dbUser.Followings)
-	user.PhotosCount = len(dbUser.Photos)
+	user.PhotosCount = len(dbUser.PhotosId)
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(user)

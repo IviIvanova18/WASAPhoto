@@ -5,6 +5,8 @@
           errormsg: null,
           loading: false,
           followers: [],
+          userId: null,
+          username: null,
         }
       },
       methods: {
@@ -15,20 +17,24 @@
           this.loading = true;
           this.errormsg = null;
           try {
-            let userId = this.$route.params.userId;
-            let username = this.$route.params.username;
-            let apiUrl = `/users/${userId}/profile/${username}/`;
+            this.userId = this.$route.params.userId;
+            this.username = this.$route.params.username;
+
+            let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
             let response = await this.$axios.get(apiUrl);            
             this.followers = response.data.followers; 
-            console.log(this.followers);     
                         
           } catch (e) {
             this.errormsg = e.toString();
           }
           this.loading = false;
         },
+        async gotoAccount(id,username){
+          this.$router.push({ name: 'MyAccount', params: { userId: id, username: username} });
+        },
         
       },
+      
       mounted() {
         this.refresh()
       }
@@ -38,7 +44,7 @@
   
 <template>
 	<div >
-			<h1>Followings list</h1>
+			<h1>Followers list</h1>
 
 		<ErrorMsg class="error-container" v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
@@ -47,12 +53,11 @@
 		<div class="card" v-if="followers?.length === 0">
 			<div class="card-body">
 				<p>No followers in the database.</p>
-				
 			</div>
 		</div>
 
 		<div v-if="!loading" v-for="f in followers">
-      {{f}}
+      <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="gotoAccount(this.userId,f)">{{f}}</a>
 		</div>
 	</div>
 </template>
