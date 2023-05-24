@@ -13,7 +13,9 @@
 				this.errormsg = null;
 				try {
 					this.userId = this.$route.params.userId;
-					this.username = this.$route.params.username
+					console.log(this.userId);
+					this.username = this.$route.params.username;
+					console.log(this.username);
 				} catch (e) {
 					this.errormsg = e.toString();
 				}
@@ -51,20 +53,20 @@
 				<span>General</span>
 			  </h6>
 			  <ul class="nav flex-column">
-				<li class="nav-item" v-if="userId">
-				  <RouterLink :to="{ name: 'Stream', params: { userId: userId } }" class="nav-link">
+				<li class="nav-item" v-if="this.userId">
+				  <RouterLink :to="{ name: 'Stream', params: { userId: this.userId } }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#home"/></svg>
 					Stream
 				  </RouterLink>
 				</li>
-				<li class="nav-item" v-if="userId">
-				  <RouterLink :to="{ name: 'UploadPhoto', params: { userId: userId } }" class="nav-link">
+				<li class="nav-item" v-if="this.userId">
+				  <RouterLink :to="{ name: 'UploadPhoto', params: { userId: this.userId } }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#image"/></svg>
 					Upload Photo
 				  </RouterLink>
 				</li>
-				<li class="nav-item" v-if="userId">
-				  <RouterLink :to="{ name: 'SearchUser', params: { userId: userId } }" class="nav-link">
+				<li class="nav-item" v-if="this.userId">
+				  <RouterLink :to="{ name: 'SearchUser', params: { userId: this.userId } }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#search"/></svg>
 					Search User
 				  </RouterLink>
@@ -76,13 +78,18 @@
 				<span>My Account</span>
 			  </h6>
 			  <ul class="nav flex-column">
-				<li class="nav-item" v-if="userId && username">
-				  <RouterLink :to="{ name: 'MyAccount', params: { userId: userId, username: username } }" class="nav-link">
+				<li class="nav-item" v-if="this.userId && this.username">
+				  <RouterLink :to="{ name: 'MyAccount', params: { userId: this.userId, username: username } }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#user"/></svg>
 					MyAccount
 				  </RouterLink>
 				</li>
-				
+				<li class="nav-item" v-if="this.userId">
+					<RouterLink :to="{ name: 'SetMyUsername', params: { userId: this.userId} }" class="nav-link">
+					  <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#edit-3"/></svg>
+					  Update My Username
+					</RouterLink>
+				  </li>
 				<li class="nav-item">
 				  <RouterLink :to="{ name: 'Login' }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#log-out"/></svg>

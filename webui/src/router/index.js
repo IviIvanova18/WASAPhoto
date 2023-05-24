@@ -7,6 +7,7 @@ import Followings from '../views/GetFollowings.vue'
 import Followers from '../views/GetFollowers.vue'
 import UploadPhoto from '../views/UploadPhotoView.vue'
 import SearchUser from '../views/SearchUser.vue'
+import SetMyUsername from '../views/SetMyUsername.vue'
 
 
 const router = createRouter({
@@ -18,7 +19,8 @@ const router = createRouter({
 		{ path: '/users/:userId/profile/:username', component: MyAccount, name: 'MyAccount'},
 		{ path: '/users/:userId/followings/:username', component: Followings, name: 'Followings'},
 		{ path: '/users/:userId/followers/:username', component: Followers, name: 'Followers'},
-		{ path: '/:userId/search', component: SearchUser, name: 'SearchUser'}
+		{ path: '/:userId/search', component: SearchUser, name: 'SearchUser'},
+		{ path: '/users/:userId/', component: SetMyUsername, name: 'SetMyUsername'}
 		
 	]
 })

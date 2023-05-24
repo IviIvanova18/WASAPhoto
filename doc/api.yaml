@@ -28,18 +28,6 @@ components:
       in: path
       required: true
       description: Photo id
-    Username:
-      schema:
-        type: string
-        example: "user123"
-        pattern: "ˆ.*?$"
-        readOnly: true
-        minLength: 3
-        maxLength: 20
-      name: username
-      in: query
-      required: true
-      description: Username to find the user.
     UserID:
       schema:
         type: integer
@@ -94,8 +82,7 @@ components:
           type: integer
           example: 1
           readOnly: true
-        date: { $ref: "#/components/schemas/Date" }
-        time: { $ref: "#/components/schemas/Time" }
+        datetime: { $ref: "#/components/schemas/DateTime" }
         likes: { $ref: "#/components/schemas/Likes" }
         comments: { $ref: "#/components/schemas/Comments" }
         path: { $ref: "#/components/schemas/Path" }
@@ -145,7 +132,6 @@ paths:
   /users/:
     parameters:
       - $ref: "#/components/parameters/Sort"
-      - $ref: "#/components/parameters/Username"
     get:
       tags: ["User"]
       operationId: listUsers
@@ -171,6 +157,8 @@ paths:
       operationId: setMyUserName
       summary: Update username
       description: The username of the user is updated with the specified one
+      parameters:
+        - $ref: "#/components/parameters/UserID"
       requestBody:
         required: false
         content:
@@ -197,13 +185,22 @@ paths:
       security:
         - LegacyAuth: []
   /users/{userId}/profile/{username}/:
-    parameters:
-      - $ref: "#/components/parameters/UserID"
     get:
       tags: ["User"]
       operationId: getUserProfile
       summary: Get a specific user by ID
       description: Returns the user
+      parameters:
+        - $ref: "#/components/parameters/UserID"
+        - name: username
+          description: The username of the user
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "user123"
+            minLength: 3
+            maxLength: 20
       responses:
         200:
           description: The user is returned
@@ -298,6 +295,8 @@ paths:
       operationId: uploadPhoto
       summary: Upload a photo
       description: Uploads a new photo in the user's account
+      parameters:
+      - $ref: "#/components/parameters/UserID"
       requestBody:
         content:
           application/json:
@@ -381,6 +380,9 @@ paths:
       summary: A user likes a photo
       description: A specific users like a photo
       operationId: likePhoto
+      parameters:
+        - $ref: "#/components/parameters/PhotoID"
+        - $ref: "#/components/parameters/UserID"
       responses:
         204:
           description: The photo was liked.
@@ -393,6 +395,9 @@ paths:
       summary: A user unlikes a photo
       description: The specified user unlikes a photo that they previously liked.'
       operationId: unlikePhoto
+      parameters:
+        - $ref: "#/components/parameters/PhotoID"
+        - $ref: "#/components/parameters/UserID"
       responses:
         204:
           description: The photo was unliked.
@@ -476,7 +481,7 @@ paths:
       summary: Delete a comment of a video
       description: Deletes a comment of a video if and only if the user is the autor of the comment
       parameters:
-        - name: comment_id
+        - name: commentId
           description: The id of the comment
           in: path
           required: true
