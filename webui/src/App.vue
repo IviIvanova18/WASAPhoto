@@ -13,9 +13,9 @@
 				this.errormsg = null;
 				try {
 					this.userId = this.$route.params.userId;
-					console.log(this.userId);
+					// console.log(this.userId);
 					this.username = this.$route.params.username;
-					console.log(this.username);
+					// console.log(this.username);
 				} catch (e) {
 					this.errormsg = e.toString();
 				}
@@ -48,7 +48,7 @@
 		<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
 		  <div class="position-sticky pt-3 sidebar-sticky">
 			<div>
-			  <h6
+			  <!-- <h6
 				class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
 				<span>General</span>
 			  </h6>
@@ -71,14 +71,14 @@
 					Search User
 				  </RouterLink>
 				</li>
-			  </ul>
+			  </ul> -->
 			  
   
 			  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
 				<span>My Account</span>
 			  </h6>
 			  <ul class="nav flex-column">
-				<li class="nav-item" v-if="this.userId && this.username">
+				<!-- <li class="nav-item" v-if="this.userId && this.username">
 				  <RouterLink :to="{ name: 'MyAccount', params: { userId: this.userId, username: username } }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#user"/></svg>
 					MyAccount
@@ -89,7 +89,7 @@
 					  <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#edit-3"/></svg>
 					  Update My Username
 					</RouterLink>
-				  </li>
+				  </li> -->
 				<li class="nav-item">
 				  <RouterLink :to="{ name: 'Login' }" class="nav-link">
 					<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#log-out"/></svg>
