@@ -29,12 +29,10 @@
             let response = await this.$axios.get(apiUrl);
             this.photos = response.data;  
             for (const photo of this.photos) {
-              
               const commentsResponse = await this.$axios.get(`/photos/${photo.id}/comments/`);         
               this.comments[photo.id] = commentsResponse.data;
-              const likesResponse = await this.$axios.get(`/photos/${photo.id}/likes/`);         
-              this.userLikes[photo.id] = likesResponse.data.map(p => p.idUser).includes(photo.id_user)
-            
+              const likesResponse = await this.$axios.get(`/photos/${photo.id}/likes/`);
+              this.userLikes[photo.id] = likesResponse.data.map(p => p.idUser).includes(photo.idUser)
             }
 
           } catch (e) {
@@ -47,7 +45,7 @@
 			      this.errormsg = null
 			      try {
               if (this.userLikes[photoId]) {
-                await this.$axios.delete(`/photos/${photoId}/likes/${this.userId}/`) 
+                await this.$axios.delete(`/photos/${photoId}/likes/${userId}/`) 
                 this.userLikes[photoId] = false
               } else {
                 await this.$axios.put(`/photos/${photoId}/likes/${userId}/`)
@@ -100,11 +98,17 @@
       <div class="row justify-content-center align-items-start">
         <div class="col-md-8">
           <div class="photo-card bg-white text-dark rounded-5 mb-4" v-for="photo in photos" :key="photo.id">
-            <img :src="requirePhoto(photo.path)" class="photo-img" />
+            <div class="position-relative">
+              <img :src="requirePhoto(photo.path)" class="photo-img" />
+              <div class="photo-overlay position-absolute top-0 start-0 p-2">
+                <strong>{{ photo.username }}</strong>
+                <span>{{ photo.DateTime }}</span>
+              </div>
+            </div>
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="likes">
-                  <button class="btn btn-link" :class="{ 'text-danger': userLikes[photo.id], 'text-dark': !userLikes[photo.id] }" @click="likePhoto(photo.id, photo.id_user)">
+                  <button class="btn btn-link" :class="{ 'text-danger': userLikes[photo.id], 'text-dark': !userLikes[photo.id] }" @click="likePhoto(photo.id, photo.idUser)">
                     <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#heart"/></svg>
                   </button>
                   {{ photo.likes }} likes
@@ -116,11 +120,11 @@
               <div class="comment-section">
                 <div class="comment" v-for="comment in comments[photo.id]" :key="comment.id">
                   <strong>{{ comment.username }}</strong> {{ comment.comment }}
-                  <button class="btn btn-link text-danger m1-auto" @click="deleteComment(photo.id, comment.id)">
-                    <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#trash"/></svg>
-                  </button>
+                    <button v-if="parseInt(comment.idUser) === parseInt(this.userId)" class="btn btn-link text-danger m1-auto" @click="deleteComment(photo.id, comment.id)">
+                      <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#trash"/></svg>
+                    </button>
+                  
                 </div>
-                
                 <div class="mt-3">
                   <input type="text" v-model="newComment" class="form-control" placeholder="Add a comment..." @keyup.enter="addComment(photo.id)" />
                 </div>
@@ -133,7 +137,7 @@
     <ErrorMsg class="error-container" v-if="errormsg" :msg="errormsg" />
   </div>
 </template>
-  
+
 
   
     

@@ -50,15 +50,13 @@ type AppDatabase interface {
 
 	GetIDByPhotoID(id uint64) (uint64, error)
 	GetUsernameById(id uint64) (string, error)
-	SearchUser(user User) (User, error)
 	ListUsers() ([]UserLogin, error)
 	GetUserProfile(user User) (User, error)
-	// GetUserProfile(id uint64) (User, error)
 
 
 	GetFollowersById(id uint64) ([]string, error)
 	GetFollowingsById(id uint64) ([]string, error)
-	GetPhotosById(id uint64) ([]string, error)
+	GetPhotosById(id uint64) ([]uint64,[]string, error)
 
 	BanUser(idUser uint64, idBannedUser uint64) error
 	UnbanUser(idUser uint64, idBannedUser uint64) error
@@ -227,7 +225,8 @@ type User struct {
 	PhotosCount  int
 	FollowersCount int 	
 	FollowingsCount int 
-	Photos []string 	
+	PhotosId[]uint64 
+	PhotosPath[]string	
 	Followers []string
 	Followings []string
 	

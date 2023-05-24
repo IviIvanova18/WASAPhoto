@@ -143,28 +143,34 @@ func (db *appdbimpl) GetFollowingsById(id uint64) ([]string, error) {
 	return followings, nil
 }
 
-func (db *appdbimpl) GetPhotosById(id uint64) ([]string, error) {
-	var photos []string
-	rows, err := db.c.Query(`SELECT path FROM photos WHERE idUser=? ORDER BY photos.date DESC`, id)
+func (db *appdbimpl) GetPhotosById(id uint64) ([]uint64,[]string, error) {
+	var paths []string
+	var ids []uint64
+
+	rows, err := db.c.Query(`SELECT idPhoto, path FROM photos WHERE idUser=? ORDER BY photos.date DESC`, id)
 	if err != nil {
-		return nil, err
+		return nil,nil, err
 	}
 
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {
+		var idPhoto uint64
 		var path string
-		err = rows.Scan(&path)
 
+		err = rows.Scan(&idPhoto,&path)
+		
 		if err != nil {
-			return nil, err
+			return nil,nil, err
 		}
-		photos = append(photos, path)
+		ids = append(ids, idPhoto)
+		paths = append(paths, path)
+
 	}
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return photos, nil
+	return ids,paths, nil
 }
 
 

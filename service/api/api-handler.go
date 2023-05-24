@@ -12,6 +12,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session/", rt.wrap(rt.doLogin))
 	rt.router.GET("/users/", rt.wrap(rt.listUsers))
 	rt.router.PUT("/users/:userId/", rt.wrap(rt.setMyUserName))
+	rt.router.GET("/users/:userId/", rt.wrap(rt.getMyUsername))
 
 	rt.router.GET("/users/:userId/stream/", rt.wrap(rt.getMyStream))
 	rt.router.GET("/users/:userId/profile/:username/", rt.wrap(rt.getUserProfile))
@@ -25,8 +26,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userId/following/:followedUserId/", rt.wrap(rt.followUser))
 	rt.router.DELETE("/users/:userId/following/:followedUserId/", rt.wrap(rt.unfollowUser))
 	rt.router.GET("/users/:userId/followings/", rt.wrap(rt.getFollowings))
-	
-	
+		
 	//Photo
 	rt.router.POST("/users/:userId/photos/",rt.wrap(rt.uploadPhoto))
 	rt.router.DELETE("/photos/:photoId/",rt.wrap(rt.deletePhoto))

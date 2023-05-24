@@ -30,14 +30,19 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 	}
 
 	//Get Photos
-	photos, err := db.GetPhotosById(user.IDUser)
+	photoIds, paths, err := db.GetPhotosById(user.IDUser)
 	if err != nil {
 		return user, err
 	}
-	if photos == nil {
-		user.Photos = []string{}
-	} else {
-		user.Photos = photos
+	if photoIds == nil {
+		user.PhotosId= []uint64{}
+		
+	}else if paths == nil{
+		user.PhotosPath = []string{}
+	}else {
+		user.PhotosId = photoIds
+		user.PhotosPath = paths
+
 	}
 
 	return user, nil

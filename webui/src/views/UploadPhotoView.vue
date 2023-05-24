@@ -37,7 +37,6 @@
         }
         this.loading = false;
       },           
-      
     },
     
     mounted() {

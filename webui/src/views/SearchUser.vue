@@ -1,31 +1,38 @@
 <script>
-    export default {
-      data: function () {
-        return {
-          errormsg: null,
-          loading: false,
-          otheruser: null,
-        }
-      },
-      methods: {
-        async findUser() {
-          this.loading = true;
-          this.errormsg = null;
-          try {
-            let url = `/users/${this.$route.params.userId}/profile/${this.otheruser}/`;
-            let response = await this.$axios.get(url);
-            this.$router.push({
-              name: 'MyAccount',
-              params: { userId: this.$route.params.userId, username: this.otheruser },
-            });
-          } catch (e) {
+  export default {
+    data: function () {
+      return {
+        errormsg: null,
+        loading: false,
+        otheruser: null,
+        userId: this.$route.params.userId
+      }
+    },
+    methods: {
+      async findUser() {
+        this.loading = true;
+        this.errormsg = null;
+        try {
+          let url = `/users/${this.userId}/profile/${this.otheruser}/`;
+          let response = await this.$axios.get(url);
+          this.$router.push({
+            name: 'MyAccount',
+            params: { userId: this.userId, username: this.otheruser },
+          });
+        } catch (e) {
+          if (e.response.status == 404) {
+            this.errormsg = "You can not acces user " + this.otheruser
+          } else if (e.response.status == 401) {
+            this.$router.push({ name: 'Login'})
+          } else {
             this.errormsg = e.toString();
           }
-          this.loading = false;
-        },
+        }
+        this.loading = false;
       },
-    }
-    </script>
+    },
+  }
+</script>
     
     <template>
       <div class="background">

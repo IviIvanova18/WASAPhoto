@@ -5,8 +5,7 @@
                 errormsg: null,
                 loading: false,
                 username: null,
-                
-                
+                               
             }
         },
         methods: {
@@ -19,12 +18,9 @@
                     });
                     const responseData = response.data;
                     
-                    console.log(responseData);  
+                    // console.log(responseData);  
                     const userId = response.data.id;
                     const username = response.data.username;
-                    // console.log(username);  
-                    // console.log(userId);  
-                    
                     this.$router.push({ name: 'MyAccount', params: { userId: userId, username: username } });
 
                 } catch (e) {
@@ -36,8 +32,6 @@
     }
     </script>
     
-
-      
     <template>
         <div class="background">
           <div class="container py-5">

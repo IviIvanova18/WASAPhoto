@@ -58,7 +58,8 @@ type User struct{
 	PhotosCount int 	`json:"photosCount"`
 	FollowersCount int 	`json:"followersCount"`
 	FollowingsCount int `json:"followingCount"`
-	Photos []string 	`json:"photos"`
+	PhotosId[]uint64 	`json:"idPhotos"`
+	PhotosPath[]string 	`json:"photos"`
 	Followers []string	`json:"followers"`
 	Followings []string `json:"followings"`
 }
@@ -72,7 +73,8 @@ func (user *User) ToDatabase() database.User {
 		FollowingsCount: user.FollowingsCount,
 		Followers: user.Followers,
 		Followings: user.Followings,
-		Photos: user.Photos,
+		PhotosId: user.PhotosId,
+		PhotosPath: user.PhotosPath,
 	}
 }
 func (u *User) FromDatabase(user database.User){
@@ -83,7 +85,9 @@ func (u *User) FromDatabase(user database.User){
 	u.Followings = user.Followings
 	u.Followers = user.Followers
 	u.Followings = user.Followings
-	u.Photos = user.Photos
+	u.PhotosId = user.PhotosId
+	u.PhotosPath = user.PhotosPath
+
 }
 
 //Comment 
