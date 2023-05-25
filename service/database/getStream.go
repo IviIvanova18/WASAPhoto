@@ -20,7 +20,6 @@ func (db *appdbimpl) GetStreamFollowing(user UserLogin) ([]Photo, error) {
 	}
 	defer func() { _ = rows.Close() }()
 
-
 	for rows.Next() {
 		var photo Photo
 		err = rows.Scan(&photo.IDPhoto, &photo.IDUser, &photo.Likes, &photo.Comments, &photo.DateTime, &photo.Username, &photo.Path)

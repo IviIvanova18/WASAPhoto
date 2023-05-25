@@ -3,14 +3,12 @@ package database
 func (db *appdbimpl) ListUsers() ([]UserLogin, error) {
 	var ret []UserLogin
 
-	
 	rows, err := db.c.Query(`SELECT idUser, username, photosCount FROM users`)
 	if err != nil {
 		return nil, err
 	}
 	defer func() { _ = rows.Close() }()
 
-	
 	for rows.Next() {
 		var f UserLogin
 		var photoCount int

@@ -54,7 +54,7 @@ components:
       description: The date and time when the photo was uploaded
       type: string
       format: date
-      example: 2022-01-01 
+      example: 2022-01-01
     Likes:
       description: The number of likes each photo has
       type: integer
@@ -91,13 +91,13 @@ components:
           type: integer
           example: 1
           readOnly: true
-        datetime: 
+        datetime:
           $ref: "#/components/schemas/DateTime"
-        likes: 
-          $ref: "#/components/schemas/Likes" 
-        comments: 
+        likes:
+          $ref: "#/components/schemas/Likes"
+        comments:
           $ref: "#/components/schemas/Comments"
-        path: 
+        path:
           $ref: "#/components/schemas/Path"
     User:
       title: User
@@ -136,13 +136,9 @@ components:
           description: List of paths of photos that the user uploaded.
           type: object
   securitySchemes:
-    LegacyAuth:
-      type: apiKey
-      in: header
-      name: X-App-Token
-      description: |-
-        App session token value. This value is sent by the server in the login
-        and session refresh APIs.
+    bearerAuth:
+      type: http
+      scheme: bearer
 
 paths:
   /users/:
@@ -166,7 +162,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/:
     put:
       tags: ["User"]
@@ -195,11 +191,11 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/User" }
         400: { $ref: "#/components/responses/BadRequest" }
-        404 : 
+        404:
           description: User not found
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/profile/{username}/:
     get:
       tags: ["User"]
@@ -224,7 +220,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/User" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/followings/:
     parameters:
       - $ref: "#/components/parameters/UserID"
@@ -245,7 +241,7 @@ paths:
                 minItems: 0
                 maxItems: 1000
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
 
   /users/{userId}/followings/{followedUserId}/:
     parameters:
@@ -265,7 +261,7 @@ paths:
       responses:
         204: { description: "The user was unfollowed." }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
     put:
       tags: ["User"]
       operationId: followUser
@@ -275,7 +271,7 @@ paths:
         204:
           description: The user started following the other user.
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/stream/:
     parameters:
       - $ref: "#/components/parameters/UserID"
@@ -295,7 +291,7 @@ paths:
                 minItems: 0
                 maxItems: 1000
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/photos/:
     parameters:
       - $ref: "#/components/parameters/UserID"
@@ -317,7 +313,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /users/{userId}/banned/{bannedUserId}:
     parameters:
       - $ref: "#/components/parameters/UserID"
@@ -336,7 +332,7 @@ paths:
       responses:
         204: { description: The user was unbanned. }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
     put:
       tags: ["User"]
       operationId: banUser
@@ -348,7 +344,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /photos/{photoId}/likes/:
     parameters:
       - $ref: "#/components/parameters/UserID"
@@ -371,7 +367,7 @@ paths:
                   minItems: 0
                   maxItems: 1000
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /photos/{photoId}/likes/{userId}/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
@@ -387,7 +383,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
     delete:
       tags: ["Photo"]
       summary: A user unlikes a photo
@@ -399,7 +395,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
 
   /photos/{photoId}/:
     parameters:
@@ -415,7 +411,7 @@ paths:
         "404": { description: Photo not found }
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /photos/{photoId}/comments/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
@@ -436,8 +432,8 @@ paths:
                 minItems: 0
                 maxItems: 200
       security:
-        - LegacyAuth: []
-  
+        - bearerAuth: []
+
     post:
       tags: ["Photo"]
       operationId: commentPhoto
@@ -466,7 +462,7 @@ paths:
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /photos/{photoId}/comments/{commentId}/:
     parameters:
       - $ref: "#/components/parameters/PhotoID"
@@ -489,7 +485,7 @@ paths:
         "404": { description: comment not found }
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
-        - LegacyAuth: []
+        - bearerAuth: []
   /session/:
     post:
       tags: ["login"]

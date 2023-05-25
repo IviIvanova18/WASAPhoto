@@ -2,11 +2,12 @@ package api
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strconv"
 )
 
 func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {

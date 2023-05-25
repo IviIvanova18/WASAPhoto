@@ -2,11 +2,12 @@ package api
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strconv"
 )
 
 func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -17,7 +18,6 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	
 	idPhoto, err := strconv.ParseUint(ps.ByName("photoId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

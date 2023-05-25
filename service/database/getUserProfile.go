@@ -35,11 +35,11 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 		return user, err
 	}
 	if photoIds == nil {
-		user.PhotosId= []uint64{}
-		
-	}else if paths == nil{
+		user.PhotosId = []uint64{}
+
+	} else if paths == nil {
 		user.PhotosPath = []string{}
-	}else {
+	} else {
 		user.PhotosId = photoIds
 		user.PhotosPath = paths
 

@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
+	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -35,9 +35,3 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	_ = json.NewEncoder(w).Encode(comments)
 
 }
-
-
-
-
-
-

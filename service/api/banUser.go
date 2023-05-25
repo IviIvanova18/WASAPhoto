@@ -2,11 +2,12 @@ package api
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"github.com/julienschmidt/httprouter"
 	sqlite3 "github.com/mattn/go-sqlite3"
-	"net/http"
-	"strconv"
 )
 
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -17,7 +18,6 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 
 	idBanned, err := strconv.ParseUint(ps.ByName("bannedUserId"), 10, 64)
 	if err != nil {
