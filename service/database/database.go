@@ -44,7 +44,7 @@ var ErrLikeNotFound = errors.New("Error like does not exist!")
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	CreateUser(username string) (UserLogin, error)
+	CreateUser(userLogin UserLogin) (UserLogin, error)
 	GetIDByUsername(username string) (uint64, error)
 	SetMyUserName(user UserLogin) error
 

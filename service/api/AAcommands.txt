@@ -1,5 +1,5 @@
 doLogin
-curl -POST http://localhost:3000/session/ -d'{"username": "user1"}'
+curl -POST http://localhost:3000/session -d'{"username": "user1"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user2"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user3"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user4"}'
@@ -10,7 +10,7 @@ listUsers
 curl http://localhost:3000/users/
 
 SetMyUserName
-curl -X PUT http://localhost:3000/users/1/ -d {"username" : "updatedUser1"}
+curl -X PUT http://localhost:3000/users/1/ -d '{"username" : "updatedUser1"}'
 
 uploadPhoto
 curl -X POST http://localhost:3000/users/1/photos/ -d '{"path": "dog.jpeg"}'    

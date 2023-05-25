@@ -1,6 +1,5 @@
 package database
 
-
 func (db *appdbimpl) GetIDByUsername(username string) (uint64, error) {
 	var id uint64
 	err := db.c.QueryRow(`SELECT idUser FROM users WHERE username=?`, username).Scan(&id)
@@ -34,7 +33,6 @@ func (db *appdbimpl) DeleteComments(idPhoto uint64) error {
 	_, err := db.c.Exec(`DELETE FROM comments WHERE idPhoto=?`, idPhoto)
 	return err
 }
-
 
 func (db *appdbimpl) UpdatePhotoCountUser(idUser uint64, count int64) error {
 	query := `UPDATE users SET photosCount = photosCount + ?
@@ -143,13 +141,13 @@ func (db *appdbimpl) GetFollowingsById(id uint64) ([]string, error) {
 	return followings, nil
 }
 
-func (db *appdbimpl) GetPhotosById(id uint64) ([]uint64,[]string, error) {
+func (db *appdbimpl) GetPhotosById(id uint64) ([]uint64, []string, error) {
 	var paths []string
 	var ids []uint64
 
 	rows, err := db.c.Query(`SELECT idPhoto, path FROM photos WHERE idUser=? ORDER BY photos.date DESC`, id)
 	if err != nil {
-		return nil,nil, err
+		return nil, nil, err
 	}
 
 	defer func() { _ = rows.Close() }()
@@ -158,10 +156,10 @@ func (db *appdbimpl) GetPhotosById(id uint64) ([]uint64,[]string, error) {
 		var idPhoto uint64
 		var path string
 
-		err = rows.Scan(&idPhoto,&path)
-		
+		err = rows.Scan(&idPhoto, &path)
+
 		if err != nil {
-			return nil,nil, err
+			return nil, nil, err
 		}
 		ids = append(ids, idPhoto)
 		paths = append(paths, path)
@@ -170,7 +168,5 @@ func (db *appdbimpl) GetPhotosById(id uint64) ([]uint64,[]string, error) {
 	if err = rows.Err(); err != nil {
 		return nil, nil, err
 	}
-	return ids,paths, nil
+	return ids, paths, nil
 }
-
-

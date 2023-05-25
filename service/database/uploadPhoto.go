@@ -21,5 +21,4 @@ func (db *appdbimpl) UploadPhoto(photo Photo) (Photo, error) {
 	photo.IDPhoto = uint64(lastInsertId)
 	return photo, nil
 
-
 }

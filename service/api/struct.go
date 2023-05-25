@@ -1,9 +1,9 @@
 package api
 
 import (
-	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"time"
-	
+
+	"git.wasaphoto.ivi/wasaphoto/service/database"
 )
 
 type Identifier struct {
@@ -11,23 +11,20 @@ type Identifier struct {
 }
 
 // Error Message
-type JSONErrorMsg struct{
+type JSONErrorMsg struct {
 	Message string
 }
 
 // Photo
-type Photo struct{
-	IDPhoto uint64 		`json:"id"`
-	IDUser uint64		`json:"idUser"`
-	Username string		`json:"username"`
-	DateTime time.Time 	`json:"DateTime"`
-	Likes int 			`json:"likes"`
-	Comments uint64 	`json:"comments"`
-	Path string			`json:"path"`
+type Photo struct {
+	IDPhoto  uint64    `json:"id"`
+	IDUser   uint64    `json:"idUser"`
+	Username string    `json:"username"`
+	DateTime time.Time `json:"DateTime"`
+	Likes    int       `json:"likes"`
+	Comments uint64    `json:"comments"`
+	Path     string    `json:"path"`
 }
-
-
-
 
 func (p *Photo) FromDatabase(photo database.Photo) {
 	p.IDPhoto = photo.IDPhoto
@@ -41,43 +38,43 @@ func (p *Photo) FromDatabase(photo database.Photo) {
 
 func (p *Photo) ToDatabase() database.Photo {
 	return database.Photo{
-		IDPhoto:	p.IDPhoto,
-		IDUser: 	p.IDUser,
-		Username:	p.Username,
-		DateTime:  	p.DateTime,
-		Likes: 		p.Likes,
-		Comments:   p.Comments,
-		Path:		p.Path,
+		IDPhoto:  p.IDPhoto,
+		IDUser:   p.IDUser,
+		Username: p.Username,
+		DateTime: p.DateTime,
+		Likes:    p.Likes,
+		Comments: p.Comments,
+		Path:     p.Path,
 	}
 }
 
-// User 
-type User struct{
-	IDUser uint64 		`json:"id"`
-	Username string 	`json:"username"`
-	PhotosCount int 	`json:"photosCount"`
-	FollowersCount int 	`json:"followersCount"`
-	FollowingsCount int `json:"followingCount"`
-	PhotosId[]uint64 	`json:"idPhotos"`
-	PhotosPath[]string 	`json:"photos"`
-	Followers []string	`json:"followers"`
-	Followings []string `json:"followings"`
+// User
+type User struct {
+	IDUser          uint64   `json:"id"`
+	Username        string   `json:"username"`
+	PhotosCount     int      `json:"photosCount"`
+	FollowersCount  int      `json:"followersCount"`
+	FollowingsCount int      `json:"followingCount"`
+	PhotosId        []uint64 `json:"idPhotos"`
+	PhotosPath      []string `json:"photos"`
+	Followers       []string `json:"followers"`
+	Followings      []string `json:"followings"`
 }
 
 func (user *User) ToDatabase() database.User {
 	return database.User{
-		IDUser:  user.IDUser,
-		Username: user.Username,
-		PhotosCount: user.PhotosCount,
-		FollowersCount: user.FollowersCount,
+		IDUser:          user.IDUser,
+		Username:        user.Username,
+		PhotosCount:     user.PhotosCount,
+		FollowersCount:  user.FollowersCount,
 		FollowingsCount: user.FollowingsCount,
-		Followers: user.Followers,
-		Followings: user.Followings,
-		PhotosId: user.PhotosId,
-		PhotosPath: user.PhotosPath,
+		Followers:       user.Followers,
+		Followings:      user.Followings,
+		PhotosId:        user.PhotosId,
+		PhotosPath:      user.PhotosPath,
 	}
 }
-func (u *User) FromDatabase(user database.User){
+func (u *User) FromDatabase(user database.User) {
 	u.IDUser = user.IDUser
 	u.Username = user.Username
 	u.PhotosCount = user.PhotosCount
@@ -90,24 +87,23 @@ func (u *User) FromDatabase(user database.User){
 
 }
 
-// Comment 
+// Comment
 
-type Comment struct{
-	IDComment uint64 	`json:"id"`
-	IDUser uint64 		`json:"idUser"`
-	Username string		`json:"username"`
-	IDPhoto uint64 		`json:"idPhoto"`
-	CommentText string 	`json:"comment"`
-
+type Comment struct {
+	IDComment   uint64 `json:"id"`
+	IDUser      uint64 `json:"idUser"`
+	Username    string `json:"username"`
+	IDPhoto     uint64 `json:"idPhoto"`
+	CommentText string `json:"comment"`
 }
 
 func (c *Comment) ToDatabase() database.Comment {
 	return database.Comment{
-		IDComment: 	c.IDComment,
-		IDUser:    	c.IDUser,
-		Username:	c.Username,
-		IDPhoto:   	c.IDPhoto,
-		CommentText:c.CommentText,
+		IDComment:   c.IDComment,
+		IDUser:      c.IDUser,
+		Username:    c.Username,
+		IDPhoto:     c.IDPhoto,
+		CommentText: c.CommentText,
 	}
 }
 
@@ -124,9 +120,6 @@ func (c *Comment) isValid() bool {
 	return 1 <= length && length <= 200
 }
 
-
-
-
 // UserLogin
 
 type UserLogin struct {
@@ -141,7 +134,7 @@ func (u *UserLogin) FromDatabase(user database.UserLogin) {
 
 func (u *UserLogin) ToDatabase() database.UserLogin {
 	return database.UserLogin{
-		ID:  u.ID,
+		ID:       u.ID,
 		Username: u.Username,
 	}
 }
@@ -154,10 +147,9 @@ func (u *UserLogin) isValid() bool {
 
 // Like
 type Like struct {
-	ID       uint64 `json:"id"`
-	IDUser uint64 `json:"idUser"`
+	ID      uint64 `json:"id"`
+	IDUser  uint64 `json:"idUser"`
 	IDPhoto uint64 `json:"idPhoto"`
-
 }
 
 func (u *Like) FromDatabase(user database.Like) {
@@ -169,9 +161,8 @@ func (u *Like) FromDatabase(user database.Like) {
 
 func (u *Like) ToDatabase() database.Like {
 	return database.Like{
-		ID:  u.ID,
-		IDUser: u.IDUser,
+		ID:      u.ID,
+		IDUser:  u.IDUser,
 		IDPhoto: u.IDPhoto,
-
 	}
 }

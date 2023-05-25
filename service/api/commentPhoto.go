@@ -1,16 +1,14 @@
 package api
 
 import (
-
 	"encoding/json"
 	"errors"
-	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"git.wasaphoto.ivi/wasaphoto/service/database"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
 
-		
+	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"git.wasaphoto.ivi/wasaphoto/service/database"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -32,7 +30,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	
+
 	comment.IDPhoto = photoId
 	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
 

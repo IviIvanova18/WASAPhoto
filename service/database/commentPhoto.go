@@ -12,7 +12,7 @@ func (db *appdbimpl) CommentPhoto(comment Comment) (Comment, error) {
 	if err != nil {
 		return comment, err
 	}
-	
+
 	comment.IDComment = uint64(lastInsertId)
 	return comment, nil
 }

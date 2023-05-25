@@ -2,10 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
+
+	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -23,7 +24,6 @@ func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps h
 	}
 	var likes []Like
 	var like Like
-	
 
 	for _, dbcom := range likesDB {
 
@@ -37,9 +37,3 @@ func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps h
 	_ = json.NewEncoder(w).Encode(likes)
 
 }
-
-
-
-
-
-

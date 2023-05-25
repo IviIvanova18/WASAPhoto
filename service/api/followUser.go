@@ -2,11 +2,12 @@ package api
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"github.com/julienschmidt/httprouter"
 	sqlite3 "github.com/mattn/go-sqlite3"
-	"net/http"
-	"strconv"
 )
 
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {

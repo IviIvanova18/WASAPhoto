@@ -1,24 +1,26 @@
 package database
 
-func (db *appdbimpl) CreateUser(username string) (UserLogin, error) {
-	res, err := db.c.Exec(`INSERT INTO users (idUser, username, photosCount) VALUES (NULL, ?, ?)`,
-		username, 0)
-	if err != nil {
-		return UserLogin{
-			ID:  0,
-			Username: "",
-		}, err
-	}
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		return UserLogin{
-			ID:  0,
-			Username: "",
-		}, err
-	}
+import (
+	"database/sql"
+)
 
-	return UserLogin{
-		ID:  uint64(lastID),
-		Username: username,
-	}, nil
+func (db *appdbimpl) CreateUser(userLogin UserLogin) (UserLogin, error) {
+	res, err := db.c.Exec(`INSERT INTO users (idUser, username, photosCount) VALUES (NULL, ?, ?)`,
+		userLogin.Username, 0)
+	if err != nil {
+		var user UserLogin
+		err := db.c.QueryRow(`SELECT idUser, username FROM users WHERE username = ?`, userLogin.Username).Scan(&user.ID, &user.Username)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return user, ErrUserDoesNotExist
+			}
+		}
+		return user, nil
+	}
+	lastInsertID, err := res.LastInsertId()
+	if err != nil {
+		return userLogin, err
+	}
+	userLogin.ID = uint64(lastInsertID)
+	return userLogin, nil
 }

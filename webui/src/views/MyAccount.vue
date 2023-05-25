@@ -201,7 +201,7 @@
           <div v-if="parseInt(this.user?.id) === parseInt(this.userId)" class="d-flex justify-content-center align-items-center h-80">
             <router-link :to="{ name: 'UploadPhoto', params: { userId: this.userId }}" class="btn btn-primary rounded-pill larger-text" style="background-color: #2e4a78;">Upload Photo</router-link>
             <router-link :to="{ name: 'SearchUser', params: { userId: this.userId }}" class="btn btn-primary rounded-pill larger-text" style="background-color: #2e4a78;">Search User</router-link>
-            
+            <router-link :to="{ name: 'SetMyUsername', params: { userId: this.userId }}" class="btn btn-primary rounded-pill larger-text" style="background-color: #2e4a78;">Update my Username</router-link>
           </div> 
           
           <div class="photo-grid d-flex justify-content-center align-items-center h-80">

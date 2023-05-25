@@ -13,8 +13,3 @@ func (db *appdbimpl) BanUser(idUser uint64, idBannedUser uint64) error {
 	}
 	return nil
 }
-
-
-
-
-	

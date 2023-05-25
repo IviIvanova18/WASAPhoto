@@ -2,10 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
+
+	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -16,7 +17,6 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	
 	listFollowedUsers, err := rt.db.GetFollowingsDB(userId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't get listFollowedUsers users")
