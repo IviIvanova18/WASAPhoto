@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"git.wasaphoto.ivi/wasaphoto/service/database"
@@ -15,6 +16,13 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	idUser, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	token, _ := strconv.ParseUint(header[1], 10, 64)
+	if token != idUser {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 

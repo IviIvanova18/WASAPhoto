@@ -1,5 +1,5 @@
 doLogin
-curl -POST http://localhost:3000/session -d'{"username": "user1"}'
+curl -POST http://localhost:3000/session/ -d'{"username": "user1"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user2"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user3"}'
 curl -POST http://localhost:3000/session/ -d'{"username": "user4"}'
