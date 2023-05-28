@@ -6,7 +6,7 @@ export default {
 		return {
 			errormsg: null,
 			loading: false,
-			userId: this.$route.params.userId,
+			userId: localStorage.getItem("token"),
 			photos: [],
 			comments: {},
 			userLikes: {},
@@ -24,8 +24,6 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				console.log("userId: ", this.$route.params.userId);
-				// this.userId = this.$route.params.userId;
 				let apiUrl = `/users/${this.userId}/stream/`;
 				let response = await this.$axios.get(apiUrl, {
 					headers: {
@@ -155,7 +153,6 @@ export default {
 				<router-link
 					:to="{
 						name: 'SearchUser',
-						params: { userId: this.userId },
 					}"
 					class="btn btn-primary rounded-pill larger-text"
 					style="background-color: #2e4a78"
@@ -180,10 +177,7 @@ export default {
 								<router-link
 									:to="{
 										name: 'MyAccount',
-										params: {
-											username: photo.username,
-											userId: this.userId,
-										},
+										params: { username: photo.username },
 									}"
 									style="
 										text-decoration: none;
@@ -244,7 +238,6 @@ export default {
 											name: 'MyAccount',
 											params: {
 												username: comment.username,
-												userId: this.userId,
 											},
 										}"
 										style="

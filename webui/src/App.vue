@@ -2,7 +2,6 @@
 export default {
 	data: function () {
 		return {
-			errormsg: null,
 			userId: localStorage.getItem("token"),
 			username: localStorage.getItem("username"),
 		};
@@ -44,7 +43,7 @@ export default {
 							<span>General</span>
 						</h6>
 						<ul class="nav flex-column">
-							<li class="nav-item" v-if="this.userId">
+							<li class="nav-item">
 								<RouterLink
 									:to="{
 										name: 'Stream',
@@ -60,7 +59,7 @@ export default {
 									Stream
 								</RouterLink>
 							</li>
-							<li class="nav-item" v-if="this.userId">
+							<li class="nav-item">
 								<RouterLink
 									:to="{
 										name: 'UploadPhoto',
@@ -76,7 +75,7 @@ export default {
 									Upload Photo
 								</RouterLink>
 							</li>
-							<li class="nav-item" v-if="this.userId">
+							<li class="nav-item">
 								<RouterLink
 									:to="{
 										name: 'SearchUser',
@@ -100,17 +99,11 @@ export default {
 							<span>My Account</span>
 						</h6>
 						<ul class="nav flex-column">
-							<li
-								class="nav-item"
-								v-if="this.userId && this.username"
-							>
+							<li class="nav-item">
 								<RouterLink
 									:to="{
 										name: 'MyAccount',
-										params: {
-											userId: this.userId,
-											username: this.username,
-										},
+										params: { username: this.username },
 									}"
 									class="nav-link"
 								>
@@ -122,11 +115,10 @@ export default {
 									MyAccount
 								</RouterLink>
 							</li>
-							<li class="nav-item" v-if="this.userId">
+							<li class="nav-item">
 								<RouterLink
 									:to="{
 										name: 'SetMyUsername',
-										params: { userId: this.userId },
 									}"
 									class="nav-link"
 								>

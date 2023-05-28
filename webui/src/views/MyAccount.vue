@@ -7,14 +7,14 @@ export default {
 			errormsg: null,
 			loading: false,
 			user: null,
-			userId: null,
-			username: null,
+			userId: localStorage.getItem("token"),
+			username: this.$route.params.username,
 			comments: {},
 			likes: {},
 			userLikes: {},
-			followTag: false,
-			banTag: false,
-			newComment: null,
+			followTag: null,
+			banTag: true,
+			newComment: true,
 		};
 	},
 	methods: {
@@ -25,8 +25,6 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				this.userId = this.$route.params.userId;
-				this.username = this.$route.params.username;
 				let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
 				let response = await this.$axios.get(apiUrl, {
 					headers: {
@@ -35,6 +33,22 @@ export default {
 					},
 				});
 				this.user = response.data;
+				let currentUser = localStorage.getItem("username");
+				response = await this.$axios.get(
+					`/users/${this.userId}/banned/`,
+					{
+						headers: {
+							Authorization:
+								"Bearer " + localStorage.getItem("token"),
+						},
+					}
+				);
+				let banned = response.data.bannedusers;
+				console.log(banned);
+				this.banTag = banned.includes(currentUser);
+				this.followTag = this.user.followers.includes(currentUser);
+				console.log(this.banTag, this.followTag);
+
 				for (const photo of this.user.idPhotos) {
 					const commentsResponse = await this.$axios.get(
 						`/photos/${photo}/comments/`,
@@ -61,13 +75,14 @@ export default {
 						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
-				if (e.response.status == 404) {
-					this.errormsg = "You can not acces user" + this.username;
-				} else if (e.response.status == 401) {
-					this.$router.push({ name: "Login" });
-				} else {
-					this.errormsg = e.toString();
-				}
+				// if (e.response.status == 404) {
+				// 	this.errormsg = "You can not acces user" + this.username;
+				// } else if (e.response.status == 401) {
+				// 	this.$router.push({ name: "Login" });
+				// } else {
+				// 	this.errormsg = e.toString();
+				// }
+				this.errormsg = e.toString();
 			}
 			this.loading = false;
 		},
@@ -164,14 +179,6 @@ export default {
 		},
 
 		async followUser(id, followedUserId) {
-			let response = await this.$axios.get(`/users/${id}/`, {
-				headers: {
-					Authorization: "Bearer " + localStorage.getItem("token"),
-				},
-			});
-			let follower = response.data.username;
-			this.followTag = this.user.followers.includes(follower);
-
 			this.loading = true;
 			this.errormsg = null;
 			try {
@@ -207,21 +214,6 @@ export default {
 			this.loading = false;
 		},
 		async banUser(id, bannedUserId) {
-			let response = await this.$axios.get(`/users/${bannedUserId}/`, {
-				headers: {
-					Authorization: "Bearer " + localStorage.getItem("token"),
-				},
-			});
-
-			let bannedUser = response.data.username;
-			response = await this.$axios.get(`/users/${id}/banned/`, {
-				headers: {
-					Authorization: "Bearer " + localStorage.getItem("token"),
-				},
-			});
-			let banned = response.data.bannedusers;
-			console.log(banned);
-			this.banTag = banned.includes(bannedUser);
 			this.loading = true;
 			this.errormsg = null;
 			try {
@@ -346,22 +338,20 @@ export default {
 							class="gap-3"
 						>
 							<button
-								v-if="!loading"
 								class="btn btn-primary btn-block rounded-pill larger-text"
 								type="submit"
 								@click="banUser(this.userId, this.user?.id)"
 								style="background-color: #d10606f5"
 							>
-								{{ banTag ? "Unban" : "Ban" }}
+								{{ this.banTag ? "Unban" : "Ban" }}
 							</button>
 							<button
-								v-if="!loading"
 								class="btn btn-primary btn-block rounded-pill larger-text"
 								type="submit"
 								@click="followUser(this.userId, this.user?.id)"
 								style="background-color: #2e4a78"
 							>
-								{{ followTag ? "Unfollow" : "Follow" }}
+								{{ this.followTag ? "Unfollow" : "Follow" }}
 							</button>
 							<LoadingSpinner v-if="loading" />
 						</div>
@@ -369,13 +359,12 @@ export default {
 				</div>
 			</div>
 			<div
-				v-if="parseInt(this.user?.id) !== parseInt(this.userId)"
+				v-if="parseInt(this.user?.id) === parseInt(this.userId)"
 				class="d-flex justify-content-center align-items-center h-80"
 			>
 				<router-link
 					:to="{
 						name: 'UploadPhoto',
-						params: { userId: this.userId },
 					}"
 					class="btn btn-primary rounded-pill larger-text"
 					style="background-color: #2e4a78"
@@ -384,7 +373,6 @@ export default {
 				<router-link
 					:to="{
 						name: 'SetMyUsername',
-						params: { userId: this.userId },
 					}"
 					class="btn btn-primary rounded-pill larger-text"
 					style="background-color: #2e4a78"
@@ -405,7 +393,8 @@ export default {
 					>
 						<div
 							v-if="
-								parseInt(photo.idUser) === parseInt(this.userId)
+								parseInt(this.user?.id) ===
+								parseInt(this.userId)
 							"
 							class="dropdown position-absolute top-0 end-0 p-2"
 						>
@@ -475,10 +464,7 @@ export default {
 									<router-link
 										:to="{
 											name: 'MyAccount',
-											params: {
-												username: comment.username,
-												userId: this.userId,
-											},
+											params: { username: username },
 										}"
 										style="
 											text-decoration: none;

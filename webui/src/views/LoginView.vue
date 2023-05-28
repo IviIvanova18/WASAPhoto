@@ -22,14 +22,12 @@ export default {
 				this.profile = response.data;
 				localStorage.setItem("token", this.profile.id);
 				localStorage.setItem("username", this.profile.username);
-				const userId = response.data.id;
-				const username = response.data.username;
+				// const userId = response.data.id;
+				// const username = response.data.username;
 				await this.$router.push({
 					name: "MyAccount",
-					params: {
-						userId: this.profile.id,
-						username: this.username,
-					},
+					params: { username: this.username },
+
 				});
 			} catch (e) {
 				this.errormsg = e.toString();

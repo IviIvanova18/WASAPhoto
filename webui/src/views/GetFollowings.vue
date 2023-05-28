@@ -36,7 +36,7 @@ export default {
 		async gotoAccount(id, username) {
 			this.$router.push({
 				name: "MyAccount",
-				params: { userId: id, username: username },
+				params: { username: username },
 			});
 		},
 	},

@@ -7,6 +7,8 @@ export default {
 			errormsg: null,
 			loading: false,
 			photo: null,
+			userId: localStorage.getItem("token"),
+			username: localStorage.getItem("username"),
 		};
 	},
 	methods: {
@@ -21,12 +23,11 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let userId = this.$route.params.userId;
 				let fileInput = document.getElementById("photo");
 				let file = fileInput.files[0];
 				let path = file.name;
 				await this.$axios.post(
-					`/users/${userId}/photos/`,
+					`/users/${this.userId}/photos/`,
 					{
 						path: path,
 					},
@@ -38,8 +39,8 @@ export default {
 					}
 				);
 				this.$router.push({
-					name: "Stream",
-					params: { userId: userId },
+					name: "MyAccount",
+					params: { username: this.username },
 				});
 			} catch (e) {
 				this.errormsg = e.toString();

@@ -5,7 +5,7 @@ export default {
 			errormsg: null,
 			loading: false,
 			username: null,
-			userId: this.$route.params.userId,
+			userId: localStorage.getItem("token"),
 		};
 	},
 	methods: {
@@ -29,7 +29,7 @@ export default {
 
 				this.$router.push({
 					name: "MyAccount",
-					params: { userId: this.userId, username: this.username },
+					params: { username: this.username },
 				});
 			} catch (e) {
 				if (e.response.status == 404) {
