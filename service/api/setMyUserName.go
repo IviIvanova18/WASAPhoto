@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 
-	// "fmt"
 	"net/http"
 	"strconv"
 
@@ -19,10 +19,11 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	// Getting the error, no Authorization header
-	authHeader := r.Header.Get("Authorization")
-	if authHeader == "" {
-		http.Error(w, "Authorization header required", http.StatusUnauthorized)
+
+	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	token, _ := strconv.ParseUint(header[1], 10, 64)
+	if token != uid {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 

@@ -14,13 +14,13 @@ const router = createRouter({
 	history: createWebHashHistory(import.meta.env.BASE_URL),
 	routes: [
 		{ path: '/', component: Login, name: 'Login' },
-		{ path: '/users/:userId/stream', component: StreamView, name: 'Stream' },
-		{ path: '/users/:userId/photos', component: UploadPhoto, name: 'UploadPhoto' },
-		{ path: '/users/:userId/profile/:username', component: MyAccount, name: 'MyAccount'},
+		{ path: '/users/stream', component: StreamView, name: 'Stream' },
+		{ path: '/users/photos', component: UploadPhoto, name: 'UploadPhoto' },
+		{ path: '/users/profile/:username', component: MyAccount, name: 'MyAccount'},
 		{ path: '/users/:userId/followings/:username', component: Followings, name: 'Followings'},
 		{ path: '/users/:userId/followers/:username', component: Followers, name: 'Followers'},
-		{ path: '/:userId/search', component: SearchUser, name: 'SearchUser'},
-		{ path: '/users/:userId/', component: SetMyUsername, name: 'SetMyUsername'}
+		{ path: '/search', component: SearchUser, name: 'SearchUser'},
+		{ path: '/users/', component: SetMyUsername, name: 'SetMyUsername'}
 		
 	]
 })

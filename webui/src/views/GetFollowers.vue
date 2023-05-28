@@ -1,52 +1,61 @@
-  <script>
-    export default {
-      data: function() {
-        return {
-          errormsg: null,
-          loading: false,
-          followers: [],
-          userId: null,
-          username: null,
-        }
-      },
-      methods: {
-        load() {
-          return load
-        },
-        async refresh() {
-          this.loading = true;
-          this.errormsg = null;
-          try {
-            this.userId = this.$route.params.userId;
-            this.username = this.$route.params.username;
+<script>
+export default {
+	data: function () {
+		return {
+			errormsg: null,
+			loading: false,
+			followers: [],
+			userId: null,
+			username: null,
+		};
+	},
+	methods: {
+		load() {
+			return load;
+		},
+		async refresh() {
+			this.loading = true;
+			this.errormsg = null;
+			try {
+				this.userId = this.$route.params.userId;
+				this.username = this.$route.params.username;
 
-            let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
-            let response = await this.$axios.get(apiUrl);            
-            this.followers = response.data.followers; 
-                        
-          } catch (e) {
-            this.errormsg = e.toString();
-          }
-          this.loading = false;
-        },
-        async gotoAccount(id,username){
-          this.$router.push({ name: 'MyAccount', params: { userId: id, username: username} });
-        },
-        
-      },
-      
-      mounted() {
-        this.refresh()
-      }
-    }
-    </script>
+				let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
+				let response = await this.$axios.get(apiUrl, {
+					headers: {
+						Authorization:
+							"Bearer " + localStorage.getItem("token"),
+					},
+				});
+				this.followers = response.data.followers;
+			} catch (e) {
+				this.errormsg = e.toString();
+			}
+			this.loading = false;
+		},
+		async gotoAccount(id, username) {
+			this.$router.push({
+				name: "MyAccount",
+				params: { username: username },
+			});
+		},
+	},
 
-  
+	mounted() {
+		this.refresh();
+	},
+};
+</script>
+
 <template>
-	<div >
-			<h1>Followers list</h1>
+	<div>
+		<h1>Followers list</h1>
 
-		<ErrorMsg class="error-container" v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<ErrorMsg
+			class="error-container"
+			v-if="errormsg"
+			:msg="errormsg"
+		></ErrorMsg>
 
 		<LoadingSpinner v-if="loading"></LoadingSpinner>
 
@@ -57,8 +66,13 @@
 		</div>
 
 		<div v-if="!loading" v-for="f in followers">
-      <a href="javascript:" class="text-muted mb-1 larger-text" style="text-decoration: none;" @click="gotoAccount(this.userId,f)">{{f}}</a>
+			<a
+				href="javascript:"
+				class="text-muted mb-1 larger-text"
+				style="text-decoration: none"
+				@click="gotoAccount(this.userId, f)"
+				>{{ f }}</a
+			>
 		</div>
 	</div>
 </template>
-

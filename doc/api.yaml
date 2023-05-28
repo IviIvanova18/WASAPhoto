@@ -345,7 +345,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - bearerAuth: []
-  /photos/{photoId}/likes/:
+  users/{userId}/photos/{photoId}/likes/:
     parameters:
       - $ref: "#/components/parameters/UserID"
       - $ref: "#/components/parameters/PhotoID"

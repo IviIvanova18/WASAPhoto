@@ -3,12 +3,14 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -20,6 +22,13 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	photo.Likes = 0
 	photo.Comments = 0
 	photo.DateTime = time.Now()
+
+	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	token, _ := strconv.ParseUint(header[1], 10, 64)
+	if token != userID {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	dbPhoto, err := rt.db.UploadPhoto(photo.ToDatabase())
 	if errors.Is(err, database.ErrUserDoesNotExist) {
