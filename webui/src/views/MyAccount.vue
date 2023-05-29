@@ -44,6 +44,9 @@ export default {
 					}
 				);
 				let banned = response.data.bannedusers;
+				console.log(currentUser);
+				console.log(banned);
+				console.log(banned.includes(currentUser));
 				this.banTag = banned.includes(currentUser);
 				this.followTag = this.user.followers.includes(currentUser);
 
@@ -73,13 +76,13 @@ export default {
 						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
-				// if (e.response.status == 404) {
-				// 	this.errormsg = "You can not acces user" + this.username;
-				// } else if (e.response.status == 401) {
-				// 	this.$router.push({ name: "Login" });
-				// } else {
-				// 	this.errormsg = e.toString();
-				// }
+				if (e.response.status == 404) {
+					this.errormsg = "You can not acces user" + this.username;
+				} else if (e.response.status == 401) {
+					this.$router.push({ name: "Login" });
+				} else {
+					this.errormsg = e.toString();
+				}
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
