@@ -8,6 +8,7 @@ export default {
 			loading: false,
 			userId: localStorage.getItem("token"),
 			photos: [],
+			likes: {},
 			comments: {},
 			userLikes: {},
 			newComment: null,
@@ -44,7 +45,7 @@ export default {
 					);
 					this.comments[photo.id] = commentsResponse.data;
 					const likesResponse = await this.$axios.get(
-						`users/${this.userId}/photos/${photo.id}/likes/`,
+						`users/${photo.idUser}/photos/${photo.id}/likes/`,
 						{
 							headers: {
 								Authorization:
@@ -52,9 +53,10 @@ export default {
 							},
 						}
 					);
+					this.likes[photo.id] = likesResponse.data.length;
 					this.userLikes[photo.id] = likesResponse.data
 						.map((p) => p.idUser)
-						.includes(photo.idUser);
+						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
 				this.errormsg = e.toString();
@@ -212,7 +214,7 @@ export default {
 											'text-dark': !userLikes[photo.id],
 										}"
 										@click="
-											likePhoto(photo.id, photo.idUser)
+											likePhoto(photo.id, this.userId)
 										"
 									>
 										<svg class="feather">
@@ -221,7 +223,7 @@ export default {
 											/>
 										</svg>
 									</button>
-									{{ photo.likes }} likes
+									{{ this.likes[photo.id] }} likes
 								</div>
 								<div class="comments" v-if="comments[photo.id]">
 									{{ comments[photo.id].length }} comments

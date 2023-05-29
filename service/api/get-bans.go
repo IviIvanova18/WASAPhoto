@@ -1,7 +1,9 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,11 +21,11 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 	}
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	if token != userId {
+	err = rt.db.IsBanned(token, userId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
 	listBannedUsers, err := rt.db.GetAllBannedUsersDB(userId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't get listBannedUsers users")

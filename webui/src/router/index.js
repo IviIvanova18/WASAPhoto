@@ -4,6 +4,7 @@ import Login from '../views/LoginView.vue'
 import StreamView from '../views/StreamView.vue'
 import MyAccount from '../views/MyAccount.vue'
 import Followings from '../views/GetFollowings.vue'
+import Banned from '../views/GetBans.vue'
 import Followers from '../views/GetFollowers.vue'
 import UploadPhoto from '../views/UploadPhotoView.vue'
 import SearchUser from '../views/SearchUser.vue'
@@ -19,6 +20,7 @@ const router = createRouter({
 		{ path: '/users/profile/:username', component: MyAccount, name: 'MyAccount'},
 		{ path: '/users/:userId/followings/:username', component: Followings, name: 'Followings'},
 		{ path: '/users/:userId/followers/:username', component: Followers, name: 'Followers'},
+		{ path: '/users/:userId/banned', component: Banned, name: 'Banned'},
 		{ path: '/search', component: SearchUser, name: 'SearchUser'},
 		{ path: '/users/', component: SetMyUsername, name: 'SetMyUsername'}
 		
