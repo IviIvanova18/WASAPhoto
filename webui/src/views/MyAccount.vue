@@ -13,8 +13,8 @@ export default {
 			likes: {},
 			userLikes: {},
 			followTag: null,
-			banTag: true,
-			newComment: true,
+			banTag: null,
+			newComment: [],
 		};
 	},
 	methods: {
@@ -44,10 +44,8 @@ export default {
 					}
 				);
 				let banned = response.data.bannedusers;
-				console.log(banned);
 				this.banTag = banned.includes(currentUser);
 				this.followTag = this.user.followers.includes(currentUser);
-				console.log(this.banTag, this.followTag);
 
 				for (const photo of this.user.idPhotos) {
 					const commentsResponse = await this.$axios.get(
@@ -148,7 +146,7 @@ export default {
 					`/photos/${photoId}/comments/`,
 					{
 						idUser: parseInt(this.userId),
-						comment: this.newComment,
+						comment: this.newComment[photoId],
 					},
 					{
 						headers: {
@@ -159,7 +157,7 @@ export default {
 				);
 
 				await this.refresh();
-				this.newComment = "";
+				this.newComment[photoId] = "";
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -496,7 +494,7 @@ export default {
 								<div class="mt-3">
 									<input
 										type="text"
-										v-model="newComment"
+										v-model="newComment[photo]"
 										class="form-control"
 										placeholder="Add a comment..."
 										@keyup.enter="addComment(photo)"
