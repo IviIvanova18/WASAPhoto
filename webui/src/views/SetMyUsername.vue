@@ -26,7 +26,7 @@ export default {
 					}
 				);
 				const responseData = response.data;
-
+				localStorage.setItem("username", this.username);
 				this.$router.push({
 					name: "MyAccount",
 					params: { username: this.username },

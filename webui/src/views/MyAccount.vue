@@ -12,8 +12,8 @@ export default {
 			comments: {},
 			likes: {},
 			userLikes: {},
-			followTag: null,
-			banTag: null,
+			followTag: true,
+			banTag: true,
 			newComment: [],
 		};
 	},
@@ -34,8 +34,8 @@ export default {
 				});
 				this.user = response.data;
 				let currentUser = localStorage.getItem("username");
-				response = await this.$axios.get(
-					`/users/${this.userId}/banned/`,
+				let banResponse = await this.$axios.get(
+					`/users/${this.user?.id}/banned/`,
 					{
 						headers: {
 							Authorization:
@@ -43,11 +43,12 @@ export default {
 						},
 					}
 				);
-				let banned = response.data.bannedusers;
-				console.log(currentUser);
-				console.log(banned);
-				console.log(banned.includes(currentUser));
+				let banned = banResponse.data.bannedusers;
+				// console.log(currentUser);
+				// console.log("Banned");
+				// console.log(banned);
 				this.banTag = banned.includes(currentUser);
+				// console.log(this.banTag);
 				this.followTag = this.user.followers.includes(currentUser);
 
 				for (const photo of this.user.idPhotos) {
@@ -62,7 +63,7 @@ export default {
 					);
 					this.comments[photo] = commentsResponse.data;
 					const likesResponse = await this.$axios.get(
-						`users/${this.userId}/photos/${photo}/likes/`,
+						`users/${this.user.id}/photos/${photo}/likes/`,
 						{
 							headers: {
 								Authorization:
@@ -198,7 +199,6 @@ export default {
 					await this.$axios.put(
 						`/users/${id}/following/${followedUserId}/`,
 						{},
-
 						{
 							headers: {
 								Authorization:
@@ -242,7 +242,7 @@ export default {
 					);
 					this.banTag = true;
 				}
-				await this.refresh();
+				// await this.refresh();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -282,11 +282,50 @@ export default {
 		<div class="col-md-3 col-lg-2 empty-col"></div>
 		<div class="col-md-9 col-lg-10">
 			<div class="d-flex justify-content-center align-items-center h-70">
-				<div class="card2 bg-white text-dark rounded-5">
+				<div
+					class="card2 bg-white text-dark rounded-5 position-relative"
+				>
 					<div class="card-body p-5 text-center">
 						<h2 class="fw-bold mb-4 text-uppercase">
 							@{{ this.user?.username }}
 						</h2>
+						<div
+							v-if="
+								parseInt(this.user?.id) ===
+								parseInt(this.userId)
+							"
+							class="dropdown"
+							style="position: absolute; bottom: 0; right: 0"
+						>
+							<button
+								class="btn btn-secondary dropdown-toggle"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+							>
+								<svg class="feather">
+									<use
+										href="/feather-sprite-v4.29.0.svg#more-vertical"
+									/>
+								</svg>
+							</button>
+							<ul
+								class="dropdown-menu"
+								aria-labelledby="dropdownMenuButton"
+							>
+								<li class="nav-item">
+									<RouterLink
+										:to="{
+											name: 'Banned',
+											params: { userId: this.userId },
+										}"
+										class="nav-link"
+									>
+										Banned Users
+									</RouterLink>
+								</li>
+							</ul>
+						</div>
 						<div class="info">
 							<div>
 								<a
@@ -437,7 +476,7 @@ export default {
 											'text-danger': userLikes[photo],
 											'text-dark': !userLikes[photo],
 										}"
-										@click="likePhoto(photo, this.user?.id)"
+										@click="likePhoto(photo, this.userId)"
 									>
 										<svg class="feather">
 											<use
