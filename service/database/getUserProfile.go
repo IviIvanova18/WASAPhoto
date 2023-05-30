@@ -2,13 +2,13 @@ package database
 
 func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 	// var user User
-	err := db.c.QueryRow(`SELECT idUser, username, photosCount FROM users WHERE users.username = ?`, user.Username).Scan(&user.IDUser, &user.Username, &user.PhotosCount)
+	err := db.c.QueryRow(`SELECT idUser, username, photosCount FROM users WHERE users.username = ?`, user.Username).Scan(&user.UserID, &user.Username, &user.PhotosCount)
 	if err != nil {
 		return user, err
 	}
 
 	// Get Followers
-	followers, err := db.GetFollowersById(user.IDUser)
+	followers, err := db.GetFollowersById(user.UserID)
 	if err != nil {
 		return user, err
 	}
@@ -19,7 +19,7 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 	}
 
 	// Get followings
-	followings, err := db.GetFollowingsById(user.IDUser)
+	followings, err := db.GetFollowingsById(user.UserID)
 	if err != nil {
 		return user, err
 	}
@@ -30,7 +30,7 @@ func (db *appdbimpl) GetUserProfile(user User) (User, error) {
 	}
 
 	// Get Photos
-	photoIds, paths, err := db.GetPhotosById(user.IDUser)
+	photoIds, paths, err := db.GetPhotosById(user.UserID)
 	if err != nil {
 		return user, err
 	}

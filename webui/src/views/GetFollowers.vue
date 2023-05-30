@@ -58,10 +58,11 @@ export default {
 		></ErrorMsg>
 
 		<LoadingSpinner v-if="loading"></LoadingSpinner>
-
-		<div class="card" v-if="followers?.length === 0">
-			<div class="card-body">
-				<p>No followers in the database.</p>
+		<div v-if="followers?.length === 0">
+			<div class="card">
+				<div class="card-body">
+					<p>No followers in the database.</p>
+				</div>
 			</div>
 		</div>
 

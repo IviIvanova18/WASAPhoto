@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"strconv"
@@ -28,7 +29,8 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 	var idUser, _ = rt.db.GetIDByPhotoID(idPhoto)
-	if token != idUser {
+	err = rt.db.IsBanned(token, idUser)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}

@@ -45,7 +45,7 @@ export default {
 					);
 					this.comments[photo.id] = commentsResponse.data;
 					const likesResponse = await this.$axios.get(
-						`users/${photo.idUser}/photos/${photo.id}/likes/`,
+						`/photos/${photo.id}/likes/${photo.userId}/`,
 						{
 							headers: {
 								Authorization:
@@ -55,7 +55,7 @@ export default {
 					);
 					this.likes[photo.id] = likesResponse.data.length;
 					this.userLikes[photo.id] = likesResponse.data
-						.map((p) => p.idUser)
+						.map((p) => p.userId)
 						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
@@ -123,7 +123,7 @@ export default {
 				await this.$axios.post(
 					`/photos/${photoId}/comments/`,
 					{
-						idUser: parseInt(this.userId),
+						userId: parseInt(this.userId),
 						comment: this.newComment,
 					},
 					{
@@ -251,22 +251,28 @@ export default {
 										{{ comment.username }}
 									</router-link>
 									{{ comment.comment }}
-									<button
+									<div
 										v-if="
-											parseInt(comment.idUser) ===
+											parseInt(comment.userId) ===
 											parseInt(this.userId)
 										"
-										class="btn btn-link text-danger m1-auto"
-										@click="
-											deleteComment(photo.id, comment.id)
-										"
 									>
-										<svg class="feather">
-											<use
-												href="/feather-sprite-v4.29.0.svg#trash"
-											/>
-										</svg>
-									</button>
+										<button
+											class="btn btn-link text-danger m1-auto"
+											@click="
+												deleteComment(
+													photo.id,
+													comment.id
+												)
+											"
+										>
+											<svg class="feather">
+												<use
+													href="/feather-sprite-v4.29.0.svg#trash"
+												/>
+											</svg>
+										</button>
+									</div>
 								</div>
 								<div class="mt-3">
 									<input

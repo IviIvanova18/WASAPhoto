@@ -53,10 +53,9 @@ type AppDatabase interface {
 	ListUsers() ([]UserLogin, error)
 	GetUserProfile(user User) (User, error)
 
-
 	GetFollowersById(id uint64) ([]string, error)
 	GetFollowingsById(id uint64) ([]string, error)
-	GetPhotosById(id uint64) ([]uint64,[]string, error)
+	GetPhotosById(id uint64) ([]uint64, []string, error)
 
 	BanUser(idUser uint64, idBannedUser uint64) error
 	UnbanUser(idUser uint64, idBannedUser uint64) error
@@ -86,8 +85,6 @@ type AppDatabase interface {
 	UpdateCommentsPhoto(photoId uint64, count int64) error
 
 	GetStreamFollowing(user UserLogin) ([]Photo, error)
-	
-	
 
 	Ping() error
 }
@@ -152,7 +149,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}
 
-
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='comments';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE comments (
@@ -160,15 +156,14 @@ func New(db *sql.DB) (AppDatabase, error) {
 			idPhoto INTEGER NOT NULL,
 			idUser INTEGER NOT NULL,
 			commentText TEXT NOT NULL,
-			FOREIGN KEY (idPhoto) REFERENCES photos(idPhotos),
-			FOREIGN KEY (idUser) REFERENCES users(isUser)
+			FOREIGN KEY (idPhoto) REFERENCES photos(idPhoto),
+			FOREIGN KEY (idUser) REFERENCES users(idUser)
 			);`
 		_, err = db.Exec(sqlStmt)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure comments: %w", err)
 		}
 	}
-
 
 	err = db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='bannedUsers';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -212,43 +207,42 @@ func (db *appdbimpl) Ping() error {
 }
 
 type UserLogin struct {
-	ID  uint64
+	ID       uint64
 	Username string
 }
 
 type User struct {
-	IDUser     uint64
-	Username   string
-	PhotosCount  int
-	FollowersCount int 	
-	FollowingsCount int 
-	PhotosId[]uint64 
-	PhotosPath[]string	
-	Followers []string
-	Followings []string
-	
+	UserID          uint64
+	Username        string
+	PhotosCount     uint64
+	FollowersCount  uint64
+	FollowingsCount uint64
+	PhotosId        []uint64
+	PhotosPath      []string
+	Followers       []string
+	Followings      []string
 }
 
-type Photo struct{
-	IDPhoto uint64 	
-	IDUser uint64
-	Username string		
-	DateTime time.Time 	
-	Likes int 			
-	Comments uint64	
-	Path string		
-}
-
-type Comment struct{
-	IDComment uint64
-	IDUser uint64
+type Photo struct {
+	PhotoID  uint64
+	UserID   uint64
 	Username string
-	IDPhoto uint64
-	CommentText string 
+	DateTime time.Time
+	Likes    uint64
+	Comments uint64
+	Path     string
+}
+
+type Comment struct {
+	IDComment   uint64
+	UserID      uint64
+	Username    string
+	PhotoID     uint64
+	CommentText string
 }
 
 type Like struct {
-	ID     uint64 
-	IDUser uint64 
-	IDPhoto uint64
+	ID      uint64
+	UserID  uint64
+	PhotoID uint64
 }

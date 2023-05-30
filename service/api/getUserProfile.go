@@ -34,7 +34,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	user.FromDatabase(dbUser)
-	err = rt.db.IsBanned(user.IDUser, userID)
+	err = rt.db.IsBanned(user.UserID, userID)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("Can't find banned users")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -43,9 +43,9 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	user.FollowersCount = len(dbUser.Followers)
-	user.FollowingsCount = len(dbUser.Followings)
-	user.PhotosCount = len(dbUser.PhotosId)
+	user.FollowersCount = uint64(len(dbUser.Followers))
+	user.FollowingsCount = uint64(len(dbUser.Followings))
+	user.PhotosCount = uint64(len(dbUser.PhotosId))
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(user)

@@ -16,7 +16,7 @@ func (db *appdbimpl) GetCommentsOfImage(photoId uint64) ([]Comment, error) {
 
 	for rows.Next() {
 		var comment Comment
-		err = rows.Scan(&comment.Username, &comment.IDUser, &comment.CommentText, &comment.IDComment, &comment.IDPhoto)
+		err = rows.Scan(&comment.Username, &comment.UserID, &comment.CommentText, &comment.IDComment, &comment.PhotoID)
 		if err != nil {
 			return nil, err
 		}

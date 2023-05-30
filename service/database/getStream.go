@@ -10,7 +10,9 @@ func (db *appdbimpl) GetStreamFollowing(user UserLogin) ([]Photo, error) {
 		ON photos.idUser = followings.idFollowed
 		INNER JOIN users
 		ON users.idUser = photos.idUser
-		WHERE followings.idFollower = ?
+		LEFT JOIN bannedUsers
+		ON followings.idFollowed = bannedUsers.idUser AND followings.idFollower = bannedUsers.idBannedUser
+		WHERE followings.idFollower = ? AND bannedUsers.idUser IS NULL
 		ORDER BY photos.date DESC
 	`
 
@@ -22,7 +24,7 @@ func (db *appdbimpl) GetStreamFollowing(user UserLogin) ([]Photo, error) {
 
 	for rows.Next() {
 		var photo Photo
-		err = rows.Scan(&photo.IDPhoto, &photo.IDUser, &photo.Likes, &photo.Comments, &photo.DateTime, &photo.Username, &photo.Path)
+		err = rows.Scan(&photo.PhotoID, &photo.UserID, &photo.Likes, &photo.Comments, &photo.DateTime, &photo.Username, &photo.Path)
 		if err != nil {
 			return []Photo{}, err
 		}

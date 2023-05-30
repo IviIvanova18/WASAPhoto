@@ -39,7 +39,7 @@ Unban
 curl -X DELETE http://localhost:3000/users/2/banned/3/
 
 Comment
-curl -X POST http://localhost:3000/photos/2/comments/ -d '{"idUser":1,"comment":"AAArgbgbb"}'
+curl -X POST http://localhost:3000/photos/2/comments/ -d '{"userId":1,"comment":"AAArgbgbb"}'
 
 UnComment
 curl -X DELETE http://localhost:3000/photos/2/comments/10/

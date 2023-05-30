@@ -33,9 +33,9 @@ export default {
 					},
 				});
 				this.user = response.data;
-				let currentUser = localStorage.getItem("username");
+				let currentUser = this.user.username;
 				let banResponse = await this.$axios.get(
-					`/users/${this.user?.id}/banned/`,
+					`/users/${this.userId}/banned/`,
 					{
 						headers: {
 							Authorization:
@@ -44,14 +44,15 @@ export default {
 					}
 				);
 				let banned = banResponse.data.bannedusers;
-				// console.log(currentUser);
-				// console.log("Banned");
-				// console.log(banned);
+				console.log(currentUser);
+				console.log("Banned");
+				console.log(banned);
 				this.banTag = banned.includes(currentUser);
-				// console.log(this.banTag);
-				this.followTag = this.user.followers.includes(currentUser);
+				console.log(this.banTag);
+				let follower = localStorage.getItem("username");
+				this.followTag = this.user.followers.includes(follower);
 
-				for (const photo of this.user.idPhotos) {
+				for (const photo of this.user.photosId) {
 					const commentsResponse = await this.$axios.get(
 						`/photos/${photo}/comments/`,
 						{
@@ -63,7 +64,7 @@ export default {
 					);
 					this.comments[photo] = commentsResponse.data;
 					const likesResponse = await this.$axios.get(
-						`users/${this.user.id}/photos/${photo}/likes/`,
+						`/photos/${photo}/likes/${this.user.id}/`,
 						{
 							headers: {
 								Authorization:
@@ -73,7 +74,7 @@ export default {
 					);
 					this.likes[photo] = likesResponse.data.length;
 					this.userLikes[photo] = likesResponse.data
-						.map((p) => p.idUser)
+						.map((p) => p.userId)
 						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
@@ -123,7 +124,7 @@ export default {
 			}
 			this.loading = false;
 		},
-		async deleteComment(photoId, commentId) {
+		async uncommentPhoto(photoId, commentId) {
 			this.loading = true;
 			this.errormsg = null;
 			try {
@@ -142,14 +143,14 @@ export default {
 			}
 			this.loading = false;
 		},
-		addComment: async function (photoId) {
+		commentPhoto: async function (photoId) {
 			this.loading = true;
 			this.errormsg = null;
 			try {
 				await this.$axios.post(
 					`/photos/${photoId}/comments/`,
 					{
-						idUser: parseInt(this.userId),
+						userId: parseInt(this.userId),
 						comment: this.newComment[photoId],
 					},
 					{
@@ -250,7 +251,7 @@ export default {
 		},
 		requirePhoto(idPhoto) {
 			return `../src/assets/images/${
-				this.user.photos[this.user.idPhotos.indexOf(idPhoto)]
+				this.user.photos[this.user.photosId.indexOf(idPhoto)]
 			}`;
 		},
 		async deletePhoto(photo) {
@@ -294,38 +295,42 @@ export default {
 								parseInt(this.user?.id) ===
 								parseInt(this.userId)
 							"
-							class="dropdown"
-							style="position: absolute; bottom: 0; right: 0"
 						>
-							<button
-								class="btn btn-secondary dropdown-toggle"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
+							<div
+								class="dropdown"
+								style="position: absolute; bottom: 0; right: 0"
 							>
-								<svg class="feather">
-									<use
-										href="/feather-sprite-v4.29.0.svg#more-vertical"
-									/>
-								</svg>
-							</button>
-							<ul
-								class="dropdown-menu"
-								aria-labelledby="dropdownMenuButton"
-							>
-								<li class="nav-item">
-									<RouterLink
-										:to="{
-											name: 'Banned',
-											params: { userId: this.userId },
-										}"
-										class="nav-link"
-									>
-										Banned Users
-									</RouterLink>
-								</li>
-							</ul>
+								<button
+									class="btn btn-secondary dropdown-toggle"
+									type="button"
+									data-bs-toggle="dropdown"
+									aria-expanded="false"
+								>
+									<svg class="feather">
+										<use
+											href="/feather-sprite-v4.29.0.svg#more-vertical"
+										/>
+									</svg>
+								</button>
+								<ul
+									class="dropdown-menu"
+									aria-labelledby="dropdownMenuButton"
+								>
+									<li class="nav-item">
+										<RouterLink
+											:to="{
+												name: 'Banned',
+												params: { userId: this.userId },
+											}"
+											class="nav-link"
+										>
+											Banned Users
+										</RouterLink>
+									</li>
+								</ul>
+							</div>
 						</div>
+
 						<div class="info">
 							<div>
 								<a
@@ -375,25 +380,28 @@ export default {
 								parseInt(this.user?.id) !==
 								parseInt(this.userId)
 							"
-							class="gap-3"
 						>
-							<button
-								class="btn btn-primary btn-block rounded-pill larger-text"
-								type="submit"
-								@click="banUser(this.userId, this.user?.id)"
-								style="background-color: #d10606f5"
-							>
-								{{ this.banTag ? "Unban" : "Ban" }}
-							</button>
-							<button
-								class="btn btn-primary btn-block rounded-pill larger-text"
-								type="submit"
-								@click="followUser(this.userId, this.user?.id)"
-								style="background-color: #2e4a78"
-							>
-								{{ this.followTag ? "Unfollow" : "Follow" }}
-							</button>
-							<LoadingSpinner v-if="loading" />
+							<div class="gap-3">
+								<button
+									class="btn btn-primary btn-block rounded-pill larger-text"
+									type="submit"
+									@click="banUser(this.userId, this.user?.id)"
+									style="background-color: #d10606f5"
+								>
+									{{ this.banTag ? "Unban" : "Ban" }}
+								</button>
+								<button
+									class="btn btn-primary btn-block rounded-pill larger-text"
+									type="submit"
+									@click="
+										followUser(this.userId, this.user?.id)
+									"
+									style="background-color: #2e4a78"
+								>
+									{{ this.followTag ? "Unfollow" : "Follow" }}
+								</button>
+								<LoadingSpinner v-if="loading" />
+							</div>
 						</div>
 					</div>
 				</div>
@@ -425,7 +433,7 @@ export default {
 			>
 				<div
 					class="col-9 col-sm-6 col-md-4 col-lg-3 mb-5"
-					v-for="photo in this.user?.idPhotos"
+					v-for="photo in this.user?.photosId"
 					:key="photo.id"
 				>
 					<div
@@ -436,34 +444,38 @@ export default {
 								parseInt(this.user?.id) ===
 								parseInt(this.userId)
 							"
-							class="dropdown position-absolute top-0 end-0 p-2"
 						>
-							<button
-								class="btn btn-secondary dropdown-toggle"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
+							<div
+								class="dropdown position-absolute top-0 end-0 p-2"
 							>
-								<svg class="feather">
-									<use
-										href="/feather-sprite-v4.29.0.svg#more-vertical"
-									/>
-								</svg>
-							</button>
-							<ul
-								class="dropdown-menu"
-								aria-labelledby="dropdownMenuButton"
-							>
-								<li>
-									<button
-										class="dropdown-item"
-										@click="deletePhoto(photo)"
-									>
-										Delete Photo
-									</button>
-								</li>
-							</ul>
+								<button
+									class="btn btn-secondary dropdown-toggle"
+									type="button"
+									data-bs-toggle="dropdown"
+									aria-expanded="false"
+								>
+									<svg class="feather">
+										<use
+											href="/feather-sprite-v4.29.0.svg#more-vertical"
+										/>
+									</svg>
+								</button>
+								<ul
+									class="dropdown-menu"
+									aria-labelledby="dropdownMenuButton"
+								>
+									<li>
+										<button
+											class="dropdown-item"
+											@click="deletePhoto(photo)"
+										>
+											Delete Photo
+										</button>
+									</li>
+								</ul>
+							</div>
 						</div>
+
 						<img :src="requirePhoto(photo)" class="photo-img" />
 						<div class="card-body">
 							<div
@@ -517,12 +529,12 @@ export default {
 									{{ comment.comment }}
 									<button
 										v-if="
-											parseInt(comment.idUser) ===
+											parseInt(comment.userId) ===
 											parseInt(this.userId)
 										"
 										class="btn btn-link text-danger m1-auto"
 										@click="
-											deleteComment(photo, comment.id)
+											uncommentPhoto(photo, comment.id)
 										"
 									>
 										<svg class="feather">
@@ -539,7 +551,7 @@ export default {
 										v-model="newComment[photo]"
 										class="form-control"
 										placeholder="Add a comment..."
-										@keyup.enter="addComment(photo)"
+										@keyup.enter="commentPhoto(photo)"
 									/>
 								</div>
 							</div>
