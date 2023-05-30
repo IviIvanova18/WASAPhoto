@@ -59,13 +59,15 @@ export default {
 
 		<LoadingSpinner v-if="loading"></LoadingSpinner>
 
-		<div class="card" v-if="banned?.length === 0">
-			<div class="card-body">
-				<p>No banned in the database.</p>
+		<div v-if="banned?.length === 0">
+			<div class="card">
+				<div class="card-body">
+					<p>No banned in the database.</p>
+				</div>
 			</div>
 		</div>
 
-		<div v-if="!loading" v-for="user in banned">
+		<div v-if="!loading" v-for="user in banned" :key="user">
 			<a
 				href="javascript:"
 				class="text-muted mb-1 larger-text"

@@ -17,18 +17,18 @@ type JSONErrorMsg struct {
 
 // Photo
 type Photo struct {
-	IDPhoto  uint64    `json:"id"`
-	IDUser   uint64    `json:"idUser"`
+	PhotoID  uint64    `json:"id"`
+	UserID   uint64    `json:"userId"`
 	Username string    `json:"username"`
 	DateTime time.Time `json:"DateTime"`
-	Likes    int       `json:"likes"`
+	Likes    uint64    `json:"likes"`
 	Comments uint64    `json:"comments"`
 	Path     string    `json:"path"`
 }
 
 func (p *Photo) FromDatabase(photo database.Photo) {
-	p.IDPhoto = photo.IDPhoto
-	p.IDUser = photo.IDUser
+	p.PhotoID = photo.PhotoID
+	p.UserID = photo.UserID
 	p.Username = photo.Username
 	p.DateTime = photo.DateTime
 	p.Likes = photo.Likes
@@ -38,8 +38,8 @@ func (p *Photo) FromDatabase(photo database.Photo) {
 
 func (p *Photo) ToDatabase() database.Photo {
 	return database.Photo{
-		IDPhoto:  p.IDPhoto,
-		IDUser:   p.IDUser,
+		PhotoID:  p.PhotoID,
+		UserID:   p.UserID,
 		Username: p.Username,
 		DateTime: p.DateTime,
 		Likes:    p.Likes,
@@ -50,12 +50,12 @@ func (p *Photo) ToDatabase() database.Photo {
 
 // User
 type User struct {
-	IDUser          uint64   `json:"id"`
+	UserID          uint64   `json:"id"`
 	Username        string   `json:"username"`
-	PhotosCount     int      `json:"photosCount"`
-	FollowersCount  int      `json:"followersCount"`
-	FollowingsCount int      `json:"followingCount"`
-	PhotosId        []uint64 `json:"idPhotos"`
+	PhotosCount     uint64   `json:"photosCount"`
+	FollowersCount  uint64   `json:"followersCount"`
+	FollowingsCount uint64   `json:"followingCount"`
+	PhotosId        []uint64 `json:"photosId"`
 	PhotosPath      []string `json:"photos"`
 	Followers       []string `json:"followers"`
 	Followings      []string `json:"followings"`
@@ -63,7 +63,7 @@ type User struct {
 
 func (user *User) ToDatabase() database.User {
 	return database.User{
-		IDUser:          user.IDUser,
+		UserID:          user.UserID,
 		Username:        user.Username,
 		PhotosCount:     user.PhotosCount,
 		FollowersCount:  user.FollowersCount,
@@ -75,7 +75,7 @@ func (user *User) ToDatabase() database.User {
 	}
 }
 func (u *User) FromDatabase(user database.User) {
-	u.IDUser = user.IDUser
+	u.UserID = user.UserID
 	u.Username = user.Username
 	u.PhotosCount = user.PhotosCount
 	u.Followers = user.Followers
@@ -91,27 +91,27 @@ func (u *User) FromDatabase(user database.User) {
 
 type Comment struct {
 	IDComment   uint64 `json:"id"`
-	IDUser      uint64 `json:"idUser"`
+	UserID      uint64 `json:"userId"`
 	Username    string `json:"username"`
-	IDPhoto     uint64 `json:"idPhoto"`
+	PhotoID     uint64 `json:"photoId"`
 	CommentText string `json:"comment"`
 }
 
 func (c *Comment) ToDatabase() database.Comment {
 	return database.Comment{
 		IDComment:   c.IDComment,
-		IDUser:      c.IDUser,
+		UserID:      c.UserID,
 		Username:    c.Username,
-		IDPhoto:     c.IDPhoto,
+		PhotoID:     c.PhotoID,
 		CommentText: c.CommentText,
 	}
 }
 
 func (c *Comment) FromDatabase(comment database.Comment) {
 	c.IDComment = comment.IDComment
-	c.IDUser = comment.IDUser
+	c.UserID = comment.UserID
 	c.Username = comment.Username
-	c.IDPhoto = comment.IDPhoto
+	c.PhotoID = comment.PhotoID
 	c.CommentText = comment.CommentText
 }
 
@@ -148,21 +148,21 @@ func (u *UserLogin) isValid() bool {
 // Like
 type Like struct {
 	ID      uint64 `json:"id"`
-	IDUser  uint64 `json:"idUser"`
-	IDPhoto uint64 `json:"idPhoto"`
+	UserID  uint64 `json:"userId"`
+	PhotoID uint64 `json:"photoId"`
 }
 
 func (u *Like) FromDatabase(user database.Like) {
 	u.ID = user.ID
-	u.IDUser = user.IDUser
-	u.IDPhoto = user.IDPhoto
+	u.UserID = user.UserID
+	u.PhotoID = user.PhotoID
 
 }
 
 func (u *Like) ToDatabase() database.Like {
 	return database.Like{
 		ID:      u.ID,
-		IDUser:  u.IDUser,
-		IDPhoto: u.IDPhoto,
+		UserID:  u.UserID,
+		PhotoID: u.PhotoID,
 	}
 }

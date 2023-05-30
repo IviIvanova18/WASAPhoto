@@ -45,7 +45,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	comment.IDPhoto = photoId
+	comment.PhotoID = photoId
 	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	err = rt.db.UpdateCommentsPhoto(comment.IDPhoto, 1)
+	err = rt.db.UpdateCommentsPhoto(comment.PhotoID, 1)
 	if err != nil && errors.Is(err, database.ErrPhotoDoesNotExists) {
 		w.WriteHeader(http.StatusNotFound)
 		return

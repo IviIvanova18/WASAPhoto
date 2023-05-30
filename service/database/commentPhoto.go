@@ -2,7 +2,7 @@ package database
 
 func (db *appdbimpl) CommentPhoto(comment Comment) (Comment, error) {
 	res, err := db.c.Exec(`INSERT INTO comments (id, idPhoto, idUser, commentText) VALUES (NULL, ?, ?, ?)`,
-		comment.IDPhoto, comment.IDUser, comment.CommentText)
+		comment.PhotoID, comment.UserID, comment.CommentText)
 
 	if err != nil {
 		return comment, err

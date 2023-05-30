@@ -11,7 +11,7 @@ func (db *appdbimpl) ListUsers() ([]UserLogin, error) {
 
 	for rows.Next() {
 		var f UserLogin
-		var photoCount int
+		var photoCount uint64
 		err = rows.Scan(&f.ID, &f.Username, &photoCount)
 		if err != nil {
 			return nil, err

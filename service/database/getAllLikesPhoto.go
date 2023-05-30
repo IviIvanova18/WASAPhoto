@@ -14,7 +14,7 @@ func (db *appdbimpl) GetAllLikesOfPhoto(photoId uint64) ([]Like, error) {
 
 	for rows.Next() {
 		var like Like
-		err = rows.Scan(&like.ID, &like.IDUser, &like.IDPhoto)
+		err = rows.Scan(&like.ID, &like.UserID, &like.PhotoID)
 		if err != nil {
 			return nil, err
 		}

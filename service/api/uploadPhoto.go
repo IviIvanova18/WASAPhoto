@@ -18,7 +18,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	err := json.NewDecoder(r.Body).Decode(&photo)
 	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 
-	photo.IDUser = userID
+	photo.UserID = userID
 	photo.Likes = 0
 	photo.Comments = 0
 	photo.DateTime = time.Now()

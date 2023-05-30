@@ -12,7 +12,6 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session/", rt.wrap(rt.doLogin))
 	rt.router.GET("/users/", rt.wrap(rt.listUsers))
 	rt.router.PUT("/users/:userId/", rt.wrap(rt.setMyUserName))
-	rt.router.GET("/users/:userId/", rt.wrap(rt.getMyUsername))
 
 	rt.router.GET("/users/:userId/stream/", rt.wrap(rt.getMyStream))
 	rt.router.GET("/users/:userId/profile/:username/", rt.wrap(rt.getUserProfile))
@@ -40,7 +39,7 @@ func (rt *_router) Handler() http.Handler {
 	// Likes
 	rt.router.PUT("/photos/:photoId/likes/:userId/", rt.wrap(rt.likePhoto))
 	rt.router.DELETE("/photos/:photoId/likes/:userId/", rt.wrap(rt.unlikePhoto))
-	rt.router.GET("/users/:userId/photos/:photoId/likes/", rt.wrap(rt.GetAllLikesPhoto))
+	rt.router.GET("/photos/:photoId/likes/:userId/", rt.wrap(rt.GetAllLikesPhoto))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
