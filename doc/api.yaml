@@ -21,18 +21,9 @@ components:
     InternalServerError:
       description: The server encountered an internal error. Further info in server logs.
   parameters:
-    photoId:
-      schema:
-        type: integer
-        example: 001
-        minimum: 0
-        readOnly: true
-      name: photoId
-      in: path
-      required: true
-      description: The unique photo identifier
     userId:
       schema:
+        description: userId schema
         type: integer
         example: 32
         minimum: 0
@@ -41,79 +32,80 @@ components:
       in: path
       required: true
       description: The unique user identifier
+    photoId:
+      schema:
+        description: photoId schema
+        type: integer
+        example: 2
+        minimum: 0
+        readOnly: true
+      name: photoId
+      in: path
+      required: true
+      description: The unique photo identifier
     username:
       name: username
       required: true
       description: The username of the user posted the photo
       in: path
       schema:
+        description: username schema
         type: string
         example: "Alice"
         pattern: "ˆ.*?$"
         minLength: 3
         maxLength: 20
-    Sort:
+    followedUserId:
+      name: followedUserId
+      in: path
+      required: true
+      description: The unique followed User identifier
       schema:
-        type: string
-        pattern: "ˆ.*?$"
-        enum: ["date", "asc", "desc"]
-        example: date
-        minLength: 3
-        maxLength: 15
-      name: sort
-      description: The way to sort the results
-      in: query
-      required: false
+        description: followedUserId schema
+        type: integer
+        example: 4
+        minimum: 0
+        readOnly: true
+    bannedUserId:
+      name: bannedUserId
+      in: path
+      required: true
+      description: The unique banned User identifier
+      schema:
+        description: bannedUserId schema
+        type: integer
+        example: 3
+        minimum: 0
+        readOnly: true
+    commentId:
+      name: commentId
+      in: path
+      required: true
+      description: The unique comment identifier
+      schema:
+        description: commentId schema
+        type: integer
+        example: 1
+        minimum: 0
+        readOnly: true
   schemas:
-    DateTime:
-      description: The date and time when the photo was uploaded
-      type: string
-      format: date
-      example: 2022-01-01
-    likes:
-      description: The number of likes each photo has
-      type: integer
-      example: 32
-      minimum: 0
-    comments:
-      description: The number of all comments of the user
-      type: integer
-      example: 12
-      minimum: 0
-    path:
-      description: The url path of the photo
-      type: string
-      pattern: "ˆ.*?$"
-      minLength: 1
-      maxLength: 200
-    photo:
-      title: Photo
-      description: This object represents a single photo
-      type: object
-      properties:
-        id:
-          $ref: "#/components/parameters/photoId"
-        username:
-          $ref: "#/components/parameters/username"
-        userId:
-          $ref: "#/components/parameters/userId"
-        DateTime:
-          $ref: "#/components/schemas/DateTime"
-        likes:
-          $ref: "#/components/schemas/likes"
-        comments:
-          $ref: "#/components/schemas/comments"
-        path:
-          $ref: "#/components/schemas/path"
     user:
       title: User
       description: This object represents a user
       type: object
       properties:
         id:
-          $ref: "#/components/parameters/userId"
+          description: The unique user identifier
+          type: integer
+          example: 1
+          minimum: 0
         username:
-          $ref: "#/components/parameters/username"
+          description: The username of the user posted the photo
+          type: string
+          example: "Alice"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 20
         photosCount:
           description: The total number of uploaded photos by this user
           type: integer
@@ -140,6 +132,123 @@ components:
         photosPath:
           description: List of paths of photos that the user uploaded.
           type: object
+    userLogin:
+      title: UserLogin
+      description: Login schema.
+      type: object
+      properties:
+        id:
+          description: The user comment identifier
+          type: integer
+          example: 3
+          minimum: 0
+        username:
+          description: user
+          type: string
+          example: Alice
+          pattern: "^.*?$"
+          minLength: 3
+          maxLength: 20
+    comment:
+      title: Comment
+      description: The comments of the photo
+      type: object
+      properties:
+        id:
+          description: The unique comment identifier
+          type: integer
+          example: 2
+          minimum: 0
+        userId:
+          description: The unique user identifier
+          type: integer
+          example: 3
+          minimum: 0
+        username:
+          description: The username of the user posted the photo
+          type: string
+          example: "Alice"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 20
+        photoId:
+          description: The photo user identifier
+          type: integer
+          example: 32
+          minimum: 0
+        comment:
+          description: The text of the comment
+          type: string
+          example: "Cool photo!"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 9999
+    photo:
+      title: Photo
+      description: This object represents a single photo
+      type: object
+      properties:
+        id:
+          description: The unique photo identifier
+          type: integer
+          example: 2
+          minimum: 0
+        username:
+          description: The username of the user posted the photo
+          type: string
+          example: "Alice"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 20
+        userId:
+          description: The unique user identifier
+          type: integer
+          example: 6
+          minimum: 0
+        DateTime:
+          description: Date when the user posted the photo
+          type: string
+          format: date-time
+          example: "2022-30-05T10:30:00Z"
+          minLength: 3
+          maxLength: 9999
+        likes:
+          description: Number of likes of the current photo
+          type: integer
+          example: 32
+          minimum: 0
+        comments:
+          description: Number of comments of the current photo
+          type: integer
+          example: 5
+          minimum: 0
+        path:
+          description: The url of the photo
+          type: string
+          example: "dog.jpeg"
+          pattern: "ˆ.*?$"
+          minLength: 1
+          maxLength: 9999
+    like:
+      title: Like
+      description: The likes of each photo
+      type: object
+      properties:
+        id:
+          description: The unique like identifier
+          type: integer
+          example: 2
+          minimum: 0
+        userId:
+          description: The unique user identifier
+          type: integer
+          example: 3
+          minimum: 0
+        photoId:
+          description: The photo user identifier
+          type: integer
+          example: 1
+          minimum: 0
   securitySchemes:
     bearerAuth:
       type: http
@@ -147,8 +256,6 @@ components:
 
 paths:
   /users/:
-    parameters:
-      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["User"]
       operationId: listUsers
@@ -183,13 +290,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/user"
+              $ref: "#/components/schemas/userLogin"
       responses:
         200:
           description: The user's username was updated
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/user" }
+              schema: { $ref: "#/components/schemas/userLogin" }
         400: { $ref: "#/components/responses/BadRequest" }
         404:
           description: User not found
@@ -198,14 +305,14 @@ paths:
       security:
         - bearerAuth: []
   /users/{userId}/profile/{username}/:
+    parameters:
+      - $ref: "#/components/parameters/userId"
+      - $ref: "#/components/parameters/username"
     get:
       tags: ["User"]
       operationId: getUserProfile
       summary: Get a specific user by ID
       description: Returns the user
-      parameters:
-        - $ref: "#/components/parameters/userId"
-        - $ref: "#/components/parameters/username"
       responses:
         200:
           description: The user is returned
@@ -213,8 +320,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/user" }
         400: { $ref: "#/components/responses/BadRequest" }
-        404:
-          description: User not found
+        404: { description: User not found }
         500: { $ref: "#/components/responses/InternalServerError" }
         401: { $ref: "#/components/responses/Unauthorized" }
       security:
@@ -222,7 +328,6 @@ paths:
   /users/{userId}/followings/:
     parameters:
       - $ref: "#/components/parameters/userId"
-      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["User"]
       summary: All the users that the current user is following
@@ -247,13 +352,7 @@ paths:
   /users/{userId}/followings/{followedUserId}/:
     parameters:
       - $ref: "#/components/parameters/userId"
-      - name: followedUserId
-        description: The id of the user to unfollow.
-        in: path
-        required: true
-        schema:
-          type: integer
-          example: 2
+      - $ref: "#/components/parameters/followedUserId"
     delete:
       tags: ["User"]
       operationId: unfollowUser
@@ -328,13 +427,7 @@ paths:
   /users/{userId}/banned/{bannedUserId}/:
     parameters:
       - $ref: "#/components/parameters/userId"
-      - name: bannedUserId
-        description: The id of the user to unban.
-        in: path
-        required: true
-        schema:
-          type: integer
-          example: 2
+      - $ref: "#/components/parameters/bannedUserId"
     delete:
       tags: ["User"]
       operationId: unbanUser
@@ -377,7 +470,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/user"
+                  $ref: "#/components/schemas/like"
                   minItems: 0
                   maxItems: 1000
         400: { $ref: "#/components/responses/BadRequest" }
@@ -431,7 +524,6 @@ paths:
   /photos/{photoId}/comments/:
     parameters:
       - $ref: "#/components/parameters/photoId"
-      - $ref: "#/components/parameters/Sort"
     get:
       tags: ["Photo"]
       operationId: getComments
@@ -444,7 +536,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/comments" }
+                items: { $ref: "#/components/schemas/comment" }
                 minItems: 0
                 maxItems: 200
         400: { $ref: "#/components/responses/BadRequest" }
@@ -477,7 +569,7 @@ paths:
           description: "The comment was added."
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/comments" }
+              schema: { $ref: "#/components/schemas/comment" }
         400: { $ref: "#/components/responses/BadRequest" }
         401: { $ref: "#/components/responses/Unauthorized" }
         500: { $ref: "#/components/responses/InternalServerError" }
@@ -486,19 +578,12 @@ paths:
   /photos/{photoId}/comments/{commentId}/:
     parameters:
       - $ref: "#/components/parameters/photoId"
+      - $ref: "#/components/parameters/commentId"
     delete:
       tags: ["Photo"]
       operationId: uncommentPhoto
       summary: Delete a comment of a video
       description: Deletes a comment of a video if and only if the user is the autor of the comment
-      parameters:
-        - name: commentId
-          description: The id of the comment
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
       responses:
         204: { description: Comment deleted successfully }
         400: { $ref: "#/components/responses/BadRequest" }
