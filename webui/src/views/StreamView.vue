@@ -251,28 +251,23 @@ export default {
 										{{ comment.username }}
 									</router-link>
 									{{ comment.comment }}
-									<div
+
+									<button
 										v-if="
 											parseInt(comment.userId) ===
 											parseInt(this.userId)
 										"
+										class="btn btn-link text-danger m1-auto"
+										@click="
+											deleteComment(photo.id, comment.id)
+										"
 									>
-										<button
-											class="btn btn-link text-danger m1-auto"
-											@click="
-												deleteComment(
-													photo.id,
-													comment.id
-												)
-											"
-										>
-											<svg class="feather">
-												<use
-													href="/feather-sprite-v4.29.0.svg#trash"
-												/>
-											</svg>
-										</button>
-									</div>
+										<svg class="feather">
+											<use
+												href="/feather-sprite-v4.29.0.svg#trash"
+											/>
+										</svg>
+									</button>
 								</div>
 								<div class="mt-3">
 									<input
