@@ -44,11 +44,7 @@ export default {
 					}
 				);
 				let banned = banResponse.data.bannedusers;
-				console.log(currentUser);
-				console.log("Banned");
-				console.log(banned);
 				this.banTag = banned.includes(currentUser);
-				console.log(this.banTag);
 				let follower = localStorage.getItem("username");
 				this.followTag = this.user.followers.includes(follower);
 
@@ -78,10 +74,11 @@ export default {
 						.includes(parseInt(this.userId));
 				}
 			} catch (e) {
-				if (e.response.status == 404) {
-					this.errormsg = "You can not acces user" + this.username;
+				if (e.response.status == 401) {
+					this.errormsg = "You can not acces" + this.username;
 				} else if (e.response.status == 401) {
-					this.$router.push({ name: "Login" });
+					// this.$router.push({ name: "Login" });
+					this.errormsg = "User not found" + this.username;
 				} else {
 					this.errormsg = e.toString();
 				}
@@ -516,7 +513,9 @@ export default {
 									<router-link
 										:to="{
 											name: 'MyAccount',
-											params: { username: username },
+											params: {
+												username: comment.username,
+											},
 										}"
 										style="
 											text-decoration: none;

@@ -22,8 +22,11 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	err = rt.db.IsBanned(token, id)
+	err = rt.db.IsBanned(id, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -33,18 +36,12 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var photos []Photo
-	var photo Photo
 
-	for _, img := range photosDB {
-		photo.FromDatabase(img)
-		photos = append(photos, photo)
-	}
-
-	if len(photos) == 0 {
-		photos = []Photo{}
+	var frontendPhotos = make([]Photo, len(photosDB))
+	for idx := range photosDB {
+		frontendPhotos[idx].FromDatabase(photosDB[idx])
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(photos)
+	_ = json.NewEncoder(w).Encode(frontendPhotos)
 
 }

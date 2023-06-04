@@ -255,28 +255,6 @@ components:
       scheme: bearer
 
 paths:
-  /users/:
-    get:
-      tags: ["User"]
-      operationId: listUsers
-      summary: List all the users
-      description: Returns the list of users
-      responses:
-        200:
-          description: User/s found
-          content:
-            application/json:
-              schema:
-                description: The list of all the users
-                type: array
-                items: { $ref: "#/components/schemas/user" }
-                minItems: 0
-                maxItems: 1000
-        401: { $ref: "#/components/responses/Unauthorized" }
-        400: { $ref: "#/components/responses/BadRequest" }
-        500: { $ref: "#/components/responses/InternalServerError" }
-      security:
-        - bearerAuth: []
   /users/{userId}/:
     parameters:
       - $ref: "#/components/parameters/userId"

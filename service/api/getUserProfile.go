@@ -15,17 +15,13 @@ import (
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var user User
 	user.Username = ps.ByName("username")
-	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	return
+	// }
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	if token != userID {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
 	dbUser, err := rt.db.GetUserProfile(user.ToDatabase())
 	if err != nil {
@@ -34,13 +30,13 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	user.FromDatabase(dbUser)
-	err = rt.db.IsBanned(user.UserID, userID)
+
+	err = rt.db.IsBanned(user.UserID, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		ctx.Logger.WithError(err).Error("Can't find banned users")
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err == nil {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	user.FollowersCount = uint64(len(dbUser.Followers))

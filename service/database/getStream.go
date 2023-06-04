@@ -18,7 +18,7 @@ func (db *appdbimpl) GetStreamFollowing(user UserLogin) ([]Photo, error) {
 
 	rows, err := db.c.Query(query, user.ID)
 	if err != nil {
-		return []Photo{}, err
+		return nil, err
 	}
 	defer func() { _ = rows.Close() }()
 
@@ -26,14 +26,14 @@ func (db *appdbimpl) GetStreamFollowing(user UserLogin) ([]Photo, error) {
 		var photo Photo
 		err = rows.Scan(&photo.PhotoID, &photo.UserID, &photo.Likes, &photo.Comments, &photo.DateTime, &photo.Username, &photo.Path)
 		if err != nil {
-			return []Photo{}, err
+			return nil, err
 		}
 
 		photos = append(photos, photo)
 	}
 
 	if err = rows.Err(); err != nil {
-		return []Photo{}, err
+		return nil, err
 	}
 
 	return photos, nil
