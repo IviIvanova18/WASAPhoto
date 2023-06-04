@@ -14,7 +14,7 @@ import (
 )
 
 func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	uid, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
+	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -22,7 +22,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	if token != uid {
+	if token != userID {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -37,14 +37,14 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	updatedUsername.ID = uid
+	updatedUsername.ID = userID
 
 	err = rt.db.SetMyUserName(updatedUsername.ToDatabase())
 	if errors.Is(err, database.ErrUserDoesNotExist) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
-		ctx.Logger.WithError(err).WithField("id", uid).Error("can't update the user")
+		ctx.Logger.WithError(err).WithField("id", userID).Error("can't update the user")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

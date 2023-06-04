@@ -12,5 +12,4 @@ func (db *appdbimpl) SetMyUserName(u UserLogin) error {
 		return ErrUserDoesNotExist
 	}
 	return nil
-
 }

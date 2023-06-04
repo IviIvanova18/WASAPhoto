@@ -21,13 +21,16 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 	}
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	err = rt.db.IsBanned(token, userId)
+	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	listFollowedUsers, err := rt.db.GetFollowingsDB(userId)
+	listFollowedUsers, err := rt.db.GetFollowingsById(userId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't get listFollowedUsers users")
 		w.WriteHeader(http.StatusInternalServerError)

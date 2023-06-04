@@ -10,15 +10,14 @@ import (
 )
 
 func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	bannedId, err := strconv.ParseUint(ps.ByName("bannedUserId"), 10, 64)
 
+	bannedId, err := strconv.ParseUint(ps.ByName("bannedUserId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	userId, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

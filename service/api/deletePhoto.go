@@ -18,6 +18,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 	var idUser, _ = rt.db.GetIDByPhotoID(id)
@@ -25,6 +26,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+
 	err = rt.db.DeletePhoto(id)
 	if errors.Is(err, database.ErrPhotoDoesNotExists) {
 		w.WriteHeader(http.StatusNotFound)
@@ -48,8 +50,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var id_user, _ = rt.db.GetIDByPhotoID(id)
-	err = rt.db.UpdatePhotoCountUser(id_user, -1)
+
+	err = rt.db.UpdatePhotoCountUser(idUser, -1)
 	if err != nil && errors.Is(err, database.ErrUserDoesNotExist) {
 		w.WriteHeader(http.StatusNotFound)
 		return

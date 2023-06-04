@@ -21,13 +21,11 @@ func (rt *_router) listUsers(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// Before sending the list to the client we need to convert it to the "frontend" type
 	var frontendUsers = make([]UserLogin, len(users))
 	for idx := range users {
 		frontendUsers[idx].FromDatabase(users[idx])
 	}
 
-	// Send the list to the user.
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(frontendUsers)
 }

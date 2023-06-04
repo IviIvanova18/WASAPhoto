@@ -25,10 +25,11 @@ export default {
 					params: { username: this.otheruser },
 				});
 			} catch (e) {
-				if (e.response.status == 404) {
-					this.errormsg = "You can not acces user " + this.otheruser;
-				} else if (e.response.status == 401) {
-					this.$router.push({ name: "Login" });
+				if (e.response.status == 401) {
+					this.errormsg = "You can not acces " + this.otheruser;
+				} else if (e.response.status == 404) {
+					// this.$router.push({ name: "Login" });
+					this.errormsg = "User not found " + this.otheruser;
 				} else {
 					this.errormsg = e.toString();
 				}
