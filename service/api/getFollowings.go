@@ -36,9 +36,6 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	type FollwedUsers struct {
-		Followed []string `json:"followedusers"`
-	}
 
 	if len(listFollowedUsers) == 0 {
 		listFollowedUsers = []string{}

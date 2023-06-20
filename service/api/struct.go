@@ -6,9 +6,9 @@ import (
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 )
 
-type Identifier struct {
-	Id uint64 `json:"id"`
-}
+// type Identifier struct {
+// 	Id uint64 `json:"id"`
+// }
 
 // Error Message
 type JSONErrorMsg struct {
@@ -165,4 +165,23 @@ func (u *Like) ToDatabase() database.Like {
 		UserID:  u.UserID,
 		PhotoID: u.PhotoID,
 	}
+}
+
+type Ban struct {
+	BannedUser string `json:"bannedUser"`
+}
+
+func (b *Ban) FromDatabase(ban database.Ban) {
+	b.BannedUser = ban.BannedUser
+
+}
+
+func (b *Ban) ToDatabase() database.Ban {
+	return database.Ban{
+		BannedUser: b.BannedUser,
+	}
+}
+
+type FollwedUsers struct {
+	Followed []string `json:"followedusers"`
 }

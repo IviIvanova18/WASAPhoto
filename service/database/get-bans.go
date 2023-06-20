@@ -1,7 +1,7 @@
 package database
 
-func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]string, error) {
-	var banned []string
+func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]Ban, error) {
+	var banned []Ban
 
 	query := `
 		SELECT users.username
@@ -14,22 +14,18 @@ func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]string, error) {
 	rows, err := db.c.Query(query, uid)
 	defer func() { _ = rows.Close() }()
 
-	if err != nil {
-		return []string{}, err
-	}
-
 	for rows.Next() {
-		var username string
-		err = rows.Scan(&username)
+		var ban Ban
+		err = rows.Scan(&ban.BannedUser)
 		if err != nil {
-			return []string{}, err
+			return nil, err
 		}
 
-		banned = append(banned, username)
+		banned = append(banned, ban)
 	}
 
 	if err = rows.Err(); err != nil {
-		return []string{}, err
+		return nil, err
 	}
 	return banned, nil
 }

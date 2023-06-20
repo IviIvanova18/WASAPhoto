@@ -249,6 +249,36 @@ components:
           type: integer
           example: 1
           minimum: 0
+    ban:
+      title: Ban
+      description: Banned user
+      type: object
+      properties:
+        bannedUser: 
+          description: The username of the banned User
+          type: string
+          example: "Alice"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 20
+    followedUsers:
+      title: FollowedUsers
+      description: Followed user
+      type: object
+      properties:
+        Followed: 
+          description: The usernames of the followed users
+          type: array
+          items:
+            type: string
+            example: "Alice"
+            pattern: "ˆ.*?$"
+            minLength: 3
+            maxLength: 20
+          minItems: 0
+          maxItems: 1000
+
+          
   securitySchemes:
     bearerAuth:
       type: http
@@ -317,10 +347,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items: { $ref: "#/components/schemas/user" }
-                minItems: 0
-                maxItems: 1000
+                items: { $ref: "#/components/schemas/followedUsers" }
         400: { $ref: "#/components/responses/BadRequest" }
         500: { $ref: "#/components/responses/InternalServerError" }
         401: { $ref: "#/components/responses/Unauthorized" }
@@ -402,6 +429,30 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - bearerAuth: []
+  /users/{userId}/banned/:
+    parameters:
+      - $ref: "#/components/parameters/userId"
+    get:
+      tags: ["User"]
+      summary: All the users that the current user banned
+      description: Returns all users that the authenticated user have banned.
+      operationId: GetAllBannedUsers
+      responses:
+        200:
+          description: The banned users were returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ban" }
+                minItems: 0
+                maxItems: 1000
+        400: { $ref: "#/components/responses/BadRequest" }
+        500: { $ref: "#/components/responses/InternalServerError" }
+        401: { $ref: "#/components/responses/Unauthorized" }
+      security:
+        - bearerAuth: []
+    
   /users/{userId}/banned/{bannedUserId}/:
     parameters:
       - $ref: "#/components/parameters/userId"
@@ -431,6 +482,7 @@ paths:
         500: { $ref: "#/components/responses/InternalServerError" }
       security:
         - bearerAuth: []
+      
   /photos/{photoId}/likes/{userId}/:
     parameters:
       - $ref: "#/components/parameters/photoId"

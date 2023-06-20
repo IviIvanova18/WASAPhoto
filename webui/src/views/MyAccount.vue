@@ -43,8 +43,11 @@ export default {
 						},
 					}
 				);
-				let banned = banResponse.data.bannedusers;
-				this.banTag = banned.includes(currentUser);
+				let banned = banResponse.data;
+				this.banTag = banned
+					.map((p) => p.bannedUser)
+					.includes(currentUser);
+
 				let follower = localStorage.getItem("username");
 				this.followTag = this.user.followers.includes(follower);
 
@@ -426,7 +429,7 @@ export default {
 			</div>
 
 			<div
-				class="photo-grid d-flex justify-content-center align-items-center h-80"
+				class="photo-grid d-flex flex-wrap justify-content-center align-items-center h-80"
 			>
 				<div
 					class="col-9 col-sm-6 col-md-4 col-lg-3 mb-5"
