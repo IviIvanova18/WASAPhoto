@@ -27,7 +27,7 @@ export default {
 						},
 					}
 				);
-				this.banned = banResponse.data.bannedusers;
+				this.banned = banResponse.data;
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
@@ -72,8 +72,8 @@ export default {
 				href="javascript:"
 				class="text-muted mb-1 larger-text"
 				style="text-decoration: none"
-				@click="gotoAccount(this.userId, user)"
-				>{{ user }}</a
+				@click="gotoAccount(this.userId, user.bannedUser)"
+				>{{ user.bannedUser }}</a
 			>
 		</div>
 	</div>
