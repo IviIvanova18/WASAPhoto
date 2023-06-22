@@ -10,14 +10,14 @@ func (db *appdbimpl) ListUsers() ([]UserLogin, error) {
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {
-		var f UserLogin
+		var user UserLogin
 		var photoCount uint64
-		err = rows.Scan(&f.ID, &f.Username, &photoCount)
+		err = rows.Scan(&user.ID, &user.Username, &photoCount)
 		if err != nil {
 			return nil, err
 		}
 
-		ret = append(ret, f)
+		ret = append(ret, user)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err

@@ -19,7 +19,7 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, err := strconv.ParseUint(header[1], 10, 64)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse token")

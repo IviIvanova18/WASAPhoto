@@ -20,9 +20,9 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	var idUser, _ = rt.db.GetIDByPhotoID(photoId)
+	idUser, _ := rt.db.GetIDByPhotoID(photoId)
 	err = rt.db.IsBanned(idUser, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)
@@ -38,7 +38,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	var comments = make([]Comment, len(commentsDB))
+	comments := make([]Comment, len(commentsDB))
 	for idx := range commentsDB {
 		comments[idx].FromDatabase(commentsDB[idx])
 	}

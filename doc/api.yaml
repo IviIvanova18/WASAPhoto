@@ -176,12 +176,12 @@ components:
           type: integer
           example: 32
           minimum: 0
-        comment:
+        commentText:
           description: The text of the comment
           type: string
           example: "Cool photo!"
           pattern: "ˆ.*?$"
-          minLength: 3
+          minLength: 1
           maxLength: 9999
     photo:
       title: Photo
@@ -210,7 +210,7 @@ components:
           type: string
           format: date-time
           example: "2022-30-05T10:30:00Z"
-          minLength: 3
+          minLength: 1
           maxLength: 9999
         likes:
           description: Number of likes of the current photo
@@ -292,11 +292,19 @@ paths:
       summary: Update username
       description: The username of the user is updated with the specified one
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/userLogin"
+              type: object
+              properties:
+                username:
+                  example: AliceNew
+                  type: string
+                  pattern: "ˆ.*?$"
+                  minLength: 3
+                  maxLength: 20
+              required:
+                - username
       responses:
         "200":
           description: The user's username was updated
@@ -449,8 +457,6 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/ban" }
-                minItems: 0
-                maxItems: 1000
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
         "401": { $ref: "#/components/responses/Unauthorized" }
@@ -505,8 +511,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/like"
-                  minItems: 0
-                  maxItems: 1000
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
@@ -571,8 +575,6 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/comment" }
-                minItems: 0
-                maxItems: 200
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
@@ -591,13 +593,15 @@ paths:
             schema:
               type: object
               properties:
-                text:
+                commentText:
                   description: The content of the comment
                   example: Such a cool photo! :)
                   type: string
                   pattern: "ˆ.*?$"
                   minLength: 1
-                  maxLength: 200
+                  maxLength: 9999
+              required:
+                - commentText
       responses:
         "201":
           description: "The comment was added."

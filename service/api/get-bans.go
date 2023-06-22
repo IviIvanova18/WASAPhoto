@@ -20,8 +20,12 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	header := strings.Split(r.Header.Get("Authorization"), " ")
+	token, err := strconv.ParseUint(header[1], 10, 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)

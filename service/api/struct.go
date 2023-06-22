@@ -113,7 +113,7 @@ func (c *Comment) FromDatabase(comment database.Comment) {
 
 func (c *Comment) isValid() bool {
 	length := len([]rune(c.CommentText))
-	return 1 <= length && length <= 200
+	return 1 <= length && length <= 9999
 }
 
 // UserLogin
