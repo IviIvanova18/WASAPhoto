@@ -20,7 +20,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 	if token != userID {
 		w.WriteHeader(http.StatusUnauthorized)

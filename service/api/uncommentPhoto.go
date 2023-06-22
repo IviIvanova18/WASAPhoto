@@ -26,9 +26,9 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
-	var idUser, _ = rt.db.GetIDByPhotoID(idPhoto)
+	idUser, _ := rt.db.GetIDByPhotoID(idPhoto)
 	err = rt.db.IsBanned(idUser, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)

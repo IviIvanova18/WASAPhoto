@@ -19,7 +19,7 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 	if token != idUser {
 		w.WriteHeader(http.StatusUnauthorized)

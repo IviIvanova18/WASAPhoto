@@ -20,7 +20,7 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var header = strings.Split(r.Header.Get("Authorization"), " ")
+	header := strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 	err = rt.db.IsBanned(id, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
@@ -37,7 +37,7 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	var frontendPhotos = make([]Photo, len(photosDB))
+	frontendPhotos := make([]Photo, len(photosDB))
 	for idx := range photosDB {
 		frontendPhotos[idx].FromDatabase(photosDB[idx])
 	}
