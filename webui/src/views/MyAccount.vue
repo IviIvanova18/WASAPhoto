@@ -25,7 +25,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
+				let apiUrl = `/profile/${this.username}/`;
 				let response = await this.$axios.get(apiUrl, {
 					headers: {
 						Authorization:

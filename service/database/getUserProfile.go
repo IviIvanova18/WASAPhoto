@@ -1,8 +1,8 @@
 package database
 
-func (db *appdbimpl) GetUserProfile(user User) (User, error) {
-	// var user User
-	err := db.c.QueryRow(`SELECT idUser, username, photosCount FROM users WHERE users.username = ?`, user.Username).Scan(&user.UserID, &user.Username, &user.PhotosCount)
+func (db *appdbimpl) GetUserProfile(username string) (User, error) {
+	var user User
+	err := db.c.QueryRow(`SELECT idUser, username, photosCount FROM users WHERE users.username = ?`, username).Scan(&user.UserID, &user.Username, &user.PhotosCount)
 	if err != nil {
 		return user, err
 	}

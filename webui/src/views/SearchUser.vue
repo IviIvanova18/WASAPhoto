@@ -13,7 +13,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let url = `/users/${this.userId}/profile/${this.otheruser}/`;
+				let url = `/profile/${this.otheruser}/`;
 				let response = await this.$axios.get(url, {
 					headers: {
 						Authorization:

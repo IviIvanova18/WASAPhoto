@@ -47,9 +47,9 @@ type AppDatabase interface {
 	CreateUser(userLogin UserLogin) (UserLogin, error) //.
 	SetMyUserName(user UserLogin) error                //.
 
-	GetIDByPhotoID(id uint64) (uint64, error) //.
-	ListUsers() ([]UserLogin, error)          //.
-	GetUserProfile(user User) (User, error)   //.
+	GetIDByPhotoID(id uint64) (uint64, error)     //.
+	ListUsers() ([]UserLogin, error)              //.
+	GetUserProfile(username string) (User, error) //.
 
 	GetFollowersById(id uint64) ([]string, error)        //.
 	GetFollowingsById(id uint64) ([]string, error)       //.
