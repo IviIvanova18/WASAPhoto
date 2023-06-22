@@ -6,10 +6,6 @@ import (
 	"git.wasaphoto.ivi/wasaphoto/service/database"
 )
 
-// type Identifier struct {
-// 	Id uint64 `json:"id"`
-// }
-
 // Error Message
 type JSONErrorMsg struct {
 	Message string

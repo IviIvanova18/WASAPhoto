@@ -20,7 +20,12 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, err := strconv.ParseUint(header[1], 10, 64)
+	if err != nil {
+		ctx.Logger.WithError(err).Error("can't parse token")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)

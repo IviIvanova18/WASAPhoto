@@ -20,7 +20,7 @@ export default {
 				this.userId = this.$route.params.userId;
 				this.username = this.$route.params.username;
 
-				let apiUrl = `/users/${this.userId}/profile/${this.username}/`;
+				let apiUrl = `/profile/${this.username}/`;
 				let response = await this.$axios.get(apiUrl, {
 					headers: {
 						Authorization:

@@ -14,16 +14,11 @@ import (
 
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var user User
-	user.Username = ps.ByName("username")
-	// userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
+	var username = ps.ByName("username")
 	var header = strings.Split(r.Header.Get("Authorization"), " ")
 	token, _ := strconv.ParseUint(header[1], 10, 64)
 
-	dbUser, err := rt.db.GetUserProfile(user.ToDatabase())
+	dbUser, err := rt.db.GetUserProfile(username)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
