@@ -14,14 +14,15 @@ import (
 )
 
 func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
 	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
 	if token != userID {
 		w.WriteHeader(http.StatusUnauthorized)
 		return

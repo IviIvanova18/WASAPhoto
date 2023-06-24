@@ -41,6 +41,8 @@ var ErrUserDoesNotExist = errors.New("Error User does not exist!")
 var ErrPhotoDoesNotExists = errors.New("Error photo does not exist!")
 var ErrCommentNotFound = errors.New("Error comment does not exist!")
 var ErrLikeNotFound = errors.New("Error like does not exist!")
+var ErrBanDoesNotExist = errors.New("Error ban does not exist!")
+var ErrFollowDoesNotExist = errors.New("Error follow does not exist!")
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
@@ -48,7 +50,6 @@ type AppDatabase interface {
 	SetMyUserName(user UserLogin) error                //.
 
 	GetIDByPhotoID(id uint64) (uint64, error)     //.
-	ListUsers() ([]UserLogin, error)              //.
 	GetUserProfile(username string) (User, error) //.
 
 	GetFollowersById(id uint64) ([]string, error)        //.
@@ -62,9 +63,8 @@ type AppDatabase interface {
 	FollowUser(idFollowed uint64, idFollower uint64) error   //.
 	UnfollowUser(idFollowed uint64, idFollower uint64) error //.
 
-	UploadPhoto(photo Photo) (Photo, error) //.
-	DeletePhoto(id uint64) error            //.
-	GetPhoto(id uint64) (Photo, error)
+	UploadPhoto(photo Photo) (Photo, error)                //.
+	DeletePhoto(id uint64) error                           //.
 	DeleteLikes(idPhoto uint64) error                      //.
 	DeleteComments(idPhoto uint64) error                   //.
 	UpdateLikesPhoto(photoId uint64, count int64) error    //.

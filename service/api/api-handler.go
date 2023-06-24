@@ -10,7 +10,6 @@ func (rt *_router) Handler() http.Handler {
 
 	// USER
 	rt.router.POST("/session/", rt.wrap(rt.doLogin))
-	rt.router.GET("/users/", rt.wrap(rt.listUsers))
 	rt.router.PUT("/users/:userId/", rt.wrap(rt.setMyUserName))
 
 	rt.router.GET("/users/:userId/stream/", rt.wrap(rt.getMyStream))
@@ -29,7 +28,6 @@ func (rt *_router) Handler() http.Handler {
 	// Photo
 	rt.router.POST("/users/:userId/photos/", rt.wrap(rt.uploadPhoto))
 	rt.router.DELETE("/photos/:photoId/", rt.wrap(rt.deletePhoto))
-	rt.router.GET("/photos/:photoId/", rt.wrap(rt.GetPhoto))
 
 	// Comment
 	rt.router.POST("/photos/:photoId/comments/", rt.wrap(rt.commentPhoto))

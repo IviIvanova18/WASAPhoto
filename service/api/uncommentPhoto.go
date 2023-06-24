@@ -26,9 +26,11 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+
 	idUser, _ := rt.db.GetIDByPhotoID(idPhoto)
+
 	err = rt.db.IsBanned(idUser, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)
@@ -39,7 +41,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	err = rt.db.UncommentPhoto(idComment, idPhoto)
-	if errors.Is(database.ErrCommentNotFound, err) {
+	if errors.Is(err, database.ErrPhotoDoesNotExists) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

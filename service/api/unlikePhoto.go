@@ -19,8 +19,8 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
 	if token != idUser {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -44,7 +44,7 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	err = rt.db.UpdateLikesPhoto(idPhoto, -1)
-	if err != nil && errors.Is(err, database.ErrPhotoDoesNotExists) {
+	if err != nil && errors.Is(database.ErrLikeNotFound, err) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	} else if err != nil {

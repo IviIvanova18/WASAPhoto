@@ -17,7 +17,7 @@ const router = createRouter({
 		{ path: '/', component: Login, name: 'Login' },
 		{ path: '/users/stream', component: StreamView, name: 'Stream' },
 		{ path: '/users/photos', component: UploadPhoto, name: 'UploadPhoto' },
-		{ path: '/users/profile/:username', component: MyAccount, name: 'MyAccount'},
+		{ path: '/profile/:username', component: MyAccount, name: 'MyAccount'},
 		{ path: '/users/:userId/followings/:username', component: Followings, name: 'Followings'},
 		{ path: '/users/:userId/followers/:username', component: Followers, name: 'Followers'},
 		{ path: '/users/:userId/banned', component: Banned, name: 'Banned'},

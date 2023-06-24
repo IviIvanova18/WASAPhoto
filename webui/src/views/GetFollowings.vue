@@ -66,7 +66,7 @@ export default {
 			</div>
 		</div>
 
-		<div v-if="!loading" v-for="f in followings">
+		<div v-if="!loading" v-for="f in followings" :key="f">
 			<a
 				href="javascript:"
 				class="text-muted mb-1 larger-text"
