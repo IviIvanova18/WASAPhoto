@@ -13,19 +13,17 @@ import (
 )
 
 func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
 	userId, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse uint")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, err := strconv.ParseUint(header[1], 10, 64)
-	if err != nil {
-		ctx.Logger.WithError(err).Error("can't parse token")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+
 	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)

@@ -9,10 +9,13 @@ import (
 	"strings"
 
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	var listBannedUsers []database.Ban
 
 	userId, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
@@ -20,12 +23,10 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, err := strconv.ParseUint(header[1], 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+
 	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)
@@ -34,7 +35,8 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	listBannedUsers, err := rt.db.GetAllBannedUsersDB(userId)
+
+	listBannedUsers, err = rt.db.GetAllBannedUsersDB(userId)
 
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't get listBannedUsers users")

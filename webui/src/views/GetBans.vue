@@ -67,7 +67,7 @@ export default {
 			</div>
 		</div>
 
-		<div v-if="!loading" v-for="user in banned" :key="user">
+		<div v-if="!loading" v-for="user in banned" :key="user.id">
 			<a
 				href="javascript:"
 				class="text-muted mb-1 larger-text"

@@ -20,8 +20,8 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
 	err = rt.db.IsBanned(userId, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		w.WriteHeader(http.StatusNotFound)
@@ -38,7 +38,6 @@ func (rt *_router) likePhoto(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 
 	err = rt.db.LikePhoto(photoId, userId)
-
 	if err != nil {
 		ctx.Logger.WithError(err).Error("Photo cannot be liked")
 		w.WriteHeader(http.StatusInternalServerError)

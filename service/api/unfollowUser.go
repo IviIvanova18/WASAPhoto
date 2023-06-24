@@ -1,11 +1,13 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
+	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -17,8 +19,8 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
 	if token != idFollower {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -31,7 +33,10 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	err = rt.db.UnfollowUser(idFollowed, idFollower)
-	if err != nil {
+	if errors.Is(err, database.ErrFollowDoesNotExist) {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	} else if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

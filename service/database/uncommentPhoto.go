@@ -9,7 +9,9 @@ func (db *appdbimpl) UncommentPhoto(id uint64, idPhoto uint64) error {
 	}
 
 	rows, err := res.RowsAffected()
-	if rows == 0 {
+	if err != nil {
+		return err
+	} else if rows == 0 {
 		return ErrCommentNotFound
 	}
 	return err

@@ -243,7 +243,6 @@ export default {
 					);
 					this.banTag = true;
 				}
-				// await this.refresh();
 			} catch (e) {
 				this.errormsg = e.toString();
 			}

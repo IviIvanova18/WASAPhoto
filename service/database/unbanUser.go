@@ -6,9 +6,11 @@ func (db *appdbimpl) UnbanUser(idUser uint64, idBannedUser uint64) error {
 	if err != nil {
 		return err
 	}
-	_, err = res.RowsAffected()
+	rows, err := res.RowsAffected()
 	if err != nil {
 		return err
+	} else if rows == 0 {
+		return ErrBanDoesNotExist
 	}
 	return nil
 }

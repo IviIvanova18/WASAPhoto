@@ -321,7 +321,6 @@ paths:
         - bearerAuth: []
   /profile/{username}/:
     parameters:
-      - $ref: "#/components/parameters/userId"
       - $ref: "#/components/parameters/username"
     get:
       tags: ["User"]

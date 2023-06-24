@@ -19,8 +19,9 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	header := strings.Split(r.Header.Get("Authorization"), " ")
-	token, _ := strconv.ParseUint(header[1], 10, 64)
+	token, _ := strconv.ParseUint(strings.
+		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+
 	idUser, _ := rt.db.GetIDByPhotoID(id)
 	if token != idUser {
 		w.WriteHeader(http.StatusUnauthorized)
