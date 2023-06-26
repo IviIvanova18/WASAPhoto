@@ -9,12 +9,17 @@ import (
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	
 	var user UserLogin
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	} else if !user.isValid() {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	dbUser, err := rt.db.CreateUser(user.ToDatabase())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

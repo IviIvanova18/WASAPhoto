@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: WASAPhoto app backend REST APIs
+  description: WASAPhoto app backend REST APIs 
   title: WASAPhoto
   version: 1.0.0
 servers:
@@ -644,7 +644,7 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                username:
                   type: string
                   example: Alice
                   pattern: "ˆ.*?$"
