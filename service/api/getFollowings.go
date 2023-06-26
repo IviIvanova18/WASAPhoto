@@ -33,15 +33,12 @@ func (rt *_router) getFollowings(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
+	// var listFollowedUsers []string
 	listFollowedUsers, err := rt.db.GetFollowingsById(userId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't get listFollowedUsers users")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
-	}
-
-	if len(listFollowedUsers) == 0 {
-		listFollowedUsers = []string{}
 	}
 
 	w.Header().Set("Content-Type", "application/json")

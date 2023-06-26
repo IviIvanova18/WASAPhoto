@@ -35,6 +35,8 @@ func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps 
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+	
+	
 
 	listBannedUsers, err = rt.db.GetAllBannedUsersDB(userId)
 
