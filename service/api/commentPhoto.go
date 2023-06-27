@@ -34,8 +34,12 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	token, _ := strconv.ParseUint(strings.
+	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid authorization token", http.StatusBadRequest)
+		return
+	}
 
 	idUserPosted, err := rt.db.GetIDByPhotoID(photoId)
 	if err != nil {
@@ -43,12 +47,12 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	err = rt.db.IsBanned(idUserPosted, token)
+	isBanned, err := rt.db.IsBanned(idUserPosted, token)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, "User not found", http.StatusNotFound)
 		return
-	} else if err == nil {
-		w.WriteHeader(http.StatusUnauthorized)
+	} else if err == nil && isBanned {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 

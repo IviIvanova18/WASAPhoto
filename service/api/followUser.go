@@ -16,8 +16,12 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	token, _ := strconv.ParseUint(strings.
+	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid authorization token", http.StatusBadRequest)
+		return
+	}
 	if token != idUser {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
