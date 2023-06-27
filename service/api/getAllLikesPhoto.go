@@ -26,15 +26,19 @@ func (rt *_router) GetAllLikesPhoto(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 
-	token, _ := strconv.ParseUint(strings.
+	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
-
-	err = rt.db.IsBanned(userId, token)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		w.WriteHeader(http.StatusNotFound)
+	if err != nil {
+		http.Error(w, "Invalid authorization token", http.StatusBadRequest)
 		return
-	} else if err == nil {
-		w.WriteHeader(http.StatusUnauthorized)
+	}
+
+	isBanned, err := rt.db.IsBanned(userId, token)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	} else if err == nil && isBanned {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 

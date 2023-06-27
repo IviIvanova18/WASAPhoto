@@ -73,7 +73,7 @@ type AppDatabase interface {
 	CommentPhoto(comment Comment) (Comment, error)        //.
 	UncommentPhoto(id uint64, idPhoto uint64) error       //.
 	GetCommentsOfImage(photoId uint64) ([]Comment, error) //.
-	IsBanned(user uint64, banned uint64) error            //.
+	IsBanned(user uint64, banned uint64) (bool,error)            //.
 
 	LikePhoto(idImage uint64, idUser uint64) error     //.
 	UnlikePhoto(idImage uint64, idUser uint64) error   //.

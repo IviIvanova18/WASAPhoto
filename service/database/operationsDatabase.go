@@ -1,5 +1,7 @@
 package database
 
+import "database/sql"
+
 func (db *appdbimpl) GetIDByPhotoID(id uint64) (uint64, error) {
 	var idUser uint64
 	err := db.c.QueryRow(`SELECT idUser FROM photos WHERE idPhoto=?`, id).Scan(&idUser)
@@ -65,11 +67,20 @@ func (db *appdbimpl) UpdateLikesPhoto(photoId uint64, count int64) error {
 	return err
 
 }
-func (db *appdbimpl) IsBanned(user uint64, banned uint64) error {
+func (db *appdbimpl) IsBanned(user uint64, banned uint64) (bool, error) {
 
-	var id uint64
+	var id sql.NullInt64
+
 	err := db.c.QueryRow(`SELECT id FROM bannedUsers WHERE idUser=? AND idBannedUser=?`, user, banned).Scan(&id)
-	return err
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return id.Valid && id.Int64 != 0, nil
+
 }
 
 func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {

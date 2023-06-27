@@ -23,8 +23,12 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	photo.Comments = 0
 	photo.DateTime = time.Now()
 
-	token, _ := strconv.ParseUint(strings.
+	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid authorization token", http.StatusBadRequest)
+		return
+	}
 	if token != userID {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
