@@ -19,8 +19,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
-		rt.baseLogger.WithError(err).Warning("wrong JSON received")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	} else if !comment.isValid() {
 		rt.baseLogger.WithError(err).Warning("wrong user format received")
@@ -57,6 +56,8 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	comment.PhotoID = photoId
+	comment.UserID = token
+	
 	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
 	if err != nil {
 		ctx.Logger.WithError(err).Error("Comment cannot be uploaded")

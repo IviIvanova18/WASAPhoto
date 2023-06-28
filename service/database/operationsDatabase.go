@@ -17,10 +17,12 @@ func (db *appdbimpl) DeleteLikes(idPhoto uint64) error {
 		return err
 	}
 	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrUserDoesNotExist
+	if err != nil {
+		return err
+	} else if rows == 0 {
+		return nil
 	}
-	return err
+	return nil
 }
 
 func (db *appdbimpl) DeleteComments(idPhoto uint64) error {
@@ -31,10 +33,12 @@ func (db *appdbimpl) DeleteComments(idPhoto uint64) error {
 		return err
 	}
 	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrUserDoesNotExist
+	if err != nil {
+		return err
+	} else if rows == 0 {
+		return nil
 	}
-	return err
+	return nil
 }
 
 func (db *appdbimpl) UpdatePhotoCountUser(idUser uint64, count int64) error {
@@ -46,10 +50,12 @@ func (db *appdbimpl) UpdatePhotoCountUser(idUser uint64, count int64) error {
 		return err
 	}
 	rows, err := res.RowsAffected()
-	if rows == 0 {
+	if err != nil {
+		return err
+	} else if rows == 0 {
 		return ErrUserDoesNotExist
 	}
-	return err
+	return nil
 }
 
 func (db *appdbimpl) UpdateLikesPhoto(photoId uint64, count int64) error {
@@ -61,10 +67,12 @@ func (db *appdbimpl) UpdateLikesPhoto(photoId uint64, count int64) error {
 		return err
 	}
 	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrPhotoDoesNotExists
+	if err != nil {
+		return err
+	} else if rows == 0 {
+		return ErrUserDoesNotExist
 	}
-	return err
+	return nil
 
 }
 func (db *appdbimpl) IsBanned(user uint64, banned uint64) (bool, error) {
@@ -90,10 +98,12 @@ func (db *appdbimpl) UpdateCommentsPhoto(photoId uint64, count int64) error {
 		return err
 	}
 	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrPhotoDoesNotExists
+	if err != nil {
+		return err
+	} else if rows == 0 {
+		return ErrUserDoesNotExist
 	}
-	return err
+	return nil
 
 }
 
