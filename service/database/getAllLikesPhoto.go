@@ -10,6 +10,9 @@ func (db *appdbimpl) GetAllLikesOfPhoto(photoId uint64) ([]Like, error) {
 	`
 
 	rows, err := db.c.Query(query, photoId)
+	if err != nil {
+		return nil, err
+	}
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {

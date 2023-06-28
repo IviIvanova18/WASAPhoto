@@ -8,8 +8,10 @@ func (db *appdbimpl) UnlikePhoto(idPhoto uint64, idUser uint64) error {
 	}
 
 	rows, err := res.RowsAffected()
-	if rows == 0 {
-		return ErrLikeNotFound
+	if err != nil {
+		return err
+	} else if rows == 0 {
+		return ErrBanDoesNotExist
 	}
 	return err
 }

@@ -12,6 +12,9 @@ func (db *appdbimpl) GetCommentsOfImage(photoId uint64) ([]Comment, error) {
 	`
 
 	rows, err := db.c.Query(query, photoId)
+	if err != nil {
+		return nil, err
+	}
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {

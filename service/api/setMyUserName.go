@@ -2,14 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"strings"
 
 	"net/http"
 	"strconv"
 
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -41,15 +39,12 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	updatedUsername.ID = userID
 
 	err = rt.db.SetMyUserName(updatedUsername.ToDatabase())
-	if errors.Is(err, database.ErrUserDoesNotExist) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	} else if err != nil {
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(updatedUsername)
-
 }

@@ -9,7 +9,7 @@ func (db *appdbimpl) SetMyUserName(u UserLogin) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		return ErrUserDoesNotExist
+		return err
 	}
 	return nil
 }

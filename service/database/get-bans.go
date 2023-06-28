@@ -12,6 +12,9 @@ func (db *appdbimpl) GetAllBannedUsersDB(uid uint64) ([]Ban, error) {
 	`
 
 	rows, err := db.c.Query(query, uid)
+	if err != nil {
+		return nil, err
+	}
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {
