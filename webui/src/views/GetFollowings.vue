@@ -65,15 +65,16 @@ export default {
 				</div>
 			</div>
 		</div>
-
-		<div v-if="!loading" v-for="f in followings" :key="f">
-			<a
-				href="javascript:"
-				class="text-muted mb-1 larger-text"
-				style="text-decoration: none"
-				@click="gotoAccount(this.userId, f)"
-				>{{ f }}</a
-			>
+		<div v-if="!loading">
+			<div v-for="f in followings" :key="f">
+				<a
+					href="javascript:"
+					class="text-muted mb-1 larger-text"
+					style="text-decoration: none"
+					@click="gotoAccount(this.userId, f)"
+					>{{ f }}</a
+				>
+			</div>
 		</div>
 	</div>
 </template>

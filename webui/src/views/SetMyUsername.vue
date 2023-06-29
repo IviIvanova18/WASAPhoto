@@ -37,6 +37,8 @@ export default {
 				} else if (e.response.status == 409) {
 					this.errormsg =
 						"This username already exists " + this.username;
+				} else if (e.response.status == 400) {
+					this.errormsg = "Wrong format received " + this.username;
 				} else {
 					this.errormsg = e.toString();
 				}
