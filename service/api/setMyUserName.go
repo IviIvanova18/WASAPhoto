@@ -19,8 +19,12 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	token, _ := strconv.ParseUint(strings.
+	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid authorization token", http.StatusBadRequest)
+		return
+	}
 	if token != userID {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -40,7 +44,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 
 	err = rt.db.SetMyUserName(updatedUsername.ToDatabase())
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusConflict)
 		return
 	}
 

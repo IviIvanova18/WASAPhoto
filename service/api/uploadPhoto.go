@@ -2,14 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
+	// "fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"git.wasaphoto.ivi/wasaphoto/service/api/reqcontext"
-	"git.wasaphoto.ivi/wasaphoto/service/database"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -25,11 +24,13 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
+	username, _ := rt.db.GetUsernameByUserID(userID)
 	photo.UserID = userID
 	photo.Likes = 0
 	photo.Comments = 0
 	photo.DateTime = time.Now()
+	photo.Username = username
+	// fmt.Println(photo.Path)
 
 	token, err := strconv.ParseUint(strings.
 		Split(r.Header.Get("Authorization"), " ")[1], 10, 64)
@@ -43,16 +44,15 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	dbPhoto, err := rt.db.UploadPhoto(photo.ToDatabase())
-	if errors.Is(err, database.ErrUserDoesNotExist) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	} else if err != nil {
-		ctx.Logger.WithError(err).WithField("id", userID).Error("User is not found. Can't upload photo!")
+	if err != nil {
+		ctx.Logger.WithError(err).Error("Can't upload image")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	photo.FromDatabase(dbPhoto)
+	// fmt.Println(photo.Path, photo.Username, photo.DateTime)
+
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(photo)
 }

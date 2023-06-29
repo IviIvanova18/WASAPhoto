@@ -38,12 +38,14 @@ export default {
 						},
 					}
 				);
+				// console.log(this.photo.path);
 				this.$router.push({
 					name: "MyAccount",
 					params: { username: this.username },
 				});
 			} catch (e) {
-				this.errormsg = e.toString();
+				this.errormsg =
+					"Error uploading photo: " + e.response.data.message;
 			}
 			this.loading = false;
 		},
