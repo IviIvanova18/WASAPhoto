@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: WASAPhoto app backend REST APIs 
+  description: WASAPhoto app backend REST APIs
   title: WASAPhoto
   version: 1.0.0
 servers:
@@ -20,6 +20,8 @@ components:
       description: The request was not compliant with the documentation (eg.missing fields, etc).
     InternalServerError:
       description: The server encountered an internal error. Further info in server logs.
+    Conflict:
+      description: The server encountered a conflict with the current state of the target resource.
   parameters:
     userId:
       schema:
@@ -38,6 +40,7 @@ components:
         type: integer
         example: 2
         minimum: 0
+        maximum: 99999
         readOnly: true
       name: photoId
       in: path
@@ -51,7 +54,7 @@ components:
       schema:
         description: username schema
         type: string
-        example: Alice
+        example: Maria
         pattern: "ˆ.*?$"
         minLength: 3
         maxLength: 20
@@ -76,6 +79,7 @@ components:
         type: integer
         example: 3
         minimum: 0
+        maximum: 99999
         readOnly: true
     commentId:
       name: commentId
@@ -87,6 +91,7 @@ components:
         type: integer
         example: 1
         minimum: 0
+        maximum: 99999
         readOnly: true
   schemas:
     user:
@@ -102,7 +107,7 @@ components:
         username:
           description: The username of the user posted the photo
           type: string
-          example: Alice
+          example: Maria
           pattern: "ˆ.*?$"
           minLength: 3
           maxLength: 20
@@ -113,22 +118,38 @@ components:
           minimum: 0
         followers:
           description: List of usernames of user's followers.
-          type: object
+          type: array
           minItems: 0
+          maxItems: 99999
+          items:
+            type: string
+            example: Maria
+            pattern: "ˆ.*?$"
+            minLength: 3
+            maxLength: 20
         followersCount:
           description: The total number of users that follow the current user
           example: 24
           type: integer
           minimum: 0
+          maximum: 9999
         followings:
           description: List of usernames of users that the current user is following.
-          type: object
+          type: array
           minItems: 0
+          maxItems: 99999
+          items:
+            type: string
+            example: Maria
+            pattern: "ˆ.*?$"
+            minLength: 3
+            maxLength: 20
         followingsCount:
           description: The total number of users that are followed by current user
           example: 52
           type: integer
           minimum: 0
+          maximum: 9999
         photosPath:
           description: List of paths of photos that the user uploaded.
           type: object
@@ -145,8 +166,8 @@ components:
         username:
           description: user
           type: string
-          example: Alice
-          pattern: "^.*?$"
+          example: Maria
+          pattern: "ˆ.*?$"
           minLength: 3
           maxLength: 20
     comment:
@@ -167,7 +188,7 @@ components:
         username:
           description: The username of the user posted the photo
           type: string
-          example: Alice
+          example: Maria
           pattern: "ˆ.*?$"
           minLength: 3
           maxLength: 20
@@ -196,7 +217,7 @@ components:
         username:
           description: The username of the user posted the photo
           type: string
-          example: Alice
+          example: Maria
           pattern: "ˆ.*?$"
           minLength: 3
           maxLength: 20
@@ -209,19 +230,21 @@ components:
           description: Date when the user posted the photo
           type: string
           format: date-time
-          example: "2022-30-05T10:30:00Z"
           minLength: 1
-          maxLength: 9999
+          maxLength: 24
+          example: "2022-05-30T10:30:00Z"
         likes:
           description: Number of likes of the current photo
           type: integer
           example: 32
           minimum: 0
+          maximum: 99999
         comments:
           description: Number of comments of the current photo
           type: integer
           example: 5
           minimum: 0
+          maximum: 99999
         path:
           description: The url of the photo
           type: string
@@ -254,10 +277,10 @@ components:
       description: Banned user
       type: object
       properties:
-        bannedUser: 
+        bannedUser:
           description: The username of the banned User
           type: string
-          example: Alice
+          example: Maria
           pattern: "ˆ.*?$"
           minLength: 3
           maxLength: 20
@@ -266,17 +289,18 @@ components:
       description: Followed user
       type: object
       properties:
-        Followed: 
+        Followed:
           description: The usernames of the followed users
           type: array
           items:
+            description: the username of the followed user
             type: string
-            example: Alice
+            example: Maria
             pattern: "ˆ.*?$"
             minLength: 3
             maxLength: 20
           minItems: 0
-          maxItems: 1000       
+          maxItems: 1000
   securitySchemes:
     bearerAuth:
       type: http
@@ -299,6 +323,7 @@ paths:
               properties:
                 username:
                   example: AliceNew
+                  description: new username schema
                   type: string
                   pattern: "ˆ.*?$"
                   minLength: 3
@@ -310,13 +335,14 @@ paths:
           description: The user's username was updated
           content:
             application/json:
-              schema: 
-                $ref: "#/components/schemas/userLogin" 
+              schema:
+                $ref: "#/components/schemas/userLogin"
         "400": { $ref: "#/components/responses/BadRequest" }
         "404":
           description: User not found
         "500": { $ref: "#/components/responses/InternalServerError" }
         "401": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
       security:
         - bearerAuth: []
   /profile/{username}/:
@@ -404,6 +430,9 @@ paths:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 99999
+                description: photo array schema
                 items: { $ref: "#/components/schemas/photo" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
@@ -425,7 +454,12 @@ paths:
               type: object
               properties:
                 path:
+                  description: Path of the photo file
                   type: string
+                  example: "cat.jpeg"
+                  pattern: "ˆ.*?$"
+                  minLength: 1
+                  maxLength: 99999
               required:
                 - path
       responses:
@@ -434,7 +468,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/photo" 
+                $ref: "#/components/schemas/photo"
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
@@ -455,13 +489,16 @@ paths:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 99999
+                description: bans array schema
                 items: { $ref: "#/components/schemas/ban" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
         "401": { $ref: "#/components/responses/Unauthorized" }
       security:
         - bearerAuth: []
-    
+
   /users/{userId}/banned/{bannedUserId}/:
     parameters:
       - $ref: "#/components/parameters/userId"
@@ -491,7 +528,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
       security:
         - bearerAuth: []
-      
+
   /photos/{photoId}/likes/{userId}/:
     parameters:
       - $ref: "#/components/parameters/photoId"
@@ -508,6 +545,9 @@ paths:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 99999
+                description: likes array schema
                 items:
                   $ref: "#/components/schemas/like"
         "400": { $ref: "#/components/responses/BadRequest" }
@@ -573,6 +613,9 @@ paths:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 99999
+                description: comments array schema
                 items: { $ref: "#/components/schemas/comment" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
@@ -594,7 +637,7 @@ paths:
               properties:
                 commentText:
                   description: The content of the comment
-                  example: Such a cool photo! :)
+                  example: "Such a cool photo!"
                   type: string
                   pattern: "ˆ.*?$"
                   minLength: 1
@@ -606,7 +649,7 @@ paths:
           description: "The comment was added."
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: "#/components/schemas/comment"
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
@@ -645,8 +688,9 @@ paths:
               type: object
               properties:
                 username:
+                  description: username schema
                   type: string
-                  example: Alice
+                  example: Maria
                   pattern: "ˆ.*?$"
                   minLength: 3
                   maxLength: 20
@@ -661,4 +705,5 @@ paths:
                 properties:
                   identifier:
                     type: string
+                    description: identifier schema
                     example: "abcdef012345"

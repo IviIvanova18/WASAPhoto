@@ -11,6 +11,15 @@ func (db *appdbimpl) GetIDByPhotoID(id uint64) (uint64, error) {
 	return idUser, nil
 }
 
+func (db *appdbimpl) GetUsernameByUserID(id uint64) (string, error) {
+	var username string
+	err := db.c.QueryRow(`SELECT username FROM users WHERE idUser=?`, id).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
+}
+
 func (db *appdbimpl) DeleteLikes(idPhoto uint64) error {
 
 	res, err := db.c.Exec(`DELETE FROM likes WHERE idPhoto=?`, idPhoto)

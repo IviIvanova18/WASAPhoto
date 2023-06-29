@@ -34,7 +34,7 @@ export default {
 			} catch (e) {
 				if (e.response.status == 404) {
 					this.errormsg = "User not found " + this.username;
-				} else if (e.response.status == 500) {
+				} else if (e.response.status == 409) {
 					this.errormsg =
 						"This username already exists " + this.username;
 				} else {

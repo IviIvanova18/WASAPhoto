@@ -14,8 +14,8 @@ import (
 
 // GetAllBannedUsers is a handler that retrieves a list of banned users.
 func (rt *_router) GetAllBannedUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	userIDStr := ps.ByName("userId")
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+
+	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
 		return
