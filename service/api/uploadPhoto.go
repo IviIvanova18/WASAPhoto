@@ -16,7 +16,15 @@ import (
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var photo Photo
 	err := json.NewDecoder(r.Body).Decode(&photo)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	userID, err := strconv.ParseUint(ps.ByName("userId"), 10, 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	photo.UserID = userID
 	photo.Likes = 0

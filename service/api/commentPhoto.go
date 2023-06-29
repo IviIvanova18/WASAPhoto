@@ -57,7 +57,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	comment.PhotoID = photoId
 	comment.UserID = token
-	
+
 	dbComment, err := rt.db.CommentPhoto(comment.ToDatabase())
 	if err != nil {
 		ctx.Logger.WithError(err).Error("Comment cannot be uploaded")
