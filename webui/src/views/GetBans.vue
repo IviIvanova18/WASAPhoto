@@ -67,14 +67,16 @@ export default {
 			</div>
 		</div>
 
-		<div v-if="!loading" v-for="user in banned" :key="user.id">
-			<a
-				href="javascript:"
-				class="text-muted mb-1 larger-text"
-				style="text-decoration: none"
-				@click="gotoAccount(this.userId, user.bannedUser)"
-				>{{ user.bannedUser }}</a
-			>
+		<div v-if="!loading">
+			<div v-for="user in banned" :key="user.id">
+				<a
+					href="javascript:"
+					class="text-muted mb-1 larger-text"
+					style="text-decoration: none"
+					@click="gotoAccount(this.userId, user.bannedUser)"
+					>{{ user.bannedUser }}</a
+				>
+			</div>
 		</div>
 	</div>
 </template>

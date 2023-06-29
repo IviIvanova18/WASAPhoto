@@ -22,7 +22,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	} else if !comment.isValid() {
-		rt.baseLogger.WithError(err).Warning("wrong user format received")
+		rt.baseLogger.WithError(err).Warning("wrong comment format received")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

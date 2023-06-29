@@ -136,7 +136,12 @@ export default {
 				await this.refresh();
 				this.newComment = "";
 			} catch (e) {
-				this.errormsg = e.toString();
+				// console.log(e.response.status);
+				if (e.response.status == 400) {
+					this.errormsg = "Wrong format received " + this.newComment;
+				} else {
+					this.errormsg = e.toString();
+				}
 			}
 			this.loading = false;
 		},
@@ -225,7 +230,7 @@ export default {
 									</button>
 									{{ this.likes[photo.id] }} likes
 								</div>
-								<div class="comments" v-if="comments[photo.id]">
+								<div class="comments">
 									{{ comments[photo.id].length }} comments
 								</div>
 							</div>
