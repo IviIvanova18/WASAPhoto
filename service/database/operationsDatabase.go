@@ -5,8 +5,10 @@ import "database/sql"
 func (db *appdbimpl) GetIDByPhotoID(id uint64) (uint64, error) {
 	var idUser uint64
 	err := db.c.QueryRow(`SELECT idUser FROM photos WHERE idPhoto=?`, id).Scan(&idUser)
-
-	return idUser, err
+	if err != nil {
+		return 0, err
+	}
+	return idUser, nil
 }
 
 func (db *appdbimpl) DeleteLikes(idPhoto uint64) error {
