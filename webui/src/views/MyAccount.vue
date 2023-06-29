@@ -164,12 +164,11 @@ export default {
 				await this.refresh();
 				this.newComment[photoId] = "";
 			} catch (e) {
-				// console.log(this.e.response.status);
 				if (e.response.status == 400) {
-					this.errormsg =
-						"Wrong format received" + this.newComment[photoId];
+					this.errormsg = "Wrong format received";
+				} else {
+					this.errormsg = e.toString();
 				}
-				this.errormsg = e.toString();
 			}
 			this.loading = false;
 		},
@@ -410,27 +409,26 @@ export default {
 					</div>
 				</div>
 			</div>
-			<div v-if="parseInt(this.user?.id) === parseInt(this.userId)">
-				<div
-					class="d-flex justify-content-center align-items-center h-80"
+			<div
+				v-if="parseInt(this.user?.id) === parseInt(this.userId)"
+				class="d-flex justify-content-center align-items-center h-80"
+			>
+				<router-link
+					:to="{
+						name: 'UploadPhoto',
+					}"
+					class="btn btn-primary rounded-pill larger-text"
+					style="background-color: #2e4a78"
+					>Upload Photo</router-link
 				>
-					<router-link
-						:to="{
-							name: 'UploadPhoto',
-						}"
-						class="btn btn-primary rounded-pill larger-text"
-						style="background-color: #2e4a78"
-						>Upload Photo</router-link
-					>
-					<router-link
-						:to="{
-							name: 'SetMyUsername',
-						}"
-						class="btn btn-primary rounded-pill larger-text"
-						style="background-color: #2e4a78"
-						>Update my Username
-					</router-link>
-				</div>
+				<router-link
+					:to="{
+						name: 'SetMyUsername',
+					}"
+					class="btn btn-primary rounded-pill larger-text"
+					style="background-color: #2e4a78"
+					>Update my Username
+				</router-link>
 			</div>
 
 			<div
@@ -503,7 +501,7 @@ export default {
 									</button>
 									{{ this.likes[photo] }} likes
 								</div>
-								<div class="comments">
+								<div class="comments" v-if="comments[photo]">
 									{{ comments[photo].length }} comments
 								</div>
 							</div>
