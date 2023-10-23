@@ -9,6 +9,19 @@ WASAPhoto contains the source code for [Web and Software Application](http://gam
 2. Backend Development in Go, using database SQLite
 3. Frontend Development in JavaScript, using Vue.js framework
 4. Docker Container for Deployment
+
+## Project Structure 
+* `cmd/`: This directory contains all the executable files.
+	* `cmd/healthcheck`: An example of a daemon used to monitor server health, particularly useful when hypervisors don't provide HTTP readiness or liveness probes (e.g., Docker engine).
+	* `cmd/webapi`: An example of a web API server daemon.
+* `doc/` : The documentation folder, includes OpenAPI file.
+* `service/` : This directory encompasses all packages responsible for implementing project-specific functionalities.
+	* `service/api`: Contains functionalities and types required by every controller or REST API endpoint.
+	* `service/database`: Houses all the functionality for connecting the backend with the SQL database.
+	* `service/globaltime`: A wrapper package for time.Time, often used in unit testing.
+* `vendor/` : Managed by Go, this directory contains a copy of all project dependencies.
+* `webui/` :The web frontend for the project, developed in Vue.js.
+	* `webui/src` : Contains all the frontend views that users can interact with.
 ## How to build
 
 If you're not using the WebUI, or if you don't want to embed the WebUI into the final executable, then:
